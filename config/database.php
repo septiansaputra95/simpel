@@ -94,6 +94,19 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'pgsql_sso' => [
+            'driver' => 'pgsql',
+            'host' => env('SSO_DB_HOST', '127.0.0.1'),
+            'port' => env('SSO_DB_PORT', '5432'),
+            'database' => env('SSO_DB_DATABASE', 'forge'),
+            'username' => env('SSO_DB_USERNAME', 'forge'),
+            'password' => env('SSO_DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),
