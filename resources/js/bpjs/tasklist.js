@@ -1,6 +1,7 @@
 $(function () {
     let urlLoadData = "/BPJS/tasklist/datatables";
     let urlSimpan = "/BPJS/tasklist/simpan";
+    let urlCariData = "/BPJS/tasklist/getKodeBooking"
     let urlTask = "/BPJS/tasklist/getTask";
 
     // Initisalisasi
@@ -19,64 +20,138 @@ $(function () {
         console.log(kodebooking);
         console.log("getKodebooking");
         data(kodebooking);
-       // Mengirim data sebagai object dalam POST request
-        // axios
-        //     .post(urlTask, { kodebooking: kodebooking })
-        //     .then(function (res) {
-        //         console.log(res);  // Mencetak seluruh response object dari server
-        //         if (res.data.code == 200) {
-        //             let message = res.data.message;
-
-        //             alert(message);
-        //         } else {
-        //             // Jika response code tidak 200
-        //             console.error("Error: ", res.data.message);
-        //         }
-        // })
-        // .catch(function (err) {
-        //     console.log(err);  // Mencetak error object
-        //     if (err.response && err.response.code != 200) {
-        //         swalWithBootstrapButtons.fire(
-        //             "Gagal Menambah data!",
-        //             err.response.data.message,
-        //             "error"
-        //         );
-        //         alert(err.response.data.message);
-        //     } else {
-        //         console.error("Request failed: ", err.message);
-        //     }
-        // });
     };
 
-    document.getElementById("btn-simpan").onclick = () => {
-        let tanggal = document.getElementById('tanggal-antrian').value;
-        console.log(tanggal);
-        simpanData(tanggal);
+    document.getElementById("btn-mining").onclick = () => {
+        console.log("Add Data");
+        // console.log($); // Should print the jQuery object/function
+        // console.log($.fn.modal); // Should print the Bootstrap modal functio
+        showModal();
     };
 
-    const simpanData = (tanggal) => {
-        const tanggalData = tanggal;
-        console.log(tanggalData);
+
+    const showModal = (method = "POST") => {
+        let modal = $("#modal-data");
+
+        $("#btn-simpan").text("Simpan");
+        $("#btn-simpan").show();
+        $("#btn-update").hide();
+
+        modal.modal("show");
+        modal.removeAttr("style");
+        return false;
+    };
+
+    const simpanData = (kodebooking) => {
         axios
             .get(urlSimpan, {
                 params: {
-                    tanggal:tanggal
+                    kodebooking:kodebooking
                 }
             })
             .then(function (res) {
                 // console.log(res);
                 if (res.data.code == 200) {
-                    alert(res.data.message  );
-                    dataTabel.ajax.reload();
+                    console.log("Data Berhasil Disimpan");
+
+                } else {
+                    alert("Penyimpanan Data Gagal");
                 }
             })
             .catch(function (err) {
-                if (err.response.code != 200) {
-                    alert("Gagal Menyimpan Antrian Tanggal");
+                if (err.response && err.response.status !== 200) {
+                    alert("Gagal Menyimpan KodeBooking");
+                } else {
+                    console.error("Terjadi kesalahan Pada SimpanData:", err.message);
                 }
             });
     };
 
+    document.getElementById("btn-simpan").onclick = () => {
+        const tanggal = document.getElementById("tanggal-task").value;
+        cariData(tanggal);
+    };
+
+    document.getElementById("btn-caridb").onclick = () => {
+        const tanggal = document.getElementById("tanggal-task").value;
+        console.log(tanggal);
+       
+    };
+    const cariData = (tanggal) => {
+        const tanggalData = tanggal;
+        console.log(tanggalData);
+        axios
+            .get(urlCariData, {
+                params: {
+                    tanggal:tanggal
+                }
+            })
+            .then(function (res) {
+                console.log(res.data);
+                if (res.data.length > 0) {
+                    res.data.forEach(item => {
+                        console.log(item.kodebooking); // Menampilkan setiap kodebooking
+                        simpanData(item.kodebooking);
+                        //throw new Error("Menghentikan eksekusi skrip");
+                    });
+                    alert("Semua Data Kode Booking Berhasil Disimpan");
+                    //dataModal(tanggalData);
+                } else {
+                    alert("Gagal Pencarian Kode Booking");
+                }
+            })
+            .catch(function (err) {
+                if (err.response && err.response.status !== 200) {
+                    alert("Gagal Pencarian Kode Booking Dengan Tanggal Dari Database");
+                } else {
+                    console.error("Terjadi kesalahan CariData:", err.message);
+                }
+            });
+    }
+
+    const data_modal = (tanggal) => {
+        $("#tabel-modal").dataTable({
+            processing: true,  // "Processing" should be lowercase.
+            serverSide: true,  // "ServerSide" should be lowercase.
+            paging: true,
+            sDom: "<t <'float-end' i><p >>",
+            iDisplayLength: 25,
+            bDestroy: true,
+            autoWidth: false,
+            ordering: false,
+            oLanguage: {
+                sLengthMenu: "_MENU_ ",
+                sInfo: "Showing <b>_START_ to _END_</b> of _TOTAL_ entries",
+                sSearch: "Search Data : ",
+                sZeroRecords: "Tidak ada data",
+                sEmptyTable: "Data tidak tersedia",
+                sLoadingRecords: '<img src="../../ajax-loader.gif"> Loading...',
+            },
+            ajax: {
+                url: urlTask,  // Add a comma here
+                type: "GET",
+                data: {
+                    tanggal: tanggal
+                },
+            },
+            columns: [
+                { mData: "no" },
+                { mData: "wakturs" },
+                { mData: "waktu" },
+                { mData: "taskname" },
+                { mData: "taskid" },
+                { mData: "kodebooking" },
+            ],
+        });
+    
+            dataTabel = $("#tabel-modal").DataTable();
+    
+            $("#term").keyup(function () {
+                dataTabel.search($(this).val()).draw();
+                $(".table").removeAttr("style");
+            });
+    };
+    
     const data = (kodebooking) => {
     $("#tabel-data").dataTable({
         processing: true,  // "Processing" should be lowercase.

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Bpjs\Bridging\Antrol\BridgeAntrol;
 use App\Models\MAntrianTanggal;
+use App\Models\MTaskList;
 
 
 class TaskListController extends Controller
@@ -26,8 +27,6 @@ class TaskListController extends Controller
     public function loadDatatables(Request $request)
     {
         $kodeBooking = $request->input('kodebooking');
-        //dd($kodeBooking);
-        //dd($kodeBooking);
         $dataAntrian = $this->taskListKodeBooking($kodeBooking);
             //    dd($dataAntrian);
 
@@ -68,60 +67,78 @@ class TaskListController extends Controller
 
     }
 
+    public function getTaskTanggal(Reqest $request)
+    {
+        $tanggal = $request->tanggal;
+        $data = MTasklist::where('wakturs', 'LIKE'. "%{$tanggal}%")
+                ->with('Antrian')
+                ->get();
+    }
+    public function getKodeBooking(Request $request)
+    {
+        $data = MAntrianTanggal::where('tanggal', $request->tanggal)->get();
+        
+        // $result = isset($data) ? ['data' => $data] : ['data' => 0];
+        // return response()->json($result);
+        return response()->json($data);
+
+    }
+
     public function store(Request $request)
     {
-        // Mendapatkan tanggal dari request
     
         try {
-            // Mengambil data antrian berdasarkan tanggal
-//             $dataAntrian = $this->daftarA    $tanggalRegistrasi = $request->input('tanggal');
-// ntrianPerTanggal($tanggalRegistrasi);
+            
+            $kodeBooking = $request->input('kodebooking');
+            $dataAntrian = $this->taskListKodeBooking($kodeBooking);
 
-            // Jika kode metadata adalah 200, berarti data ditemukan
-            if ($dataAntrian->metadata->code == 200) {
 
-                // Hapus data lama di tabel MAntrianTanggal berdasarkan tanggal
-                MAntrianTanggal::where('tanggal', $tanggalRegistrasi)->delete();
-
-                // Menyimpan data baru ke database
-                foreach ($dataAntrian->response as $data) {
-                    MAntrianTanggal::create([
+            if (isset($dataAntrian->response) && is_array($dataAntrian->response)) {
+                MTaskList::where('kodebooking', $kodeBooking)->delete();
+                foreach($dataAntrian->response as $data) {
+                    MTaskList::create([
                         'kodebooking' => $data->kodebooking,
-                        'tanggal' => $data->tanggal,
-                        'kodepoli' => $data->kodepoli,
-                        'kodedokter' => $data->kodedokter,
-                        'nokapst' => $data->nokapst,
-                        'norekammedis' => $data->norekammedis,
-                        'jeniskunjungan' => $data->jeniskunjungan,
-                        'nomorreferensi' => $data->nomorreferensi,
-                        'sumberdata' => $data->sumberdata,
-                        'noantrean' => $data->noantrean,
-                        'estimasidilayani' => $data->estimasidilayani,
-                        'createdtime' => $data->createdtime,
-                        'nohp' => $data->nohp,
-                        'status' => $data->status
+                        'wakturs' => $data->wakturs,
+                        'waktu' => $data->waktu,
+                        'taskname' => $data->taskname,
+                        'taskid' => $data->taskid
                     ]);
                 }
 
-                // Return response berhasil
                 return response()->json([
-                    'code' => $dataAntrian->metadata->code,
-                    'message' => "Data Berhasil Disimpan",
-                ], $dataAntrian->metadata->code);
+                    'code' => 200,
+                    'message' => 'Data berhasil disimpan'
+                ], 200);
 
-            } else {
-                // Return response jika data tidak ditemukan
+            }  else if($dataAntrian->metadata->message == "No Content")
+            {
+                //dd($dataAntrian->metadata->code, $dataAntrian->metadata->message, "metadata 1");
+                MTaskList::where('kodebooking', $kodeBooking)->delete();
+                MTaskList::create([
+                    'kodebooking' => $kodeBooking,
+                    'wakturs' => '0',
+                    'waktu' => '0',
+                    'taskname' => 'Tidak Ada Satu Task List Pun',
+                    'taskid' => '0'
+                ]);
+
                 return response()->json([
-                    'code' => $dataAntrian->metadata->code,
-                    'message' => $dataAntrian->metadata->message,
-                ], $dataAntrian->metadata->code);
+                    'code' => 200,
+                    'message' => 'Data berhasil disimpan dengan pesan "No Content" '
+                ], 200);
+            }
+            else {
+                return response()->json([
+                    'code' => 400,
+                    'message' => 'Data antrian tidak valid atau tidak ditemukan.'
+                ], 400);
             }
 
         } catch (\Exception $e) {
             // Return response jika terjadi kesalahan
             return response()->json([
                 'code' => 500,
-                'message' => "Terjadi kesalahan: " . $e->getMessage(),
+                'message' => "Terjadi kesalahan Store Function: " . $e->getMessage(),
             ], 500);
         }
     }        

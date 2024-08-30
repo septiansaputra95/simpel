@@ -27,4 +27,9 @@ class MAntrianTanggal extends Model
         'createdtime',
         'status'
     ];
+
+    public function tasklist()
+    {
+        return $this->hasMany(MTaskList::class, 'kodebooking', 'kodebooking');
+    }
 }

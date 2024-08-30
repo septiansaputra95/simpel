@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-primary" id="btn-cari">Cari</button>
-                    <button type="submit" class="btn btn-success" id="btn-simpan">Simpan</button>
+                    <button type="submit" class="btn btn-warning" id="btn-mining">Mining Task List</button>
                 </div>
             </div>
 
@@ -43,6 +43,8 @@
         </div>
     </div>
 @endsection
+@include('bpjs.task-list.modal-data')
+
 @push('scripts')
 @vite(['resources/js/bpjs/tasklist.js'])
 @endpush

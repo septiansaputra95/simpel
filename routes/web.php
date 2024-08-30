@@ -15,7 +15,10 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
 
     Route::get('/tasklist', 'TaskListController@index')->name('tasklist.index');
     Route::post('/tasklist/datatables', 'TaskListController@loadDatatables');
-    Route::post('/tasklist/getTask', 'TaskListController@taskListKodeBooking');
+    Route::post('/tasklist/getTask', 'TaskListController@getTaskTanggal');
+    Route::get('/tasklist/getKodeBooking', 'TaskListController@getKodeBooking');
+    Route::get('/tasklist/simpan', 'TaskListController@store');
+    
 
     Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
 

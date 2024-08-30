@@ -44,5 +44,9 @@
         <a href="{{ route('tasklist.index') }}" class="submenu-item py-2 px-4 text-gray-300 hover:text-white cursor-pointer">
             <i class="fas fa-list-alt mr-2"></i> Task List
         </a>
+
+        <a href="{{ route('updatetask.index') }}" class="submenu-item py-2 px-4 text-gray-300 hover:text-white cursor-pointer">
+            <i class="fas fa-list-alt mr-2"></i> Update Task
+        </a>
     </div>
 </div>
