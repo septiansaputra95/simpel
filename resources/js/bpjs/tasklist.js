@@ -51,6 +51,7 @@ $(function () {
             })
             .then(function (res) {
                 // console.log(res);
+                console.log("simpanData");
                 if (res.data.code == 200) {
                     console.log("Data Berhasil Disimpan");
 
@@ -67,6 +68,8 @@ $(function () {
             });
     };
 
+    //window.simpanData = simpanData;
+
     document.getElementById("btn-simpan").onclick = () => {
         const tanggal = document.getElementById("tanggal-task").value;
         cariData(tanggal);
@@ -75,7 +78,6 @@ $(function () {
     document.getElementById("btn-caridb").onclick = () => {
         const tanggal = document.getElementById("tanggal-task").value;
         console.log(tanggal);
-       
     };
     const cariData = (tanggal) => {
         const tanggalData = tanggal;

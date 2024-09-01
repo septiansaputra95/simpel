@@ -15,18 +15,22 @@
                 </div>
                 <div class="col-auto">
                     <input type="text" class="form-control" id="kodebooking" placeholder="Kode Booking">
+                </div>
+                <div class="col-auto">
                     <select name="" id="taskid" class="form-control">
-                        <option value="1">1</option>
+                        {{-- <option value="1">1</option> --}}
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
                         <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
                     </select>
                     @csrf
                 </div>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-primary" id="btn-kirim">Cari</button>
-                    <button type="submit" class="btn btn-success" id="btn-simpan">Simpan</button>
+                    {{-- <button type="button" class="btn btn-primary" id="btn-kirim">Cari</button> --}}
+                    <button type="submit" class="btn btn-success" id="btn-update">Update Task</button>
                 </div>
             </div>
 
@@ -37,5 +41,5 @@
     </div>
 @endsection
 @push('scripts')
-@vite(['resources/js/bpjs/tasklist.js'])
+@vite(['resources/js/bpjs/updatetask.js'])
 @endpush

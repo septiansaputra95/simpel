@@ -21,6 +21,9 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     
 
     Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
+    Route::post('/updatetask/postTask', 'UpdateTaskController@postTask');
+    Route::get('/updatetask/getKodeBooking', 'UpdateTaskController@getKodeBooking');
+
 
 
 });
