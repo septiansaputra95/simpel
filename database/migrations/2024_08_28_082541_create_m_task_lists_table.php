@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('waktu', 150);
             $table->string('taskname', 150);
             $table->string('taskid', 150);
+            $table->date('tanggal_data');
             $table->timestamps();
         });
     }

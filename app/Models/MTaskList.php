@@ -16,7 +16,8 @@ class MTaskList extends Model
         'wakturs', 
         'waktu', 
         'taskname',
-        'taskid'
+        'taskid',
+        'tanggal_data'
     ];
 
     public function Antrian()

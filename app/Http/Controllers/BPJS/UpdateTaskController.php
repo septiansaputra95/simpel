@@ -53,14 +53,14 @@ class UpdateTaskController extends Controller
         ];
 
         //dd($data);
-        return $data;
+        //return $data;
         
         
-        // $dataRequest = json_encode($data);
+        $dataRequest = json_encode($data);
 
-        // $endpoint = 'antrean/updatewaktu';
-        // $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
-        // $result = json_decode($requestBridge);
-        // return $result;
+        $endpoint = 'antrean/updatewaktu';
+        $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
+        $result = json_decode($requestBridge);
+        return $result;
     }
 }

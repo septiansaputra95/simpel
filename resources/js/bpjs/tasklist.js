@@ -42,16 +42,17 @@ $(function () {
         return false;
     };
 
-    const simpanData = (kodebooking) => {
+    const simpanData = (kodebooking, tanggal) => {
         axios
             .get(urlSimpan, {
                 params: {
-                    kodebooking:kodebooking
+                    kodebooking:kodebooking,
+                    tanggal:tanggal
                 }
             })
             .then(function (res) {
                 // console.log(res);
-                console.log("simpanData");
+                //console.log("simpanData");
                 if (res.data.code == 200) {
                     console.log("Data Berhasil Disimpan");
 
@@ -93,7 +94,7 @@ $(function () {
                 if (res.data.length > 0) {
                     res.data.forEach(item => {
                         console.log(item.kodebooking); // Menampilkan setiap kodebooking
-                        simpanData(item.kodebooking);
+                        simpanData(item.kodebooking, tanggal);
                         //throw new Error("Menghentikan eksekusi skrip");
                     });
                     alert("Semua Data Kode Booking Berhasil Disimpan");

@@ -67,12 +67,13 @@ $(function () {
                 console.log(res.data);
                 const taskid = caritask + 1
                 if (res.data.length > 0) {
-                    const waktu = res.data[0].waktu;
+                    const waktu = res.data[0].wakturs;
+                    const tanggal = res.data[0].tanggal_data;
                     const waktu2 = waktu.substring(0,19);
-                    console.log(waktu2);
+                    console.log(waktu, waktu2);
                     const newTime = pembagianWaktu(waktu2, taskid);
                     console.log('New Time pada cariData ' +  newTime);
-                    postTask(kodebooking, taskid, newTime);
+                    postTask(kodebooking, taskid, newTime, tanggal);
 
                 } else {
                     alert("Update Task " + taskid + " Gagal, Taskid " + caritask + " Tidak Ditemukan");
@@ -90,12 +91,15 @@ $(function () {
     function pembagianWaktu (waktu2, taskid)
     {
         const caritask = taskid + 1;
+        console.log("Cari tAsk " + caritask);
+        console.log("taskid " + taskid);
+
         if (taskid == 2)
         {
             const randomTime = getRandomTime(1, 3);
             console.log("Random TIme: " + randomTime);
             const newTime = addMillisecondsToTimestamp(waktu2, randomTime);
-            console.log("Waktu Update Task " + caritask + " Adalah " + newTime);
+            console.log("Waktu Update Task " + taskid + " Adalah " + newTime);
             return newTime;
         }
         else  if (taskid == 3)
@@ -103,7 +107,7 @@ $(function () {
             const randomTime = getRandomTime(2, 4);
             console.log("Random TIme: " + randomTime);
             const newTime = addMillisecondsToTimestamp(waktu2, randomTime);
-            console.log("Waktu Update Task " + caritask + " Adalah " + newTime);
+            console.log("Waktu Update Task " + taskid + " Adalah " + newTime);
             return newTime;
         }
         else  if (taskid == 4)
@@ -111,7 +115,7 @@ $(function () {
             const randomTime = getRandomTime(20, 45);
             console.log("Random TIme: " + randomTime);
             const newTime = addMillisecondsToTimestamp(waktu2, randomTime);
-            console.log("Waktu Update Task " + caritask + " Adalah " + newTime);
+            console.log("Waktu Update Task " + taskid + " Adalah " + newTime);
             return newTime;
         }
         else  if (taskid == 5)
@@ -119,7 +123,7 @@ $(function () {
             const randomTime = getRandomTime(5, 10);
             console.log("Random TIme: " + randomTime);
             const newTime = addMillisecondsToTimestamp(waktu2, randomTime);
-            console.log("Waktu Update Task " + caritask + " Adalah " + newTime);
+            console.log("Waktu Update Task " + taskid + " Adalah " + newTime);
             return newTime;
         }
         else  if (taskid == 6)
@@ -127,7 +131,7 @@ $(function () {
             const randomTime = getRandomTime(3, 6);
             console.log("Random TIme: " + randomTime);
             const newTime = addMillisecondsToTimestamp(waktu2, randomTime);
-            console.log("Waktu Update Task " + caritask + " Adalah " + newTime);
+            console.log("Waktu Update Task " + taskid + " Adalah " + newTime);
             return newTime;
         }
         else  if (taskid == 7)
@@ -135,21 +139,22 @@ $(function () {
             const randomTime = getRandomTime(7, 15);
             console.log("Random TIme: " + randomTime);
             const newTime = addMillisecondsToTimestamp(waktu2, randomTime);
-            console.log("Waktu Update Task " + caritask + " Adalah " + newTime);
+            console.log("Waktu Update Task " + taskid + " Adalah " + newTime);
             return newTime;
         }
 
     }
-    const simpanData = (kodebooking) => {
+    const simpanData = (kodebooking, tanggal) => {
         axios
             .get(urlSimpan, {
                 params: {
-                    kodebooking:kodebooking
+                    kodebooking:kodebooking,
+                    tanggal:tanggal
                 }
             })
             .then(function (res) {
                 // console.log(res);
-                console.log("simpanData");
+                //console.log("simpanData");
                 if (res.data.code == 200) {
                     console.log("Data Berhasil Disimpan");
 
@@ -166,7 +171,7 @@ $(function () {
             });
     };
 
-    const postTask = (kodebooking, taskid, newTime) => {
+    const postTask = (kodebooking, taskid, newTime, tanggal) => {
         console.log("post Task " + kodebooking, taskid, newTime);
         axios
             .post(urlPost, {
@@ -177,7 +182,7 @@ $(function () {
             .then(function (res) {
                 if (res.status === 200) {
                 console.log(res);
-                    simpanData(kodebooking); 
+                    simpanData(kodebooking, tanggal); 
                     console.log("Post Task Berhasil");
 
                 } else {

@@ -90,18 +90,21 @@ class TaskListController extends Controller
         try {
             
             $kodeBooking = $request->input('kodebooking');
+            $tanggal = $request->input("tanggal");
             $dataAntrian = $this->taskListKodeBooking($kodeBooking);
 
-
+            //dd($tanggal);
             if (isset($dataAntrian->response) && is_array($dataAntrian->response)) {
                 MTaskList::where('kodebooking', $kodeBooking)->delete();
                 foreach($dataAntrian->response as $data) {
+                    
                     MTaskList::create([
                         'kodebooking' => $data->kodebooking,
                         'wakturs' => $data->wakturs,
                         'waktu' => $data->waktu,
                         'taskname' => $data->taskname,
-                        'taskid' => $data->taskid
+                        'taskid' => $data->taskid,
+                        'tanggal_data' => $tanggal
                     ]);
                 }
 
@@ -119,7 +122,8 @@ class TaskListController extends Controller
                     'wakturs' => '0',
                     'waktu' => '0',
                     'taskname' => 'Tidak Ada Satu Task List Pun',
-                    'taskid' => '0'
+                    'taskid' => '0',
+                    'tanggal_data' => $tanggal
                 ]);
 
                 return response()->json([
