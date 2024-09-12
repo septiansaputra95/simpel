@@ -120,5 +120,22 @@ class AntrianOnlineController extends Controller
                 'message' => "Terjadi kesalahan: " . $e->getMessage(),
             ], 500);
         }
-    }        
+    }   
+    
+    public function autoStore()
+    {
+        $tanggal = DATE('Y-m-d');
+
+        $request = new Request();
+        $request->replace(['tanggal' => $tanggal]);
+
+        $response = $this->store($request);
+
+        $responseData = $response->getData(); 
+
+        echo "Pesan: " . $responseData->message . "<br>";
+        echo "Selesai proses simpan " . $tanggal . ". Mohon di cek.";
+
+        return $response;
+    }
 }

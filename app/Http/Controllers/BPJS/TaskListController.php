@@ -91,6 +91,7 @@ class TaskListController extends Controller
             
             $kodeBooking = $request->input('kodebooking');
             $tanggal = $request->input("tanggal");
+            //dd($kodeBooking, $tanggal);
             $dataAntrian = $this->taskListKodeBooking($kodeBooking);
 
             //dd($tanggal);
@@ -145,5 +146,24 @@ class TaskListController extends Controller
                 'message' => "Terjadi kesalahan Store Function: " . $e->getMessage(),
             ], 500);
         }
-    }        
+    }   
+    
+    public function autoStore()
+    {
+        $tanggal = DATE('Y-m-d');
+
+        $request = new Request();
+        $request->replace(['tanggal' => $tanggal]);
+
+        $response = $this->getKodeBooking($request);
+        $responseData = $response->getData();
+
+        foreach ($responseData as $item) {
+            $request->replace(['tanggal' => $tanggal, 'kodebooking' => $item->kodebooking]);
+            $data = $this->store($request);
+            echo "Data ". $item->kodebooking. " Berhasil Di Simpan";
+            echo "<br>";
+        }
+    
+    }
 }
