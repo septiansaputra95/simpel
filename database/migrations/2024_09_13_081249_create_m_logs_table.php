@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('api', 150);
             $table->string('controller', 150);
             $table->string('code', 150);
-            $table->string('message', 150);
-            $table->string('data', 150);
+            $table->string('message', 1500);
+            $table->string('data', 1500);
             $table->timestamps();
         });
     }

@@ -40,10 +40,8 @@
 </head>
 <body>
     <h1 class="h1">Mohon Tidak Ditutup</h1><br>
-    <h1 class="h1">Halaman Untuk Get Antrian Tanggal</h1><br>
+    <h1 class="h1">Halaman Untuk Post Update Task</h1><br>
     <h1 id="clock" class="clock"></h1>
-    <br><br>
-    <h1 class="h1">Antrian Akan Di Proses Pukul: 22.03 WIB</h1><br>
 
     <script>
         function updateClock() {
@@ -62,21 +60,37 @@
             document.getElementById('clock').innerHTML = timeString;
 
             // Mengecek apakah sudah jam 15:00
-            if (hours == "22" && minutes == "03" && seconds == "00") {
+            if (hours == "22" && minutes == "07" && seconds == "00") {
                 // Kirim request ke route Laravel
                 fetchPeserta();
-                console.log("Proses Antrian");
-            } else if(hours == "22" && minutes == "12" && seconds == "00") 
-            {
+                console.log("Proses Fetch Update Data");
+
+            } else if (hours == "22" && minutes == "08" && seconds == "00") {
                 // Kirim request ke route Laravel
                 fetchPeserta();
-                console.log("Proses Antrian Pagi");
-            } 
+                console.log("Proses Fetch Update Data");
+
+            } else if (hours == "22" && minutes == "09" && seconds == "00") {
+                // Kirim request ke route Laravel
+                fetchPeserta();
+                console.log("Proses Fetch Update Data");
+
+            }  else if (hours == "22" && minutes == "10" && seconds == "00") {
+                // Kirim request ke route Laravel
+                fetchPeserta();
+                console.log("Proses Fetch Update Data");
+
+            }  else if (hours == "22" && minutes == "11" && seconds == "00") {
+                // Kirim request ke route Laravel
+                fetchPeserta();
+                console.log("Proses Fetch Update Data");
+
+            }
         }
 
         function fetchPeserta() {
             $.ajax({
-                url: '{{ route("antrianonline.autostore") }}', // Panggil route yang diinginkan
+                url: '{{ route("updatetask.autoupdate") }}', // Panggil route yang diinginkan
                 method: 'GET',
                 success: function(response) {
                     console.log("Peserta data successfully fetched");

@@ -87,7 +87,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask()
     {
         // $tanggal = DATE('Y-m-d');
-        $tanggal = "2024-09-14";
+        $tanggal = "2024-09-12";
         $data = MAntrianTanggal::where('tanggal', $tanggal)
                         ->where('status', "Belum dilayani")
                         ->get();
@@ -97,14 +97,13 @@ class UpdateTaskController extends Controller
             $kodebooking [] = $item->kodebooking;
         }
 
-        // dd($kodebooking);
         
         for($i=0; $i < COUNT($kodebooking); $i++)
         {
             $taskData = MTaskList::where('kodebooking', $kodebooking[$i])
                     ->orderBy('taskid', 'DESC')
                     ->first();
-            dd($taskData, $kodebooking);
+            //dd($taskData, $kodebooking);
             $kodeBooking = $taskData->kodebooking;
             $taskid = $taskData->taskid;
             $waktuRs = $taskData->wakturs;
@@ -115,9 +114,14 @@ class UpdateTaskController extends Controller
             if ($taskid >= 5 || $taskid == 99 || $taskid == 0) {
                 continue;
             }
-        
-            // Menampilkan hasilnya
             
+            // $prosesUlang = 5 - $taskid;
+            // dd($taskid, $prosesUlang);
+            // for($j=1; $j = $prosesUlang; $j++)
+            // {
+            //     $this->prosesUpdate($kodeBooking, $tanggal);
+            //     echo $j;
+            // }  
 
             $newTime = $this->pembagianWaktu($waktu2, $postTaskid);
             // dd($waktu2, $newTime);
@@ -164,16 +168,83 @@ class UpdateTaskController extends Controller
 
             echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
             echo $pesan2 = "Update Data Task Lokal Database " . $kodeBooking . " Task id " . $postTaskid .". Selesai.";
-            dd([
-                'kodebooking' => $kodeBooking,
-                'taskid' => $taskid,
-                'wakturs' => $waktuRs
-            ], $waktu2, $newTime, $postTaskid, $response, $responseData, $storeResponseData);
+            // dd([
+            //     'kodebooking' => $kodeBooking,
+            //     'taskid' => $taskid,
+            //     'wakturs' => $waktuRs
+            // ], $waktu2, $newTime, $postTaskid, $response, $responseData, $storeResponseData);
 
             $this->storeLogs($code, $message, $pesan, $pesan2);
             // die();
         }
 
+    }
+
+    public function prosesUpdate($kodeBooking, $tanggal)
+    {
+        $taskData = MTaskList::where('kodebooking', $kodeBooking)
+                    ->orderBy('taskid', 'DESC')
+                    ->first();
+        //dd($taskData, $kodebooking);
+        $kodeBooking = $taskData->kodebooking;
+        $taskid = $taskData->taskid;
+        $waktuRs = $taskData->wakturs;
+        $waktu2 = substr($waktuRs, 0, 19);
+        $postTaskid = $taskid + 1;
+        
+        $newTime = $this->pembagianWaktu($waktu2, $postTaskid);
+        // dd($waktu2, $newTime);
+        // dd([
+        //     'kodebooking' => $kodeBooking,
+        //     'taskid' => $taskid,
+        //     'wakturs' => $waktuRs
+        // ], $waktu2, $newTime, $postTaskid);
+
+        $request = new Request();
+        $request->replace([
+            'kodebooking' => $kodeBooking,
+            'taskid' => $postTaskid,
+            'newTime' => $newTime
+        ]);
+
+        $response = $this->postTask($request);
+        $responseData = $response->getData(); 
+
+        $code = $responseData->metadata->code ?? $responseData->code ?? null;
+        $message = $responseData->metadata->message ?? $responseData->message ?? null;
+
+        // dd([
+        //     'kodebooking' => $kodeBooking,
+        //     'taskid' => $taskid,
+        //     'wakturs' => $waktuRs
+        // ], $waktu2, $newTime, $postTaskid, $response, $responseData);
+        //dd($responseData);
+        echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
+        echo $pesan2 = "Proses Post Task Kodebooking" . $kodeBooking . " Task id " . $postTaskid .". Selesai.";
+        $this->storeLogs($code, $message, $pesan, $pesan2);
+        
+        $storeRequest = new Request();
+        $storeRequest->replace([
+            'kodebooking' => $kodeBooking,
+            'tanggal' => $tanggal
+        ]);
+
+        $storeResponse = $this->store($storeRequest);
+        $storeResponseData = $storeResponse->getData();
+        
+        $code = $storeResponseData->metadata->code ?? $storeResponseData->code ?? null;
+        $message = $storeResponseData->metadata->message ?? $storeResponseData->message ?? null;
+
+        echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
+        echo $pesan2 = "Update Data Task Lokal Database " . $kodeBooking . " Task id " . $postTaskid .". Selesai.";
+        // dd([
+        //     'kodebooking' => $kodeBooking,
+        //     'taskid' => $taskid,
+        //     'wakturs' => $waktuRs
+        // ], $waktu2, $newTime, $postTaskid, $response, $responseData, $storeResponseData);
+
+        $this->storeLogs($code, $message, $pesan, $pesan2);
+        // die();
     }
 
     public function pembagianWaktu($waktu2, $taskid)
@@ -341,6 +412,11 @@ class UpdateTaskController extends Controller
                 'message' => "Terjadi kesalahan Store Function: " . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function digitalClock()
+    {
+        return view('bpjs.update-task.digitalclock');
     }
 
 }
