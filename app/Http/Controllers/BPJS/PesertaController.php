@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Bpjs\Bridging\Vclaim\BridgeVclaim;
 use App\Models\MPeserta;
 use App\Models\MAntrianTanggal;
+use App\Models\MLogs;
+
 
 class PesertaController extends Controller
 {
@@ -25,32 +27,54 @@ class PesertaController extends Controller
         $dataAntrian = MAntrianTanggal::where('tanggal', $tanggal)
                 ->get();
         foreach($dataAntrian as $data) {
-            $nokapst = $data->nokapst;
-            $pesertaData = $this->peserta($nokapst, $tanggal);
+            $nokapst        = $data->nokapst;
+            $pesertaData    = $this->peserta($nokapst, $tanggal);
+            $peserta        = $pesertaData->response->peserta;
+            $metaData       = $pesertaData->metaData;
+            $code           = $metaData->code;
+            $message        = $metaData->message;
 
-            $peserta = $pesertaData->response->peserta;
+            
             
             $existingPeserta = MPeserta::where('nik', $peserta->nik)->first();
 
             if (!$existingPeserta) {
                 MPeserta::create([
-                    'nik' => $peserta->nik,
-                    'nama' => $peserta->nama,
-                    'noKartu' => $peserta->noKartu,
-                    'pisa' => $peserta->pisa,
-                    'kdprovider' => $peserta->provUmum->kdProvider,
-                    'nmprovider' => $peserta->provUmum->nmProvider,
-                    'kodekelas' => $peserta->hakKelas->kode,
-                    'kelas' => $peserta->hakKelas->keterangan,
-                    'statuspesertakode' => $peserta->statusPeserta->kode,
-                    'statuspesertaketerangan' => $peserta->statusPeserta->keterangan,
-                    'jenispesertakode' => $peserta->jenisPeserta->kode,
-                    'jenispesertaketerangan' => $peserta->jenisPeserta->keterangan
+                    'nik'                       => $peserta->nik,
+                    'nama'                      => $peserta->nama,
+                    'noKartu'                   => $peserta->noKartu,
+                    'pisa'                      => $peserta->pisa,
+                    'kdprovider'                => $peserta->provUmum->kdProvider,
+                    'nmprovider'                => $peserta->provUmum->nmProvider,
+                    'kodekelas'                 => $peserta->hakKelas->kode,
+                    'kelas'                     => $peserta->hakKelas->keterangan,
+                    'statuspesertakode'         => $peserta->statusPeserta->kode,
+                    'statuspesertaketerangan'   => $peserta->statusPeserta->keterangan,
+                    'jenispesertakode'          => $peserta->jenisPeserta->kode,
+                    'jenispesertaketerangan'    => $peserta->jenisPeserta->keterangan
                 ]);
-                echo "Peserta: " . $peserta->nama . " Berhasil Disimpan";
+                echo $pesan = "Peserta: " . $peserta->nik . " ". $peserta->nama ." Berhasil Disimpan";
+                
+                MLogs::create([
+                    'metode'        => 'GET',
+                    'api'           => 'Peserta by No Kartu',
+                    'controller'    => 'PesertaController',
+                    'code'          => $code,
+                    'message'       => $message,
+                    'data'          => $pesan
+                ]);
+
                 $hitung++;
             } else {
-                echo "Peserta: " . $peserta->nama . " Sudah Ada";
+                echo $pesan = "Peserta: ". $peserta->nik . " ". $peserta->nama ." Sudah Ada";
+                MLogs::create([
+                    'metode'        => 'GET',
+                    'api'           => 'Peserta by No Kartu',
+                    'controller'    => 'PesertaController',
+                    'code'          => $code,
+                    'message'       => $message,
+                    'data'          => $pesan
+                ]);
             }
 
             echo "<br>";
@@ -64,6 +88,11 @@ class PesertaController extends Controller
         $requestBridge = $this->bridging->getRequest($endpoint);
         $result = json_decode($requestBridge);
         return $result;
+    }
+
+    public function digitalClock()
+    {
+        return view('bpjs.peserta.digitalclock');
     }
 
 }

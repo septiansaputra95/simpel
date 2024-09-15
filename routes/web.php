@@ -12,19 +12,22 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/antrianonline', 'AntrianOnlineController@index')->name('antrianonline.index');
     Route::get('/antrianonline/datatables', 'AntrianOnlineController@loadDatatables');
     Route::get('/antrianonline/simpan', 'AntrianOnlineController@store');
-    Route::get('/antrianonline/autostore', 'AntrianOnlineController@autostore');
+    Route::get('/antrianonline/autostore', 'AntrianOnlineController@autostore')->name('antrianonline.autostore');
+    Route::get('/antrianonline/digitalclock', 'AntrianOnlineController@digitalClock');
 
     Route::get('/tasklist', 'TaskListController@index')->name('tasklist.index');
     Route::post('/tasklist/datatables', 'TaskListController@loadDatatables');
     Route::post('/tasklist/getTask', 'TaskListController@getTaskTanggal');
     Route::get('/tasklist/getKodeBooking', 'TaskListController@getKodeBooking');
     Route::get('/tasklist/simpan', 'TaskListController@store');
-    Route::get('/tasklist/autoStore', 'TaskListController@autoStore');
+    Route::get('/tasklist/autostore', 'TaskListController@autoStore')->name('tasklist.autostore');
+    Route::get('/tasklist/digitalclock', 'TaskListController@digitalClock');
     
 
     Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
     Route::post('/updatetask/postTask', 'UpdateTaskController@postTask');
     Route::get('/updatetask/getKodeBooking', 'UpdateTaskController@getKodeBooking');
+    Route::get('/updatetask/autoupdate', 'UpdateTaskController@autoUpdateTask')->name('updatetask.autoupdate');
 
     Route::get('/referensidokter', 'ReferensiDokterController@index')->name('referensi.index');
     Route::get('/referensipoli', 'ReferensiPoliController@index')->name('referensipoli.index');
@@ -33,6 +36,8 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/baymanagement', 'BaymanagementController@index')->name('baymanagement.index');
     
 
+    Route::get('/peserta/digitalclock', 'PesertaController@digitalClock');
+    Route::get('/jadwaldokter/digitalclock', 'JadwalDokterController@digitalClock');
 
 
 });

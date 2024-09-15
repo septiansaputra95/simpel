@@ -142,7 +142,6 @@ $(function () {
             console.log("Waktu Update Task " + taskid + " Adalah " + newTime);
             return newTime;
         }
-
     }
     const simpanData = (kodebooking, tanggal) => {
         axios

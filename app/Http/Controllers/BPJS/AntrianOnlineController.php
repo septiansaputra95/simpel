@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Bpjs\Bridging\Antrol\BridgeAntrol;
 use App\Models\MAntrianTanggal;
+use App\Models\MLogs;
 
 
 class AntrianOnlineController extends Controller
@@ -121,6 +122,11 @@ class AntrianOnlineController extends Controller
             ], 500);
         }
     }   
+
+    public function digitalClock()
+    {
+        return view('bpjs.antrian-tanggal.digitalclock');
+    }
     
     public function autoStore()
     {
@@ -133,9 +139,23 @@ class AntrianOnlineController extends Controller
 
         $responseData = $response->getData(); 
 
-        echo "Pesan: " . $responseData->message . "<br>";
-        echo "Selesai proses simpan " . $tanggal . ". Mohon di cek.";
+        echo $pesan = "Pesan: " . $responseData->message . " ". $responseData->code. "<br>";
+        echo $pesan2 = "Selesai proses simpan " . $tanggal . ". Mohon di cek.";
+        $this->storeLogs($responseData->code, $responseData->message, $pesan, $pesan2);
+
 
         return $response;
+    }
+
+    public function storeLogs($code, $message, $pesan, $pesan2)
+    {
+        MLogs::create([
+            'metode'        => 'GET',
+            'api'           => 'Antrian Per Tanggal',
+            'controller'    => 'AntrianOnlineController',
+            'code'          => $code,
+            'message'       => $message,
+            'data'          => $pesan.' '. $pesan2
+        ]);
     }
 }

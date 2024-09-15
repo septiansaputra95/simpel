@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Bpjs\Bridging\Antrol\BridgeAntrol;
 use App\Models\MReferensiPoli;
 use App\Models\MJadwalDokter;
+use App\Models\MLogs;
+
 
 
 class JadwalDokterController extends Controller
@@ -32,16 +34,24 @@ class JadwalDokterController extends Controller
         foreach($poli as $item)
         {
             $jadwal = $this->jadwaldokter($item->kdpoli, $tanggal);
+            
             if($jadwal->metadata->code == 200)
             {
+                $code = $jadwal->metadata->code;
+                $message = $jadwal->metadata->message;
                 $this->store($jadwal, $tanggal);
-                echo "Data berhasil disimpan untuk poli: " . $item->kdpoli . " ".$item->nmpoli."<br>";
+                echo $pesan = "Data berhasil disimpan untuk poli: " . $item->kdpoli . " ".$item->nmpoli."<br>";
+                $this->storeLogs($code, $message, $pesan);
             } 
             elseif ($jadwal->metadata->code == 1)
             {
-                echo "Tidak ada data untuk poli: " . $item->kdpoli . " ".$item->nmpoli."<br>";
+                $code = $jadwal->metadata->code;
+                $message = $jadwal->metadata->message;
+                echo  $pesan = "Tidak ada data untuk poli: " . $item->kdpoli . " ".$item->nmpoli."<br>";
+                $this->storeLogs($code, $message, $pesan);
                 continue;
             }
+            //die();
         }
         
     }
@@ -75,5 +85,23 @@ class JadwalDokterController extends Controller
                 'tanggal_data'      => $tanggal
             ]);
         }
-}
+    }
+
+    public function digitalClock()
+    {
+        return view('bpjs.jadwaldokter.digitalclock');
+    }
+
+    public function storeLogs($code, $message, $pesan)
+    {
+        MLogs::create([
+            'metode'        => 'GET',
+            'api'           => 'Jadwal Dokter',
+            'controller'    => 'JadwalDokterController',
+            'code'          => $code,
+            'message'       => $message,
+            'data'          => $pesan
+        ]);
+    }
+
 }

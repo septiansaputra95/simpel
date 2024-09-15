@@ -147,6 +147,11 @@ class TaskListController extends Controller
             ], 500);
         }
     }   
+
+    public function digitalClock()
+    {
+        return view('bpjs.task-list.digitalclock');
+    }
     
     public function autoStore()
     {
