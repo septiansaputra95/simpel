@@ -9,7 +9,7 @@ class MAntrianTanggal extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = "kodebooking";
+    protected $primaryKey = "id";
 
     protected $fillable = [
         'kodebooking',

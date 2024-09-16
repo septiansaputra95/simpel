@@ -9,7 +9,7 @@ class MPeserta extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = "nik";
+    protected $primaryKey = "id";
 
     protected $fillable = [
         'nik',

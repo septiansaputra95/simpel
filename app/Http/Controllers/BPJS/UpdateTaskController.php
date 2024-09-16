@@ -8,6 +8,12 @@ use App\Models\MAntrianTanggal;
 use App\Models\MTaskList;
 use Bpjs\Bridging\Antrol\BridgeAntrol;
 use App\Models\MLogs;
+use App\Models\MPeserta;
+use App\Models\MReferensiPoli;
+use App\Models\MReferensiDokter;
+use App\Models\MJadwalDokter;
+use App\Models\MBaymanagement;
+
 use DateTime;
 use DateInterval;
 
@@ -78,6 +84,22 @@ class UpdateTaskController extends Controller
         $dataRequest = json_encode($data);
 
         $endpoint = 'antrean/getlisttask';
+        $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
+        $result = json_decode($requestBridge);
+        return $result;
+
+    }
+
+    protected function batalAntrean($kodebooking)
+    {
+        $data = [
+            'kodebooking' => $kodebooking,
+            "keterangan"=> "Batal Antrean"
+        ];
+
+        $dataRequest = json_encode($data);
+
+        $endpoint = 'antrean/batal';
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
         $result = json_decode($requestBridge);
         return $result;
@@ -417,6 +439,106 @@ class UpdateTaskController extends Controller
     public function digitalClock()
     {
         return view('bpjs.update-task.digitalclock');
+    }
+
+    public function autoAddTask()
+    {
+        // $tanggal = DATE('Y-m-d');
+        $tanggal = "2024-09-13";
+        $data = MTaskList::where('tanggal_data', $tanggal)
+                        ->where('taskid', "0")
+                        ->with('antrian') // Pastikan relasi dimuat
+                        ->get();
+
+        foreach($data as $item)
+        {
+            $kodebooking []         = $item->kodebooking;
+            $nomorkartu []          = $item->antrian->nokapst;
+            $norm []                = $item->antrian->norekammedis;
+            $nohp []                = $item->antrian->nohp;
+            $kodepoli []            = $item->antrian->kodepoli;
+            $kodedokter []          = $item->antrian->kodedokter;
+            $estimasidilayani []    = $item->antrian->estimasidilayani;
+            $nomorreferensi []      = $item->antrian->nomorreferensi;
+
+        }
+        //dd($kodebooking, $nomorkartu, $norm, $nohp, $kodepoli, $kodedokter);
+        for($i = 0; $i<COUNT($kodebooking); $i++)
+        {   
+            $nik = $this->getPeserta($nomorkartu[$i]);
+            $namapoli = $this->getPoli($kodepoli[$i]);
+            $namadokter = $this->getDokter($kodedokter[$i]);
+            $jadwal = $this->getJadwalDokter($kodedokter[$i], $tanggal);
+            $nomorantrian = $this->getAntrianPoli($norm[$i], $tanggal);
+
+            if($nomorantrian == '')
+            {
+
+            }
+            dd($norm[$i], $kodepoli[$i], $namapoli, $kodedokter[$i], $namadokter, $jadwal, $nomorantrian);
+        }
+    }
+    
+    public function getPeserta($nomorkartu)
+    {
+        $data = MPeserta::where('noKartu', $nomorkartu)->get();
+        foreach($data as $item)
+        {
+            $nik = $item->nik;
+        }
+        //dd($data,$nomorkartu, $nik);
+
+        return $nik;
+    }
+
+    public function getPoli($kodepoli)
+    {
+        $data = MReferensiPoli::where('kdpoli', $kodepoli)->get();
+        foreach($data as $item)
+        {
+            $namapoli = $item->nmpoli;
+        }
+        
+        return $namapoli;
+    }
+
+    public function getDokter($kodedokter)
+    {
+        $data = MReferensiDokter::where('kodedokter', $kodedokter)->get();
+        foreach($data as $item)
+        {
+            $namadokter = $item->namadokter;
+        }
+        
+        return $namadokter;
+    }
+
+    public function getJadwalDokter($kodedokter, $tanggal)
+    {
+        $data = MJadwalDokter::where('kodedokter', $kodedokter)
+                            ->where('tanggal_data', $tanggal)
+                            ->get();
+
+        foreach($data as $item)
+        {
+            $jadwal = $item->jadwal;
+        }
+        
+        return $jadwal;
+    }
+
+    public function getAntrianPoli($norm, $tanggal)
+    {
+        $data = MBaymanagement::where('norm', $norm)
+                            ->where('tanggal_data', $tanggal)
+                            ->get();
+        $nomorantrian ='';
+        foreach($data as $item)
+        {
+            $nomorantrian = $item->nomorantrian;
+        }
+        
+        return $nomorantrian;
     }
 
 }

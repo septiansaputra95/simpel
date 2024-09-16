@@ -9,7 +9,7 @@ class MTaskList extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = "kodebooking";
+    protected $primaryKey = "id";
 
     protected $fillable = [
         'kodebooking',
@@ -20,7 +20,7 @@ class MTaskList extends Model
         'tanggal_data'
     ];
 
-    public function Antrian()
+    public function antrian()
     {
         return $this->belongsTo(MAntrianTanggal::class, 'kodebooking', 'kodebooking');
     }
