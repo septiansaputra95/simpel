@@ -61,10 +61,8 @@
 
             // Mengecek apakah sudah jam 15:00
             if (hours == "22" && minutes == "04" && seconds == "00") {
-                // Kirim request ke route Laravel
-                fetchPeserta();
-                console.log("Proses Fetch Data Peserta");
-
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('peserta.index') }}";
             }
         }
 

@@ -61,30 +61,20 @@
 
             // Mengecek apakah sudah jam 15:00
             if (hours == "22" && minutes == "07" && seconds == "00") {
-                // Kirim request ke route Laravel
-                fetchPeserta();
-                console.log("Proses Fetch Update Data");
-
-            } else if (hours == "22" && minutes == "08" && seconds == "00") {
-                // Kirim request ke route Laravel
-                fetchPeserta();
-                console.log("Proses Fetch Update Data");
-
-            } else if (hours == "22" && minutes == "09" && seconds == "00") {
-                // Kirim request ke route Laravel
-                fetchPeserta();
-                console.log("Proses Fetch Update Data");
-
-            }  else if (hours == "22" && minutes == "10" && seconds == "00") {
-                // Kirim request ke route Laravel
-                fetchPeserta();
-                console.log("Proses Fetch Update Data");
-
-            }  else if (hours == "22" && minutes == "11" && seconds == "00") {
-                // Kirim request ke route Laravel
-                fetchPeserta();
-                console.log("Proses Fetch Update Data");
-
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "22" && minutes == "06" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "22" && minutes == "07" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            }  else if (hours == "22" && minutes == "08" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            }  else if (hours == "22" && minutes == "09" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
             }
         }
 

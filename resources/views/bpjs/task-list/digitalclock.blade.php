@@ -63,10 +63,8 @@
             //console.log(timeString);
             // Mengecek apakah sudah jam 15:00
             if (hours == "22" && minutes == "05" && seconds == "00") {
-                // Kirim request ke route Laravel
-                //window.location.href = '{{ route("jadwaldokter.index") }}';
-                fetchPeserta();
-                console.log("Proses Data Task list");
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('tasklist.autostore') }}";
             }
         }
 

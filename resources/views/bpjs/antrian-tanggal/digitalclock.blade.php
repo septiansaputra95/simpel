@@ -3,6 +3,7 @@
 <head>
     <title>Digital Clock</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    {{-- <meta http-equiv="refresh" content="10"> --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         /* .clock {
@@ -39,6 +40,7 @@
     </style>
 </head>
 <body>
+    
     <h1 class="h1">Mohon Tidak Ditutup</h1><br>
     <h1 class="h1">Halaman Untuk Get Antrian Tanggal</h1><br>
     <h1 id="clock" class="clock"></h1>
@@ -63,29 +65,16 @@
 
             // Mengecek apakah sudah jam 15:00
             if (hours == "22" && minutes == "03" && seconds == "00") {
-                // Kirim request ke route Laravel
-                fetchPeserta();
-                console.log("Proses Antrian");
-            } else if(hours == "22" && minutes == "12" && seconds == "00") 
-            {
-                // Kirim request ke route Laravel
-                fetchPeserta();
-                console.log("Proses Antrian Pagi");
-            } 
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('antrianonline.autostore') }}";
+            } else if (hours == "22" && minutes == "12" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('antrianonline.autostore') }}";
+            }
+            
         }
 
-        function fetchPeserta() {
-            $.ajax({
-                url: '{{ route("antrianonline.autostore") }}', // Panggil route yang diinginkan
-                method: 'GET',
-                success: function(response) {
-                    console.log("Peserta data successfully fetched");
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching peserta data: ", error);
-                }
-            });
-        }
+        
 
         // Update clock setiap 1 detik
         setInterval(updateClock, 1000);

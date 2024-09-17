@@ -29,7 +29,7 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/updatetask/getKodeBooking', 'UpdateTaskController@getKodeBooking');
     Route::get('/updatetask/autoupdate', 'UpdateTaskController@autoUpdateTask')->name('updatetask.autoupdate');
     Route::get('/updatetask/autoadd', 'UpdateTaskController@autoAddTask')->name('updatetask.autoadd');
-    Route::get('/updatetask/digitalclock', 'UpdateTaskController@digitalClock');
+    Route::get('/updatetask/digitalclock', 'UpdateTaskController@digitalClock')->name('updatetask.digitalclock');
 
     Route::get('/referensidokter', 'ReferensiDokterController@index')->name('referensi.index');
     Route::get('/referensipoli', 'ReferensiPoliController@index')->name('referensipoli.index');

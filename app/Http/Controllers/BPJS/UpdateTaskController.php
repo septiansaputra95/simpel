@@ -200,6 +200,8 @@ class UpdateTaskController extends Controller
             // die();
         }
 
+        return redirect()->route('updatetask.digitalclock');
+
     }
 
     public function prosesUpdate($kodeBooking, $tanggal)

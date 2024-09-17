@@ -61,25 +61,23 @@
             //console.log(timeString);
             // Mengecek apakah sudah jam 15:00
             if (hours == "22" && minutes == "02" && seconds == "00") {
-                // Kirim request ke route Laravel
-                //window.location.href = '{{ route("jadwaldokter.index") }}';
-                fetchPeserta();
-                console.log("Proses Fetch Data");
-            }
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('jadwaldokter.index') }}";
+            } 
         }
 
-        function fetchPeserta() {
-            $.ajax({
-                url: '{{ route("jadwaldokter.index") }}', // Panggil route yang diinginkan
-                method: 'GET',
-                success: function(response) {
-                    console.log("Peserta data successfully fetched");
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching peserta data: ", error);
-                }
-            });
-        }
+        // function fetchPeserta() {
+        //     $.ajax({
+        //         url: '{{ route("jadwaldokter.index") }}', // Panggil route yang diinginkan
+        //         method: 'GET',
+        //         success: function(response) {
+        //             console.log("Peserta data successfully fetched");
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Error fetching peserta data: ", error);
+        //         }
+        //     });
+        // }
 
         // Update clock setiap 1 detik
         setInterval(updateClock, 1000);
