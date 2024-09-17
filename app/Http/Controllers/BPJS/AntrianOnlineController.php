@@ -143,8 +143,8 @@ class AntrianOnlineController extends Controller
         echo $pesan2 = "Selesai proses simpan " . $tanggal . ". Mohon di cek.";
         $this->storeLogs($responseData->code, $responseData->message, $pesan, $pesan2);
 
-
         return $response;
+        return redirect()->route('antrianonline.digitalclock');
     }
 
     public function storeLogs($code, $message, $pesan, $pesan2)

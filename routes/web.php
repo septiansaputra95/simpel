@@ -13,7 +13,7 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/antrianonline/datatables', 'AntrianOnlineController@loadDatatables');
     Route::get('/antrianonline/simpan', 'AntrianOnlineController@store');
     Route::get('/antrianonline/autostore', 'AntrianOnlineController@autostore')->name('antrianonline.autostore');
-    Route::get('/antrianonline/digitalclock', 'AntrianOnlineController@digitalClock');
+    Route::get('/antrianonline/digitalclock', 'AntrianOnlineController@digitalClock')->name('antrianonline.digitalclock');;
 
     Route::get('/tasklist', 'TaskListController@index')->name('tasklist.index');
     Route::post('/tasklist/datatables', 'TaskListController@loadDatatables');
