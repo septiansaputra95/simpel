@@ -103,7 +103,59 @@ class UpdateTaskController extends Controller
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
         $result = json_decode($requestBridge);
         return $result;
+    }
 
+    protected function addAntrean(
+        $kodebooking,
+        $nomorkartu,
+        $nik,
+        $nohp,
+        $kodepoli,
+        $namapoli,
+        $norm,
+        $tanggal,
+        $kodedokter,
+        $namadokter,
+        $jadwal,
+        $nomorreferensi,
+        $nomorantrian,
+        $estimasidilayani,
+        $sisakapasitas,
+        $kapasitas
+    )
+    {
+        $data = [
+            "kodebooking" => $kodebooking,
+            "jenispasien" => "JKN",
+            "nomorkartu" => $nomorkartu,
+            "nik" => $nik,
+            "nohp" => $nohp,
+            "kodepoli" => $kodepoli,
+            "namapoli" => $namapoli,
+            "pasienbaru" => 0,
+            "norm" => $kodebooking,
+            "kodebooking" => $norm,
+            "tanggalperiksa" => $tanggal,
+            "kodedokter" => $kodedokter,
+            "namadokter" => $namadokter,
+            "jampraktek" => $jadwal,
+            "jeniskunjungan" => 1,
+            "nomorreferensi" => $nomorreferensi,
+            "nomorantrean" => $nomorantrian,
+            "angkaantrean" => $nomorantrian,
+            "estimasidilayani" => $estimasidilayani,
+            "sisakuotajkn" => $sisakapasitas,
+            "kuotajkn" => $kapasitas,
+            "sisakuotanonjkn" => 0,
+            "keterangan"=> "Peserta harap 30 menit lebih awal guna pencatatan administrasi."
+        ];
+
+        $dataRequest = json_encode($data);
+
+        $endpoint = 'antrean/add';
+        $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
+        $result = json_decode($requestBridge);
+        return $result;
     }
 
     public function autoUpdateTask()
@@ -445,13 +497,15 @@ class UpdateTaskController extends Controller
 
     public function autoAddTask()
     {
-        // $tanggal = DATE('Y-m-d');
-        $tanggal = "2024-09-13";
+        // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
+        $tanggal = DATE('Y-m-d');
+        //$tanggal = "2024-09-14";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
-                        ->with('antrian') // Pastikan relasi dimuat
+                        ->with('antrian') 
                         ->get();
 
+        // FETCH DATA
         foreach($data as $item)
         {
             $kodebooking []         = $item->kodebooking;
@@ -465,20 +519,72 @@ class UpdateTaskController extends Controller
 
         }
         //dd($kodebooking, $nomorkartu, $norm, $nohp, $kodepoli, $kodedokter);
+        // MENGAMBIL DATA YANG DIPERLUKAN
         for($i = 0; $i<COUNT($kodebooking); $i++)
         {   
-            $nik = $this->getPeserta($nomorkartu[$i]);
-            $namapoli = $this->getPoli($kodepoli[$i]);
-            $namadokter = $this->getDokter($kodedokter[$i]);
-            $jadwal = $this->getJadwalDokter($kodedokter[$i], $tanggal);
-            $nomorantrian = $this->getAntrianPoli($norm[$i], $tanggal);
+            $rm = '1330043893';
+            $nik            = $this->getPeserta($nomorkartu[$i]);
+            $namapoli       = $this->getPoli($kodepoli[$i]);
+            $namadokter     = $this->getDokter($kodedokter[$i]);
+            $hasil          = $this->getJadwalDokter($kodedokter[$i], $tanggal);
+            $nomorantrian   = $this->getAntrianPoli($norm[$i].'.0', $tanggal);
 
+            
+            //$nomorantrian = $this->getAntrianPoli($rm.'.0', $tanggal);
+            // MENGHILANGKAN .0 DALAM NOMOR ANTRIAN BUG DARI MINING PYTHON
+            $nomorantrian = str_replace('.0', '', $nomorantrian);
+            
+            // JADWAL DAN KAPASITAS DI DEKLARASI KAN DALAM VARIABEL BERBEDA
+            $jadwal         = $hasil['jadwal'];
+            $kapasitas      = $hasil['kapasitas'];
+
+            // DEKLARASI SISA KAPASITAS KUOTA JKN
+            $sisakapasitas   = $kapasitas - $nomorantrian;
+            //dd($nomorantrian, $norm[$i], $sisakapasitas);
             if($nomorantrian == '')
             {
+                $batal = $this->batalAntrean($kodebooking[$i]);
+                
+                $storeRequest = new Request();
+                $storeRequest->replace([
+                    'kodebooking' => $kodebooking[$i],
+                    'tanggal' => $tanggal
+                ]);
 
+                $storeResponse = $this->store($storeRequest);
+                $storeResponseData = $storeResponse->getData();
+                
+                $code = $storeResponseData->metadata->code ?? $storeResponseData->code ?? null;
+                $message = $storeResponseData->metadata->message ?? $storeResponseData->message ?? null;
+
+                echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
+                echo $pesan2 = "Batal Antrean " . $kodebooking[$i] . " Task id";
+                $this->storeLogs($code, $message, $pesan, $pesan2);
+                continue;
             }
-            dd($norm[$i], $kodepoli[$i], $namapoli, $kodedokter[$i], $namadokter, $jadwal, $nomorantrian);
+
+            $addAntrean = $this->addAntrean(
+                kodebooking[$i],
+                nomorkartu[$i],
+                $nik,
+                $nohp[$i],
+                $kodepoli[$i],
+                $namapoli,
+                $norm[$i],
+                $tanggal,
+                $kodedokter[$i],
+                $namadokter,
+                $jadwal,
+                $nomorreferensi[$i],
+                $nomorantrian,
+                $estimasidilayani[$i],
+                $sisakapasitas,
+                $kapasitas
+
+            );
+            // dd($norm[$i], $kodepoli[$i], $namapoli, $kodedokter[$i], $namadokter, $jadwal, $kapasitas, $nomorantrian, $sisakapasitas);
         }
+        return redirect()->route('updatetask.digitalclock');
     }
     
     public function getPeserta($nomorkartu)
@@ -524,9 +630,13 @@ class UpdateTaskController extends Controller
         foreach($data as $item)
         {
             $jadwal = $item->jadwal;
+            $kapasitas = $item->kapasitaspasien;
         }
         
-        return $jadwal;
+        return [
+            'jadwal' => $jadwal,
+            'kapasitas' => $kapasitas,
+        ];
     }
 
     public function getAntrianPoli($norm, $tanggal)

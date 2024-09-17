@@ -22,7 +22,9 @@ class PesertaController extends Controller
 
     public function index()
     {
-        $tanggal = DATE('Y-m-d');
+        //$tanggal = DATE('Y-m-d');
+        $tanggal = "2024-09-14";
+
         $hitung = 0;
         $dataAntrian = MAntrianTanggal::where('tanggal', $tanggal)
                 ->get();

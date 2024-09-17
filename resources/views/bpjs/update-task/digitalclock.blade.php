@@ -60,9 +60,9 @@
             document.getElementById('clock').innerHTML = timeString;
 
             // Mengecek apakah sudah jam 15:00
-            if (hours == "22" && minutes == "07" && seconds == "00") {
+            if (hours == "22" && minutes == "06" && seconds == "40") {
                 // Redirect ke route updatetask.autoupdate
-                window.location.href = "{{ route('updatetask.autoupdate') }}";
+                window.location.href = "{{ route('updatetask.autoadd') }}";
             } else if (hours == "22" && minutes == "06" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('updatetask.autoupdate') }}";
@@ -73,6 +73,9 @@
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('updatetask.autoupdate') }}";
             }  else if (hours == "22" && minutes == "09" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "22" && minutes == "09" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('updatetask.autoupdate') }}";
             }
