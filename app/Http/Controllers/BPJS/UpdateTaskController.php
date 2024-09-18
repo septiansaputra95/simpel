@@ -61,15 +61,28 @@ class UpdateTaskController extends Controller
             'waktu' => $newTime
         ];
 
-        //dd($data);
-        //return $data;
-        
         
         $dataRequest = json_encode($data);
 
         $endpoint = 'antrean/updatewaktu';
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
+
         $result = json_decode($requestBridge);
+        
+        $metadata = $result->metadata ?? null;
+        if ($metadata) {
+            $code = $metadata->code?? null;
+            $message = $metadata->message ?? null;
+
+            $pesan = $kodebooking;
+            $pesan2 = " " ;
+
+            $this->storeLogs($code, $message, $pesan, $pesan2);
+
+        } else {
+            $this->storeLogs('Unknown', 'No metadata in response', 'Response: ' . $requestBridge, 'Failed to fetch valid response. Kode Booking: '.$kodebooking. ' Task: '.$taskid);
+        }
+
         return $result;
     }
 
@@ -146,7 +159,8 @@ class UpdateTaskController extends Controller
             "estimasidilayani" => $estimasidilayani,
             "sisakuotajkn" => $sisakapasitas,
             "kuotajkn" => $kapasitas,
-            "sisakuotanonjkn" => 0,
+            "sisakuotanonjkn" => 1,
+            "kuotanonjkn" => 1,
             "keterangan"=> "Peserta harap 30 menit lebih awal guna pencatatan administrasi."
         ];
 
@@ -155,29 +169,44 @@ class UpdateTaskController extends Controller
         $endpoint = 'antrean/add';
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
         $result = json_decode($requestBridge);
+
+        $metadata = $result->metadata ?? null;
+        if ($metadata) {
+            $code = $metadata->code?? null;
+            $message = $metadata->message ?? null;
+
+            $pesan = $kodebooking;
+            $pesan2 = " " ;
+
+            $this->storeLogs($code, $message, $pesan, $pesan2);
+
+        } else {
+            $this->storeLogs('Unknown', 'No metadata in response', 'Response: ' . $requestBridge, 'Failed to fetch valid response. Kode Booking: '.$kodebooking. ' Task: '.$taskid);
+        }
+        
         return $result;
     }
 
     public function autoUpdateTask()
     {
-        $tanggal = DATE('Y-m-d');
-        // $tanggal = "2024-09-12";
+        // $tanggal = DATE('Y-m-d');
+        $tanggal = "2024-09-17";
         $data = MAntrianTanggal::where('tanggal', $tanggal)
                         ->where('status', "Belum dilayani")
                         ->get();
-
+        
         foreach($data as $item)
         {
             $kodebooking [] = $item->kodebooking;
         }
-
+        dd($kodebooking);
         
         for($i=0; $i < COUNT($kodebooking); $i++)
         {
             $taskData = MTaskList::where('kodebooking', $kodebooking[$i])
                     ->orderBy('taskid', 'DESC')
                     ->first();
-            //dd($taskData, $kodebooking);
+            dd($taskData, $kodebooking);
             $kodeBooking = $taskData->kodebooking;
             $taskid = $taskData->taskid;
             $waktuRs = $taskData->wakturs;
@@ -297,7 +326,7 @@ class UpdateTaskController extends Controller
         //dd($responseData);
         echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
         echo $pesan2 = "Proses Post Task Kodebooking" . $kodeBooking . " Task id " . $postTaskid .". Selesai.";
-        $this->storeLogs($code, $message, $pesan, $pesan2);
+        //$this->storeLogs($code, $message, $pesan, $pesan2);
         
         $storeRequest = new Request();
         $storeRequest->replace([
@@ -319,7 +348,7 @@ class UpdateTaskController extends Controller
         //     'wakturs' => $waktuRs
         // ], $waktu2, $newTime, $postTaskid, $response, $responseData, $storeResponseData);
 
-        $this->storeLogs($code, $message, $pesan, $pesan2);
+        //$this->storeLogs($code, $message, $pesan, $pesan2);
         // die();
     }
 
@@ -422,7 +451,10 @@ class UpdateTaskController extends Controller
             'controller'    => 'UpdateTaskController',
             'code'          => $code,
             'message'       => $message,
-            'data'          => $pesan.' '. $pesan2
+            'data'          => $pesan.' '. $pesan2,
+            'created_at'    => DATE('Y-m-d h:m:s'),
+            'updated_at'    => DATE('Y-m-d h:m:s')
+
         ]);
     }
 
@@ -518,7 +550,7 @@ class UpdateTaskController extends Controller
             $nomorreferensi []      = $item->antrian->nomorreferensi;
 
         }
-        //dd($kodebooking, $nomorkartu, $norm, $nohp, $kodepoli, $kodedokter);
+        // dd($kodebooking, $nomorkartu, $norm, $nohp, $kodepoli, $kodedokter);
         // MENGAMBIL DATA YANG DIPERLUKAN
         for($i = 0; $i<COUNT($kodebooking); $i++)
         {   
@@ -539,8 +571,9 @@ class UpdateTaskController extends Controller
             $kapasitas      = $hasil['kapasitas'];
 
             // DEKLARASI SISA KAPASITAS KUOTA JKN
-            $sisakapasitas   = $kapasitas - $nomorantrian;
-            //dd($nomorantrian, $norm[$i], $sisakapasitas);
+            //dd($nomorantrian, $norm[$i]);
+        
+            
             if($nomorantrian == '')
             {
                 $batal = $this->batalAntrean($kodebooking[$i]);
@@ -560,12 +593,15 @@ class UpdateTaskController extends Controller
                 echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
                 echo $pesan2 = "Batal Antrean " . $kodebooking[$i] . " Task id";
                 $this->storeLogs($code, $message, $pesan, $pesan2);
+                //dd($batal);
                 continue;
             }
 
+            $sisakapasitas   = $kapasitas - $nomorantrian;
+            //dd($kodebooking[$i], $nomorantrian, $norm[$i], $sisakapasitas);
             $addAntrean = $this->addAntrean(
-                kodebooking[$i],
-                nomorkartu[$i],
+                $kodebooking[$i],
+                $nomorkartu[$i],
                 $nik,
                 $nohp[$i],
                 $kodepoli[$i],
@@ -582,7 +618,7 @@ class UpdateTaskController extends Controller
                 $kapasitas
 
             );
-            // dd($norm[$i], $kodepoli[$i], $namapoli, $kodedokter[$i], $namadokter, $jadwal, $kapasitas, $nomorantrian, $sisakapasitas);
+            //dd($addAntrean, $norm[$i], $kodepoli[$i], $namapoli, $kodedokter[$i], $namadokter, $jadwal, $kapasitas, $nomorantrian, $sisakapasitas);
         }
         return redirect()->route('updatetask.digitalclock');
     }

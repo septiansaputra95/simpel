@@ -75,7 +75,17 @@
             }  else if (hours == "22" && minutes == "09" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('updatetask.autoupdate') }}";
-            } else if (hours == "22" && minutes == "09" && seconds == "00") {
+            } else if (hours == "22" && minutes == "10" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            }
+            else if (hours == "22" && minutes == "11" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            }  else if (hours == "22" && minutes == "12" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "22" && minutes == "13" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('updatetask.autoupdate') }}";
             }

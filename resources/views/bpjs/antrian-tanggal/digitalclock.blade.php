@@ -67,7 +67,7 @@
             if (hours == "22" && minutes == "03" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('antrianonline.autostore') }}";
-            } else if (hours == "22" && minutes == "12" && seconds == "00") {
+            } else if (hours == "22" && minutes == "15" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('antrianonline.autostore') }}";
             }

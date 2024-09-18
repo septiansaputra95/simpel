@@ -63,6 +63,22 @@ class TaskListController extends Controller
         $endpoint = 'antrean/getlisttask';
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
         $result = json_decode($requestBridge);
+        
+        // $metadata = $result->metadata ?? null;
+        // dd($metadata);
+        // if ($metadata) {
+        //     $code = $metadata->code?? null;
+        //     $message = $metadata->message ?? null;
+
+        //     $pesan = $kodebooking;
+        //     $pesan2 = " " ;
+
+        //     $this->storeLogs($code, $message, $pesan, $pesan2);
+
+        // } else {
+        //     $this->storeLogs('Unknown', 'No metadata in response', 'Response: ' . $requestBridge, 'Failed to fetch valid response. Kode Booking: ', '');
+        // }
+
         return $result;
 
     }
@@ -170,5 +186,17 @@ class TaskListController extends Controller
             echo "<br>";
         }
     
+    }
+
+    public function storeLogs($code, $message, $pesan, $pesan2)
+    {
+        MLogs::create([
+            'metode'        => 'POST',
+            'api'           => 'Task List',
+            'controller'    => 'TaskListController',
+            'code'          => $code,
+            'message'       => $message,
+            'data'          => $pesan.' '. $pesan2
+        ]);
     }
 }
