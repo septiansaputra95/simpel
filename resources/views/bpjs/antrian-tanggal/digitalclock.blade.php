@@ -70,7 +70,7 @@
             } else if (hours == "12" && minutes == "45" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('antrianonline.autostore') }}";
-            } else if (hours == "16" && minutes == "00" && seconds == "00") {
+            } else if (hours == "15" && minutes == "45" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('antrianonline.autostore') }}";
             } else if (hours == "22" && minutes == "03" && seconds == "00") {

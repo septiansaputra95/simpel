@@ -62,10 +62,16 @@
             document.getElementById('clock').innerHTML = timeString;
             //console.log(timeString);
             // Mengecek apakah sudah jam 15:00
-            if (hours == "22" && minutes == "05" && seconds == "00") {
+            if (hours == "12" && minutes == "50" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('tasklist.autostore') }}";
-            }
+            } else if (hours == "15" && minutes == "50" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('tasklist.autostore') }}";
+            } else if (hours == "22" && minutes == "05" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('tasklist.autostore') }}";
+            } 
         }
 
         function fetchPeserta() {
