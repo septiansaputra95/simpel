@@ -530,8 +530,8 @@ class UpdateTaskController extends Controller
     public function autoAddTask()
     {
         // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
-        $tanggal = DATE('Y-m-d');
-        //$tanggal = "2024-09-14";
+        //$tanggal = DATE('Y-m-d');
+        $tanggal = "2024-09-18";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
                         ->with('antrian') 
