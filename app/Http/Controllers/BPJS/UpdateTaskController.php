@@ -591,24 +591,24 @@ class UpdateTaskController extends Controller
             
             if($nomorantrian == '')
             {
-                $batal = $this->batalAntrean($kodebooking[$i]);
+                // $batal = $this->batalAntrean($kodebooking[$i]);
                 
-                $storeRequest = new Request();
-                $storeRequest->replace([
-                    'kodebooking' => $kodebooking[$i],
-                    'tanggal' => $tanggal
-                ]);
+                // $storeRequest = new Request();
+                // $storeRequest->replace([
+                //     'kodebooking' => $kodebooking[$i],
+                //     'tanggal' => $tanggal
+                // ]);
 
-                $storeResponse = $this->store($storeRequest);
-                $storeResponseData = $storeResponse->getData();
+                // $storeResponse = $this->store($storeRequest);
+                // $storeResponseData = $storeResponse->getData();
                 
-                $code = $storeResponseData->metadata->code ?? $storeResponseData->code ?? null;
-                $message = $storeResponseData->metadata->message ?? $storeResponseData->message ?? null;
+                // $code = $storeResponseData->metadata->code ?? $storeResponseData->code ?? null;
+                // $message = $storeResponseData->metadata->message ?? $storeResponseData->message ?? null;
 
-                echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
-                echo $pesan2 = "Batal Antrean " . $kodebooking[$i] . " Task id";
-                $this->storeLogs($code, $message, $pesan, $pesan2);
-                //dd($batal);
+                // echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
+                // echo $pesan2 = "Batal Antrean " . $kodebooking[$i] . " Task id";
+                // $this->storeLogs($code, $message, $pesan, $pesan2);
+                // //dd($batal);
                 continue;
             }
 
