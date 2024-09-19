@@ -185,7 +185,7 @@ class TaskListController extends Controller
             echo "Data ". $item->kodebooking. " Berhasil Di Simpan";
             echo "<br>";
         }
-    
+        return redirect()->route('tasklist.digitalclock');
     }
 
     public function storeLogs($code, $message, $pesan, $pesan2)

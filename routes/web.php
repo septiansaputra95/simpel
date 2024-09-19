@@ -13,7 +13,7 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/antrianonline/datatables', 'AntrianOnlineController@loadDatatables');
     Route::get('/antrianonline/simpan', 'AntrianOnlineController@store');
     Route::get('/antrianonline/autostore', 'AntrianOnlineController@autostore')->name('antrianonline.autostore');
-    Route::get('/antrianonline/digitalclock', 'AntrianOnlineController@digitalClock')->name('antrianonline.digitalclock');;
+    Route::get('/antrianonline/digitalclock', 'AntrianOnlineController@digitalClock')->name('antrianonline.digitalclock');
 
     Route::get('/tasklist', 'TaskListController@index')->name('tasklist.index');
     Route::post('/tasklist/datatables', 'TaskListController@loadDatatables');
@@ -21,7 +21,7 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/tasklist/getKodeBooking', 'TaskListController@getKodeBooking');
     Route::get('/tasklist/simpan', 'TaskListController@store');
     Route::get('/tasklist/autostore', 'TaskListController@autoStore')->name('tasklist.autostore');
-    Route::get('/tasklist/digitalclock', 'TaskListController@digitalClock');
+    Route::get('/tasklist/digitalclock', 'TaskListController@digitalClock')->name('tasklist.digitalclock');
     
 
     Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
