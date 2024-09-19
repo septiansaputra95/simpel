@@ -65,8 +65,21 @@ class UpdateTaskController extends Controller
         $dataRequest = json_encode($data);
 
         $endpoint = 'antrean/updatewaktu';
+        echo $kodebooking.'<br>';
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
+        //dd($requestBridge);
+        // Cek apakah respons tidak null
+        if ($requestBridge === null) {
+            return redirect()->route('updatetask.digitalclock');
+        }
 
+        // Decode JSON response
+        $result = json_decode($requestBridge);
+
+        // Cek apakah result valid dan berisi metadata
+        if (!isset($result->metadata)) {
+            return redirect()->route('updatetask.digitalclock');
+        }
         $result = json_decode($requestBridge);
         
         $metadata = $result->metadata ?? null;
@@ -190,23 +203,25 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask()
     {
         $tanggal = DATE('Y-m-d');
-        //$tanggal = "2024-09-17";
+        //$tanggal = "2024-09-18";
         $data = MAntrianTanggal::where('tanggal', $tanggal)
                         ->where('status', "Belum dilayani")
+                        ->whereHas('tasklist')
+                        ->with('tasklist')
                         ->get();
         
         foreach($data as $item)
         {
             $kodebooking [] = $item->kodebooking;
         }
-        dd($kodebooking);
+        //dd($kodebooking);
         
         for($i=0; $i < COUNT($kodebooking); $i++)
         {
             $taskData = MTaskList::where('kodebooking', $kodebooking[$i])
                     ->orderBy('taskid', 'DESC')
                     ->first();
-            dd($taskData, $kodebooking);
+            //dd($taskData, $kodebooking);
             $kodeBooking = $taskData->kodebooking;
             $taskid = $taskData->taskid;
             $waktuRs = $taskData->wakturs;
@@ -277,7 +292,7 @@ class UpdateTaskController extends Controller
             //     'wakturs' => $waktuRs
             // ], $waktu2, $newTime, $postTaskid, $response, $responseData, $storeResponseData);
 
-            $this->storeLogs($code, $message, $pesan, $pesan2);
+            //$this->storeLogs($code, $message, $pesan, $pesan2);
             // die();
         }
 
@@ -530,8 +545,8 @@ class UpdateTaskController extends Controller
     public function autoAddTask()
     {
         // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
-        //$tanggal = DATE('Y-m-d');
-        $tanggal = "2024-09-18";
+        $tanggal = DATE('Y-m-d');
+        //$tanggal = "2024-09-18";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
                         ->with('antrian') 
