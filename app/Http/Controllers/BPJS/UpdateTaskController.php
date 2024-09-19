@@ -189,8 +189,8 @@ class UpdateTaskController extends Controller
 
     public function autoUpdateTask()
     {
-        // $tanggal = DATE('Y-m-d');
-        $tanggal = "2024-09-17";
+        $tanggal = DATE('Y-m-d');
+        //$tanggal = "2024-09-17";
         $data = MAntrianTanggal::where('tanggal', $tanggal)
                         ->where('status', "Belum dilayani")
                         ->get();
