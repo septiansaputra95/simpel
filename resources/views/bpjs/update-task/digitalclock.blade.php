@@ -59,11 +59,46 @@
             var timeString = hours + ":" + minutes + ":" + seconds;
             document.getElementById('clock').innerHTML = timeString;
 
-            // Mengecek apakah sudah jam 15:00
-            if (hours == "22" && minutes == "06" && seconds == "40") {
+            // SIANG
+            if (hours == "13" && minutes == "00" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
-                window.location.href = "{{ route('updatetask.autoadd') }}";
-            } else if (hours == "22" && minutes == "06" && seconds == "00") {
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "13" && minutes == "01" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "13" && minutes == "02" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "13" && minutes == "03" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "13" && minutes == "04" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "13" && minutes == "05" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } 
+            // SORE
+            else if (hours == "16" && minutes == "01" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "16" && minutes == "02" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "16" && minutes == "03" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "16" && minutes == "04" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } else if (hours == "16" && minutes == "05" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('updatetask.autoupdate') }}";
+            } 
+            
+            // MALAM
+            else if (hours == "22" && minutes == "06" && seconds == "40") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('updatetask.autoupdate') }}";
             } else if (hours == "22" && minutes == "07" && seconds == "00") {

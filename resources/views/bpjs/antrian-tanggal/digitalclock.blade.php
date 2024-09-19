@@ -64,13 +64,22 @@
             document.getElementById('clock').innerHTML = timeString;
 
             // Mengecek apakah sudah jam 15:00
-            if (hours == "22" && minutes == "03" && seconds == "00") {
+            if (hours == "11" && minutes == "40" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('antrianonline.autostore') }}";
+            } else if (hours == "12" && minutes == "45" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('antrianonline.autostore') }}";
+            } else if (hours == "16" && minutes == "00" && seconds == "00") {
+                // Redirect ke route updatetask.autoupdate
+                window.location.href = "{{ route('antrianonline.autostore') }}";
+            } else if (hours == "22" && minutes == "03" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('antrianonline.autostore') }}";
             } else if (hours == "22" && minutes == "15" && seconds == "00") {
                 // Redirect ke route updatetask.autoupdate
                 window.location.href = "{{ route('antrianonline.autostore') }}";
-            }
+            } 
             
         }
 
