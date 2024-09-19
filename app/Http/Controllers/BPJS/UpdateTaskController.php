@@ -69,7 +69,7 @@ class UpdateTaskController extends Controller
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
         //dd($requestBridge);
         // Cek apakah respons tidak null
-        if ($requestBridge === null) {
+        if ($requestBridge == null) {
             return redirect()->route('updatetask.digitalclock');
         }
 
