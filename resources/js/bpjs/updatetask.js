@@ -80,7 +80,7 @@ $(function () {
             })
             .then(function (res) {
                 console.log(res.data);
-                const taskid = caritask;
+                const taskid = caritask + 1;
                 if (res.data.length > 0) {
                     const waktu = res.data[0].wakturs;
                     const tanggal = res.data[0].tanggal_data;
@@ -116,7 +116,7 @@ $(function () {
             })
             .then(function (res) {
                 console.log(res.data);
-                const taskid = caritask + 1
+                const taskid = caritask
                 if (res.data.length > 0) {
                     const waktu = res.data[0].wakturs;
                     const tanggal = res.data[0].tanggal_data;
