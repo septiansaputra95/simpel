@@ -70,7 +70,7 @@ class UpdateTaskController extends Controller
         //dd($requestBridge);
         // Cek apakah respons tidak null
         if ($requestBridge == null) {
-            return redirect()->route('updatetask.digitalclock');
+            dd($requestBridge, $data);
         }
 
         // Decode JSON response
@@ -78,7 +78,7 @@ class UpdateTaskController extends Controller
 
         // Cek apakah result valid dan berisi metadata
         if (!isset($result->metadata)) {
-            return redirect()->route('updatetask.digitalclock');
+            dd($result, $data);
         }
         $result = json_decode($requestBridge);
         

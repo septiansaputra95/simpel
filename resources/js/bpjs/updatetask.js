@@ -32,6 +32,21 @@ $(function () {
         
     };
 
+    document.getElementById("btn-update-error").onclick = () => {
+        const kodebooking = document.getElementById("kodebooking").value;
+        const taskid = document.getElementById('taskid').value;
+
+        console.log("Pencarian Taskid " + taskid);
+        const caritask = taskid;
+
+        console.log(caritask);
+
+        cariDataError(kodebooking, caritask);
+
+        // postTask(kodebooking, taskid)
+        
+    };
+
     function getRandomTime(minMinutes, maxMinutes) {
         const minMs = minMinutes * 60 * 1000; // Mengubah menit ke milisecond
         const maxMs = maxMinutes * 60 * 1000; // Mengubah menit ke milisecond
@@ -65,12 +80,48 @@ $(function () {
             })
             .then(function (res) {
                 console.log(res.data);
+                const taskid = caritask;
+                if (res.data.length > 0) {
+                    const waktu = res.data[0].wakturs;
+                    const tanggal = res.data[0].tanggal_data;
+                    const waktu2 = waktu.substring(0,19);
+                    console.log('Task id: ' + taskid);
+                    const newTime = pembagianWaktu(waktu2, taskid);
+                    console.log('New Time pada cariData ' +  newTime);
+                    postTask(kodebooking, taskid, newTime, tanggal);
+
+                } else {
+                    alert("Update Task " + taskid + " Gagal, Taskid " + caritask + " Tidak Ditemukan");
+                }
+            })
+            .catch(function (err) {
+                if (err.response && err.response.status !== 200) {
+                    alert("Gagal Pencarian Kode Booking Update Task");
+                } else {
+                    console.error("Terjadi kesalahan CariData:", err.message);
+                }
+            });
+    }
+
+    function cariDataError(kodebooking, caritask)
+    {
+        //const kodebooking = kodebooking;
+        console.log(kodebooking);
+        axios
+            .get(urlCariData, {
+                params: {
+                    kodebooking:kodebooking,
+                    caritask:caritask
+                }
+            })
+            .then(function (res) {
+                console.log(res.data);
                 const taskid = caritask + 1
                 if (res.data.length > 0) {
                     const waktu = res.data[0].wakturs;
                     const tanggal = res.data[0].tanggal_data;
                     const waktu2 = waktu.substring(0,19);
-                    console.log(waktu, waktu2);
+                    console.log('Task id: ' + taskid);
                     const newTime = pembagianWaktu(waktu2, taskid);
                     console.log('New Time pada cariData ' +  newTime);
                     postTask(kodebooking, taskid, newTime, tanggal);
@@ -94,7 +145,15 @@ $(function () {
         console.log("Cari tAsk " + caritask);
         console.log("taskid " + taskid);
 
-        if (taskid == 2)
+        if (taskid == 1)
+        {
+            const randomTime = getRandomTime(1, 3);
+            console.log("Random TIme: " + randomTime);
+            const newTime = addMillisecondsToTimestamp(waktu2, randomTime);
+            console.log("Waktu Update Task " + taskid + " Adalah " + newTime);
+            return newTime;
+        }
+        else  if (taskid == 2)
         {
             const randomTime = getRandomTime(1, 3);
             console.log("Random TIme: " + randomTime);
