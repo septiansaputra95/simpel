@@ -28,10 +28,12 @@
                     </select>
                     @csrf
                 </div>
-                <div class="col-md-2">
+                <div class="col-auto">
                     {{-- <button type="button" class="btn btn-primary" id="btn-kirim">Cari</button> --}}
-                    <button type="submit" class="btn btn-success" id="btn-update">Update Task</button>
-                    <button type="submit" class="btn btn-warning" id="btn-update-error">Update Error Task</button>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success" id="btn-update">Update Task</button>
+                        <button type="submit" class="btn btn-warning" id="btn-update-error">Update Error Task</button>ss
+                    </div>
                 </div>
             </div>
 
