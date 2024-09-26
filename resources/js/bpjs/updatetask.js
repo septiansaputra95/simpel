@@ -3,6 +3,8 @@ $(function () {
     let urlCariData = "/BPJS/updatetask/getKodeBooking"
     let urlPost = "/BPJS/updatetask/postTask"
     let urlSimpan = "/BPJS/tasklist/simpan";
+    let urlAntrean = "/BPJS/updatetask/antrean";
+    let urlCariDataTask6 = "/BPJS/updatetask/getTask6"
     
 
     //import { simpanData } from './tasklist.js';
@@ -47,6 +49,48 @@ $(function () {
         
     };
 
+    document.getElementById("btn-add").onclick = () => {
+        const kodebooking = document.getElementById("kodebooking").value;
+        const taskid = document.getElementById('taskid').value;
+
+        console.log("Add Antrean " + kodebooking);
+        const caritask = taskid;
+
+        // console.log(caritask);
+
+        AddTask3(kodebooking);
+
+        // postTask(kodebooking, taskid)
+        
+    };
+
+    document.getElementById("btn-add-3").onclick = () => {
+        const kodebooking = document.getElementById("kodebooking").value;
+        const taskid = document.getElementById('taskid').value;
+
+        console.log("Add Antrean " + kodebooking);
+        const caritask = taskid;
+
+        // console.log(caritask);
+
+        AddTask3From6(kodebooking);
+
+        // postTask(kodebooking, taskid)
+        
+    };
+
+    document.getElementById("btn-batal").onclick = () => {
+        const kodebooking = document.getElementById("kodebooking").value;
+        const confirmation = confirm("Apakah Anda Akan Membatalkan Antrean Kodebooking " + kodebooking + "?");
+
+        if (confirmation) {
+            alert("Ke batal Antrean");
+        } else {
+            // Jika pengguna menekan "Tidak", tidak ada aksi
+            alert("Pembatalan dibatalkan.");
+        }
+    };
+
     function getRandomTime(minMinutes, maxMinutes) {
         const minMs = minMinutes * 60 * 1000; // Mengubah menit ke milisecond
         const maxMs = maxMinutes * 60 * 1000; // Mengubah menit ke milisecond
@@ -65,6 +109,11 @@ $(function () {
     function addMillisecondsToTimestamp(timestamp, milliseconds) {
         let date = convertTimestampToDate(timestamp);
         return date.getTime() + milliseconds;
+    }
+
+    function minusMillisecondsToTimestamp(timestamp, milliseconds) {
+        let date = convertTimestampToDate(timestamp);
+        return date.getTime() - milliseconds;
     }
 
     function cariData(kodebooking, caritask)
@@ -139,6 +188,76 @@ $(function () {
             });
     }
 
+    function AddTask3(kodebooking)
+    {
+        //const kodebooking = kodebooking;
+        console.log(kodebooking);
+        axios
+            .get(urlAntrean, {
+                params: {
+                    kodebooking:kodebooking
+                }
+            })
+            .then(function (res) {
+                console.log(res.data);
+                if (res.data.length > 0) {
+                    const randomTime = getRandomTime(8, 10);
+                    const tanggal = res.data[0].tanggal;
+                    const estimasiText = res.data[0].estimasidilayani;
+                    let estimasi = parseInt(estimasiText, 10); 
+                    const newTime = estimasi + randomTime;
+                    const taskid = 3;
+                    console.log(randomTime, estimasi, newTime, tanggal);
+                    postTask(kodebooking, taskid, newTime, tanggal);
+                } else {
+                    alert("Data Antrean " + kodebooking + " Tidak Ditemukan");
+                }
+            })
+            .catch(function (err) {
+                if (err.response && err.response.status !== 200) {
+                    alert("Gagal Pencarian Kode Booking Update Task");
+                } else {
+                    console.error("Terjadi kesalahan CariData:", err.message);
+                }
+            });
+    }
+
+    function AddTask3From6(kodebooking)
+    {
+        //const kodebooking = kodebooking;
+        console.log(kodebooking);
+        axios
+            .get(urlCariDataTask6, {
+                params: {
+                    kodebooking:kodebooking,
+                    caritask: 6
+                }
+            })
+            .then(function (res) {
+                console.log(res.data);
+                if (res.data.length > 0) {
+                    const randomTime = getRandomTime(40, 50);
+                    const tanggal = res.data[0].tanggal_data;
+                    const waktu = res.data[0].wakturs;
+                    const waktu2 = waktu.substring(0,19);
+                    const taskid = 3;
+                    const newTime = minusMillisecondsToTimestamp(waktu2, randomTime);
+                    console.log(kodebooking, randomTime, newTime, tanggal);
+                    //throw new Error("Stopping script execution");
+                    postTask(kodebooking, taskid, newTime, tanggal);
+                } else {
+                    alert("Data Antrean " + kodebooking + " Tidak Ditemukan");
+                }
+            })
+            .catch(function (err) {
+                if (err.response && err.response.status !== 200) {
+                    alert("Gagal Pencarian Kode Booking Update Task");
+                } else {
+                    console.error("Terjadi kesalahan CariData:", err.message);
+                }
+            });
+    }
+
     function pembagianWaktu (waktu2, taskid)
     {
         const caritask = taskid + 1;
@@ -171,7 +290,7 @@ $(function () {
         }
         else  if (taskid == 4)
         {
-            const randomTime = getRandomTime(20, 45);
+            const randomTime = getRandomTime(20, 40);
             console.log("Random TIme: " + randomTime);
             const newTime = addMillisecondsToTimestamp(waktu2, randomTime);
             console.log("Waktu Update Task " + taskid + " Adalah " + newTime);

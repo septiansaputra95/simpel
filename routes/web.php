@@ -27,10 +27,13 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
     Route::post('/updatetask/postTask', 'UpdateTaskController@postTask');
     Route::get('/updatetask/getKodeBooking', 'UpdateTaskController@getKodeBooking');
+    Route::get('/updatetask/antrean', 'UpdateTaskController@getAntrean');
+    Route::get('/updatetask/getTask6', 'UpdateTaskController@getTask6');
     Route::get('/updatetask/autoupdate', 'UpdateTaskController@autoUpdateTask')->name('updatetask.autoupdate');
+    Route::get('/updatetask/autoupdateerror', 'UpdateTaskController@autoUpdateTaskError')->name('updatetask.autoupdateerror');
     Route::get('/updatetask/autoadd', 'UpdateTaskController@autoAddTask')->name('updatetask.autoadd');
     Route::get('/updatetask/digitalclock', 'UpdateTaskController@digitalClock')->name('updatetask.digitalclock');
-
+    
     Route::get('/referensidokter', 'ReferensiDokterController@index')->name('referensi.index');
     Route::get('/referensipoli', 'ReferensiPoliController@index')->name('referensipoli.index');
     Route::get('/peserta', 'PesertaController@index')->name('peserta.index');
