@@ -64,32 +64,6 @@ $(function () {
         
     };
 
-    document.getElementById("btn-add-3").onclick = () => {
-        const kodebooking = document.getElementById("kodebooking").value;
-        const taskid = document.getElementById('taskid').value;
-
-        console.log("Add Antrean " + kodebooking);
-        const caritask = taskid;
-
-        // console.log(caritask);
-
-        AddTask3From6(kodebooking);
-
-        // postTask(kodebooking, taskid)
-        
-    };
-
-    document.getElementById("btn-batal").onclick = () => {
-        const kodebooking = document.getElementById("kodebooking").value;
-        const confirmation = confirm("Apakah Anda Akan Membatalkan Antrean Kodebooking " + kodebooking + "?");
-
-        if (confirmation) {
-            alert("Ke batal Antrean");
-        } else {
-            // Jika pengguna menekan "Tidak", tidak ada aksi
-            alert("Pembatalan dibatalkan.");
-        }
-    };
 
     function getRandomTime(minMinutes, maxMinutes) {
         const minMs = minMinutes * 60 * 1000; // Mengubah menit ke milisecond
@@ -188,39 +162,6 @@ $(function () {
             });
     }
 
-    function AddTask3(kodebooking)
-    {
-        //const kodebooking = kodebooking;
-        console.log(kodebooking);
-        axios
-            .get(urlAntrean, {
-                params: {
-                    kodebooking:kodebooking
-                }
-            })
-            .then(function (res) {
-                console.log(res.data);
-                if (res.data.length > 0) {
-                    const randomTime = getRandomTime(8, 10);
-                    const tanggal = res.data[0].tanggal;
-                    const estimasiText = res.data[0].estimasidilayani;
-                    let estimasi = parseInt(estimasiText, 10); 
-                    const newTime = estimasi + randomTime;
-                    const taskid = 3;
-                    console.log(randomTime, estimasi, newTime, tanggal);
-                    postTask(kodebooking, taskid, newTime, tanggal);
-                } else {
-                    alert("Data Antrean " + kodebooking + " Tidak Ditemukan");
-                }
-            })
-            .catch(function (err) {
-                if (err.response && err.response.status !== 200) {
-                    alert("Gagal Pencarian Kode Booking Update Task");
-                } else {
-                    console.error("Terjadi kesalahan CariData:", err.message);
-                }
-            });
-    }
 
     function AddTask3From6(kodebooking)
     {
