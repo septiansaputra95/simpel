@@ -13,6 +13,7 @@ use App\Models\MReferensiPoli;
 use App\Models\MReferensiDokter;
 use App\Models\MJadwalDokter;
 use App\Models\MBaymanagement;
+use App\Models\MSEPSelisih;
 
 use DateTime;
 use DateInterval;
@@ -106,7 +107,7 @@ class UpdateTaskController extends Controller
             $message = $metadata->message ?? null;
 
             $pesan = $kodebooking;
-            $pesan2 = " " ;
+            $pesan2 = "" ;
 
             $this->storeLogs($code, $message, $pesan, $pesan2);
 
@@ -224,7 +225,7 @@ class UpdateTaskController extends Controller
         //$tanggal = "2024-09-18";
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
-                        ->where('status', "Belum dilayani")
+                        ->whereIn('status', ["Belum dilayani", "Sedang dilayani"])
                         ->whereHas('tasklist')
                         ->with('tasklist')
                         ->get();
@@ -295,14 +296,93 @@ class UpdateTaskController extends Controller
 
             echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
             echo $pesan2 = "Update Data Task Lokal Database " . $kodeBooking . " Task id " . $postTaskid .". Selesai.";
-            // dd([
-            //     'kodebooking' => $kodeBooking,
-            //     'taskid' => $taskid,
-            //     'wakturs' => $waktuRs
-            // ], $waktu2, $newTime, $postTaskid, $response, $responseData, $storeResponseData);
+        }
 
+        //return redirect()->route('updatetask.digitalclock');
+
+    }
+
+    public function autoUpdateTask7()
+    {
+        // $tanggal = DATE('Y-m-d');
+        $tanggal = "2024-10-07";
+        // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
+        $data = MAntrianTanggal::where('tanggal', $tanggal)
+                        ->where('status', "Selesai dilayani")
+                        ->whereHas('tasklist')
+                        ->with('tasklist')
+                        ->get();
+        
+        foreach($data as $item)
+        {
+            // DIAMBIL KODEBOOKING NYA
+            $kodebooking [] = $item->kodebooking;
+        }
+        //dd($kodebooking);
+        
+        // PROSES PERULANGAN BERDASARKAN KODEBOOKING YANG SUDAH DITARIK
+        for($i=0; $i < COUNT($kodebooking); $i++)
+        {
+            // MENGAMBIL TASKLIST 1 BARIS DIMANA TASKID TERAKHIR
+            $kd = '36688565';
+            $taskData = MTaskList::where('kodebooking', $kodebooking[$i])
+                    ->where('taskid', 6)
+                    ->orderBy('taskid', 'DESC')
+                    ->first();
+            // dd($taskData);
+            // PENGECEKAN JIKA $taskData kosong maka akan di skip ke $kodebooking[$i]
+            if ($taskData === null)
+            {
+                continue;
+            }
+
+            $kodeBooking = $taskData->kodebooking;
+            $taskid = $taskData->taskid;
+            $waktuRs = $taskData->wakturs;
+            $waktu2 = substr($waktuRs, 0, 19);
+            $postTaskid = $taskid + 1;
+            // dd($taskData, $kodeBooking, $taskid, $waktuRs, $waktu2, $postTaskid);
+            
+
+            $newTime = $this->pembagianWaktu($waktu2, $postTaskid);
+
+            // MELAKUKAN POST TASK MENGGUNAKAN METODE REQUEST MENGIKUTI SCRIP DARI
+            // FUNCTION POST TASK
+            $request = new Request();
+            $request->replace([
+                'kodebooking' => $kodeBooking,
+                'taskid' => $postTaskid,
+                'newTime' => $newTime
+            ]);
+
+            $response = $this->postTask($request);
+            $responseData = $response->getData(); 
+            // dd($response);
+
+            $code = $responseData->metadata->code ?? $responseData->code ?? null;
+            $message = $responseData->metadata->message ?? $responseData->message ?? null;
+
+            //dd($responseData);
+            echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
+            echo $pesan2 = "Proses Post Task Kodebooking" . $kodeBooking . " Task id " . $postTaskid .". Selesai.";
             //$this->storeLogs($code, $message, $pesan, $pesan2);
-            // die();
+            
+            // HASIL NYA AKAN DILAKUKAN PENGECEKAN MANUAL BERDASARKAN TANGGAL DAN KODEBOOKING
+            // LALU AKAN DISIMPAN UNTUK UPDATE TASKID TERAKHIR DARI KODEBOOKING TERSEBUT
+            $storeRequest = new Request();
+            $storeRequest->replace([
+                'kodebooking' => $kodeBooking,
+                'tanggal' => $tanggal
+            ]);
+
+            $storeResponse = $this->store($storeRequest);
+            $storeResponseData = $storeResponse->getData();
+            
+            $code = $storeResponseData->metadata->code ?? $storeResponseData->code ?? null;
+            $message = $storeResponseData->metadata->message ?? $storeResponseData->message ?? null;
+
+            echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
+            echo $pesan2 = "Update Data Task Lokal Database " . $kodeBooking . " Task id " . $postTaskid .". Selesai.";
         }
 
         //return redirect()->route('updatetask.digitalclock');
@@ -311,8 +391,8 @@ class UpdateTaskController extends Controller
 
     public function autoUpdateTaskError()
     {   
-        // $tanggal = DATE('Y-m-d');
-        $tanggal = "2024-09-23";
+        $tanggal = DATE('Y-m-d');
+        //$tanggal = "2024-09-23";
         $data = MLogs::select('message', 'data')
                 ->whereDate('created_at', $tanggal)
                 ->where('message', 'LIKE', '%TaskId sebelumnya belum terkirim%')
@@ -661,7 +741,23 @@ class UpdateTaskController extends Controller
             echo $kodebooking[$i]. '<br>';
         }
 
-        
+    }
+
+    public function autoAddAntrean()
+    {
+        $tanggal = DATE('Y-m-d');
+        //$tanggal = "2024-09-18";
+
+        $data = MSEPSelisih::where('tglsep', $tanggal)
+                        ->get();
+        foreach ($data as $item)
+        {
+            $nokartu[] = $item->nokartu;
+            $nomr[] = $item->nomr;
+            $poli[] = $item->poli;
+            $nama[] = $item->nama;
+        }
+
     }
     
     public function getPeserta($nomorkartu)

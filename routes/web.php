@@ -30,6 +30,7 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/updatetask/antrean', 'UpdateTaskController@getAntrean');
     Route::get('/updatetask/getTask6', 'UpdateTaskController@getTask6');
     Route::get('/updatetask/autoupdate', 'UpdateTaskController@autoUpdateTask')->name('updatetask.autoupdate');
+    Route::get('/updatetask/autoupdate7', 'UpdateTaskController@autoUpdateTask7')->name('updatetask.autoupdate7');
     Route::get('/updatetask/autoupdateerror', 'UpdateTaskController@autoUpdateTaskError')->name('updatetask.autoupdateerror');
     Route::get('/updatetask/autoadd', 'UpdateTaskController@autoAddTask')->name('updatetask.autoadd');
     Route::get('/updatetask/digitalclock', 'UpdateTaskController@digitalClock')->name('updatetask.digitalclock');
@@ -43,6 +44,11 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
 
     Route::get('/peserta/digitalclock', 'PesertaController@digitalClock');
     Route::get('/jadwaldokter/digitalclock', 'JadwalDokterController@digitalClock');
+
+    Route::get('/sep/autostore', 'SEPController@autoStore')->name('sep.autostore');
+    Route::get('/sep/autostorekunjungan', 'SEPController@autoStoreKunjungan')->name('sep.autostorekunjungan');
+    Route::get('/sep/autoselisih', 'SEPController@autoSelisih')->name('sep.autoselisih');
+
 
 
 });

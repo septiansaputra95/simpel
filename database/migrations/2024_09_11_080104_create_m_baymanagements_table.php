@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('m_baymanagements', function (Blueprint $table) {
             $table->id();
-            $table->string('norm', 150);
-            $table->string('namapasien', 150);
-            $table->string('dokter', 150);
-            $table->string('nomorantrian', 150);
-            $table->date('tanggal_data');
+            $table->string('norm', 150)->nullable();
+            $table->string('namapasien', 150)->nullable();
+            $table->string('dokter', 150)->nullable();
+            $table->string('nomorantrian', 150)->nullable();
+            $table->string('mulaikonsul', 150)->nullable();
+            $table->string('selesaikonsul', 150)->nullable();
+            $table->date('tanggal_data')->nullable();
             $table->timestamps();
         });
     }
