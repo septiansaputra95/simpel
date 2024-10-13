@@ -178,13 +178,12 @@ class UpdateTaskController extends Controller
             "kodepoli" => $kodepoli,
             "namapoli" => $namapoli,
             "pasienbaru" => 0,
-            "norm" => $kodebooking,
-            "kodebooking" => $norm,
+            "norm" => $norm,
             "tanggalperiksa" => $tanggal,
             "kodedokter" => $kodedokter,
             "namadokter" => $namadokter,
             "jampraktek" => $jadwal,
-            "jeniskunjungan" => 1,
+            "jeniskunjungan" => 2,
             "nomorreferensi" => $nomorreferensi,
             "nomorantrean" => $nomorantrian,
             "angkaantrean" => $nomorantrian,
@@ -201,7 +200,6 @@ class UpdateTaskController extends Controller
         $endpoint = 'antrean/add';
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
         $result = json_decode($requestBridge);
-
         $metadata = $result->metadata ?? null;
         if ($metadata) {
             $code = $metadata->code?? null;
@@ -211,10 +209,19 @@ class UpdateTaskController extends Controller
             $pesan2 = " " ;
 
             $this->storeLogs($code, $message, $pesan, $pesan2);
-
+            // if ($code == 200)
+            // {
+            //     $this->flagaddantrean($norm, $tanggal);
+            // }
+            
         } else {
             $this->storeLogs('Unknown', 'No metadata in response', 'Response: ' . $requestBridge, 'Failed to fetch valid response. Kode Booking: '.$kodebooking. ' Task: '.$taskid);
         }
+
+        // FLAG ANTREAN AGAR TIDAK DI KIRIM OLEH SISTEM
+        $this->flagaddantrean($norm, $tanggal);
+        
+        // dd($data, $result, $code);
         
         return $result;
     }
@@ -305,7 +312,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask7()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2024-10-07";
+        // $tanggal = "2024-10-09";
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
                         ->where('status', "Selesai dilayani")
@@ -598,18 +605,10 @@ class UpdateTaskController extends Controller
     
     public function addMillisecondsToTimestamp($timestamp, $milliseconds)
     {
-        // Konversi timestamp ke objek DateTime
-        // $date = $this->convertTimestampToDate($timestamp);
+
         $date = $this->convertToMilliseconds($timestamp);
         return $newtime = $date + $milliseconds;
-        //dd($date, $timestamp, $milliseconds, $newtime);
-
-        // Tambahkan milidetik (mengubahnya menjadi detik untuk PHP DateInterval)
-        // $interval = new DateInterval('PT' . ($milliseconds / 1000) . 'S');
-        // $date->add($interval);
-
-        // Mengembalikan waktu yang telah diubah dalam format 'Y-m-d H:i:s'
-        // return $date->format('Y-m-d H:i:s');
+        
     }
 
     public function storeLogs($code, $message, $pesan, $pesan2)
@@ -705,7 +704,7 @@ class UpdateTaskController extends Controller
                         ->where('taskid', "0")
                         ->with('antrian') 
                         ->get();
-
+        
         // FETCH DATA
         foreach($data as $item)
         {
@@ -746,18 +745,147 @@ class UpdateTaskController extends Controller
     public function autoAddAntrean()
     {
         $tanggal = DATE('Y-m-d');
-        //$tanggal = "2024-09-18";
-
+        $tanggal_estimasi = DATE('d-m-Y');
+        // $tanggal = DATE('2024-10-10');
+        // $tanggal_estimasi = DATE('10-10-2024');
+        $waktuestimasi = [];
+        $jumlahdata = [];
+        
         $data = MSEPSelisih::where('tglsep', $tanggal)
+                        ->where('poli', '<>', 'INSTALASI GAWAT DARURAT')
+                        ->where('flagaddantrean', 'f')
+                        ->with('peserta')
                         ->get();
+
+        // FETECH DATA DARI MSEPSELISIH
+        $nomor = rand(1,1000);
+        //dd($data);
         foreach ($data as $item)
         {
             $nokartu[] = $item->nokartu;
             $nomr[] = $item->nomr;
             $poli[] = $item->poli;
             $nama[] = $item->nama;
+            $kddpjp[] = $item->kddpjp;
+            $nmdpjp[] = $item->nmdpjp;
+            $norujukan[] = $item->norujukan;
+            $kodebooking[] = $item->kodebooking;
+
+            foreach ($item->peserta as $peserta) {
+                $nohp[] = $peserta->noTelepon; 
+                $nik[] =$peserta->nik;
+            }
+
+            $nomor++;
+        }
+        // dd($kodebooking);
+        // GET JADWAL POLI
+        for($i=0; $i<COUNT($kddpjp); $i++)
+        {
+            $dataJadwal = $this->getJadwalDokter($kddpjp[$i], $tanggal);
+
+            if ($dataJadwal) {  
+                $kodedokter[] = $dataJadwal['kodedokter'];
+                $jadwal[] = $dataJadwal['jadwal'];
+                $kapasitas[] = $dataJadwal['kapasitas'];
+            }
+
+        }
+        // dd($poli);
+        // GET KODE POLI
+        for($i=0; $i<COUNT($poli); $i++)
+        {
+            $dataPoli = $this->getPoli($poli[$i]);
+            
+            if ($dataPoli) {  
+                $kodepoli[] = $dataPoli['kodepoli'];
+                $namapoli[] = $dataPoli['namapoli'];
+            }
+
         }
 
+        // GET ANTRIAN POLI
+        for($i=0; $i<COUNT($nomr); $i++)
+        {
+            $dataAntrian = $this->getAntrianPoli($nomr[$i], $tanggal);
+
+            if ($dataAntrian) {  
+                $nomorantrian[] = abs($dataAntrian['nomorantrian']);
+                $mulaikonsul[] = $dataAntrian['mulaikonsul'];
+                $selesaikonsul[] = $dataAntrian['selesaikonsul'];
+            }
+
+        }
+
+        // MANIPULASI NOMOR ANTRIAN
+        for($i=0; $i<COUNT($kapasitas); $i++)
+        {
+            if($nomorantrian[$i] > $kapasitas[$i])
+            {
+                $kapasitasJkn = $kapasitas[$i] - 1;
+                $nomorantrian[$i] = rand(1, $kapasitasJkn);
+            }
+            continue;
+        }
+
+        // MEMBUAT ESTIMASI
+        for($i=0; $i<COUNT($jadwal); $i++)
+        {
+            $subJadwal = substr($jadwal[$i], 0, 5);
+            $waktuestimasi[] = $tanggal_estimasi.' '.$subJadwal.':00';
+            $randomTime = $this->getRandomTime(4, 30);
+            //dd($waktuestimasi, $randomTime);
+            $newTime[$i] = $this->addMillisecondsToTimestamp($waktuestimasi[$i], $randomTime);
+
+        }
+
+        for($i=0; $i<COUNT($nmdpjp); $i++)
+        {
+            // $hasil = $this->getKapasitasDokter($nmdpjp, $tanggal);
+            // $jumlahdata[$i] = $hasil['jumlahdata'];
+            $kapasitas2 = $kapasitas[$i] - 1;
+            $sisa[] = rand(1, $kapasitas2);
+        }
+
+
+
+        for($i=0; $i<COUNT($nokartu); $i++)
+        {
+
+            $data = $this->addAntrean(
+                $kodebooking[$i], 
+                $nokartu[$i], 
+                $nik[$i],
+                $nohp[$i],
+                $kodepoli[$i],
+                $poli[$i],
+                $nomr[$i],
+                $tanggal,
+                $kddpjp[$i],
+                $nmdpjp[$i],
+                $jadwal[$i],
+                $norujukan[$i],
+                $nomorantrian[$i],
+                $newTime[$i],
+                $sisa[$i],
+                $kapasitas[$i]
+            );
+        //dd($kodebooking, $nokartu, $nomr, $nohp, $kddpjp, $kodedokter, $jadwal, $kodepoli, $namapoli, $kapasitas, $nomorantrian, $mulaikonsul, $waktuestimasi, $newTime, $sisa);
+        echo $kodebooking[$i].'<br>';
+
+        
+        }
+        
+
+    }
+
+    public function generateKodebooking()
+    {
+        $kode = rand(36,37);
+        $tanggal = DATE('Ymd');
+        $template = $kode.''.$tanggal;
+        
+        return $template;
     }
     
     public function getPeserta($nomorkartu)
@@ -772,15 +900,24 @@ class UpdateTaskController extends Controller
         return $nik;
     }
 
-    public function getPoli($kodepoli)
+    public function getPoli($namapoli)
     {
-        $data = MReferensiPoli::where('kdpoli', $kodepoli)->get();
-        foreach($data as $item)
-        {
-            $namapoli = $item->nmpoli;
-        }
+        $data = MReferensiPoli::where('nmpoli', $namapoli)->first();
         
-        return $namapoli;
+        // Jika tidak ditemukan, cari berdasarkan nmsubspesialis
+        if (!$data) {
+            $data = MReferensiPoli::where('nmsubspesialis', $namapoli)->first();
+        }
+
+        // Jika tetap tidak ditemukan, kembalikan null atau pesan error
+        if (!$data) {
+            return null; // atau bisa gunakan return ['error' => 'Poli not found'];
+        }
+
+        return [
+            'kodepoli' => $data->kdpoli,
+            'namapoli' => $data->nmpoli
+        ];
     }
 
     public function getDokter($kodedokter)
@@ -798,17 +935,12 @@ class UpdateTaskController extends Controller
     {
         $data = MJadwalDokter::where('kodedokter', $kodedokter)
                             ->where('tanggal_data', $tanggal)
-                            ->get();
+                            ->first();
 
-        foreach($data as $item)
-        {
-            $jadwal = $item->jadwal;
-            $kapasitas = $item->kapasitaspasien;
-        }
-        
         return [
-            'jadwal' => $jadwal,
-            'kapasitas' => $kapasitas,
+            'kodedokter' => $data->kodedokter,
+            'jadwal' => $data->jadwal,
+            'kapasitas' => $data->kapasitaspasien,
         ];
     }
 
@@ -816,14 +948,34 @@ class UpdateTaskController extends Controller
     {
         $data = MBaymanagement::where('norm', $norm)
                             ->where('tanggal_data', $tanggal)
-                            ->get();
-        $nomorantrian ='';
-        foreach($data as $item)
-        {
-            $nomorantrian = $item->nomorantrian;
-        }
-        
-        return $nomorantrian;
+                            ->first();
+
+        return [
+            'nomorantrian' => $data->nomorantrian,
+            'mulaikonsul' => $data->mulaikonsul,
+            'selesaikonsul' => $data->selesaikonsul
+        ];
+
+    }
+
+    public function getKapasitasDokter($nmdpjp, $tanggal)
+    {
+        $data = MBaymanagement::where('dokter', 'LIKE', '%dr. '.$nmdpjp.'%')
+                            ->where('tanggal_data', $tanggal)
+                            ->tosql();
+        //dd($data);
+        return [
+            'jumlahdata' => $data
+        ];
+
+    }
+
+    public function flagaddantrean($nomr, $tanggal)
+    {
+        // UPDATE FLAG TRUE ADD ANTREAN
+        MSEPSelisih::where('nomr', $nomr)
+                    ->where('tglsep', $tanggal)
+                    ->update(['flagaddantrean' => true]);
     }
 
 }

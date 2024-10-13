@@ -13,18 +13,20 @@ return new class extends Migration
     {
         Schema::create('m_pesertas', function (Blueprint $table) {
             $table->id();
-            $table->string('nik', 150);
-            $table->string('nama', 150);
-            $table->string('noKartu', 150);
-            $table->string('pisa', 150);
-            $table->string('kdprovider', 150);
-            $table->string('nmprovider', 150);
-            $table->string('kodekelas', 150);
-            $table->string('kelas', 150);
-            $table->string('statuspesertakode', 150);
-            $table->string('statuspesertaketerangan', 150);
-            $table->string('jenispesertakode', 150);
-            $table->string('jenispesertaketerangan', 150);
+            $table->string('nik', 150)->nullable();
+            $table->string('nama', 150)->nullable();
+            $table->string('noKartu', 150)->nullable();
+            $table->string('noMr', 150)->nullable();
+            $table->string('noTelepon', 150)->nullable();
+            $table->string('pisa', 150)->nullable();
+            $table->string('kdprovider', 150)->nullable();
+            $table->string('nmprovider', 150)->nullable();
+            $table->string('kodekelas', 150)->nullable();
+            $table->string('kelas', 150)->nullable();
+            $table->string('statuspesertakode', 150)->nullable();
+            $table->string('statuspesertaketerangan', 150)->nullable();
+            $table->string('jenispesertakode', 150)->nullable();
+            $table->string('jenispesertaketerangan', 150)->nullable();
 
             $table->timestamps();
         });

@@ -12,6 +12,7 @@ class MVclaimSEP extends Model
     protected $fillable = [
         'nomor',
         'nomor_sep', 
+        'nomor_rujukan',
         'tanggal_sep',
         'rirj',
         'nomor_kartu',

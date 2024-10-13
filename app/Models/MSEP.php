@@ -20,7 +20,10 @@ class MSEP extends Model
         'poli',
         'nokartu',
         'nama',
-        'nomr'
+        'nomr',
+        'kddpjp',
+        'nmdpjp'
+
     ];
 
 }

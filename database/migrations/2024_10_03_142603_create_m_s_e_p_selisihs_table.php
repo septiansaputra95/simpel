@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('nokartu', 150)->nullable();
             $table->string('nama', 150)->nullable();
             $table->string('nomr', 150)->nullable();
+            $table->string('kddpjp', 150)->nullable();
+            $table->string('nmdpjp', 150)->nullable();
             $table->boolean('flagdatang')->default(0);
             $table->boolean('flagaddantrean')->default(0);
             $table->timestamps();

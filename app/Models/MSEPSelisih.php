@@ -16,12 +16,20 @@ class MSEPSelisih extends Model
         'tglsep', 
         'kelasrawat',
         'diagnosa',
+        'kodebooking',
         'norujukan',
         'poli',
         'nokartu',
         'nama',
         'nomr',
+        'kddpjp',
+        'nmdpjp',
         'flagdatang',
         'flagaddantrean'
     ];
+
+    public function peserta()
+    {
+        return $this->hasMany(MPeserta::class, 'noKartu', 'nokartu');
+    }
 }

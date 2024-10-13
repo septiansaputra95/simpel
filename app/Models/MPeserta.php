@@ -15,6 +15,8 @@ class MPeserta extends Model
         'nik',
         'nama',
         'noKartu',
+        'noMr',
+        'noTelepon',
         'pisa',
         'kdprovider',
         'nmprovider',
@@ -25,4 +27,9 @@ class MPeserta extends Model
         'jenispesertakode',
         'jenispesertaketerangan'
     ];
+
+    public function SEPselisih()
+    {
+        return $this->belongsTo(MSEPSelisih::class, 'nokartu', 'noKartu');
+    }
 }

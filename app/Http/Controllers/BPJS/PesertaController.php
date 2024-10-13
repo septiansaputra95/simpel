@@ -8,6 +8,7 @@ use Bpjs\Bridging\Vclaim\BridgeVclaim;
 use App\Models\MPeserta;
 use App\Models\MAntrianTanggal;
 use App\Models\MLogs;
+use App\Models\MVclaimSEP;
 
 
 class PesertaController extends Controller
@@ -23,13 +24,13 @@ class PesertaController extends Controller
     public function index()
     {
         $tanggal = DATE('Y-m-d');
-        //$tanggal = "2024-09-14";
+        // $tanggal = "2024-10-08";
 
         $hitung = 0;
-        $dataAntrian = MAntrianTanggal::where('tanggal', $tanggal)
+        $dataAntrian = MVclaimSEP::where('tanggal_sep', $tanggal)
                 ->get();
         foreach($dataAntrian as $data) {
-            $nokapst        = $data->nokapst;
+            $nokapst        = $data->nomor_kartu;
             $pesertaData    = $this->peserta($nokapst, $tanggal);
             $peserta        = $pesertaData->response->peserta;
             $metaData       = $pesertaData->metaData;
@@ -37,7 +38,7 @@ class PesertaController extends Controller
             $message        = $metaData->message;
 
             
-            
+            //dd($peserta);
             $existingPeserta = MPeserta::where('nik', $peserta->nik)->first();
 
             if (!$existingPeserta) {
@@ -45,6 +46,8 @@ class PesertaController extends Controller
                     'nik'                       => $peserta->nik,
                     'nama'                      => $peserta->nama,
                     'noKartu'                   => $peserta->noKartu,
+                    'noMr'                      => $peserta->mr->noMR,
+                    'noTelepon'                 => $peserta->mr->noTelepon,
                     'pisa'                      => $peserta->pisa,
                     'kdprovider'                => $peserta->provUmum->kdProvider,
                     'nmprovider'                => $peserta->provUmum->nmProvider,

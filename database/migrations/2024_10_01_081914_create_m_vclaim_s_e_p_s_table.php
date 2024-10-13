@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nomor', 150)->nullable();
             $table->string('nomor_sep', 150)->nullable();
+            $table->string('nomor_rujukan', 150)->nullable();
             $table->string('tanggal_sep', 150)->nullable();
             $table->string('rirj', 150)->nullable();
             $table->string('nomor_kartu', 150)->nullable();
