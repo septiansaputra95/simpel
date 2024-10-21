@@ -207,8 +207,8 @@ class UpdateTaskController extends Controller
 
             $pesan = $kodebooking;
             $pesan2 = " " ;
-
-            $this->storeLogs($code, $message, $pesan, $pesan2);
+            $api = "Add Antrean";
+            $this->storeLogsAlter($api, $code, $message, $pesan, $pesan2);
             // if ($code == 200)
             // {
             //     $this->flagaddantrean($norm, $tanggal);
@@ -219,7 +219,7 @@ class UpdateTaskController extends Controller
         }
 
         // FLAG ANTREAN AGAR TIDAK DI KIRIM OLEH SISTEM
-        $this->flagaddantrean($norm, $tanggal);
+        // $this->flagaddantrean($norm, $tanggal);
         
         // dd($data, $result, $code);
         
@@ -626,6 +626,21 @@ class UpdateTaskController extends Controller
         ]);
     }
 
+    public function storeLogsAlter($api, $code, $message, $pesan, $pesan2)
+    {
+        MLogs::create([
+            'metode'        => 'POST',
+            'api'           => $api,
+            'controller'    => 'UpdateTaskController',
+            'code'          => $code,
+            'message'       => $message,
+            'data'          => $pesan.' '. $pesan2,
+            'created_at'    => DATE('Y-m-d h:m:s'),
+            'updated_at'    => DATE('Y-m-d h:m:s')
+
+        ]);
+    }
+
     public function store(Request $request)
     {
     
@@ -746,7 +761,7 @@ class UpdateTaskController extends Controller
     {
         $tanggal = DATE('Y-m-d');
         $tanggal_estimasi = DATE('d-m-Y');
-        // $tanggal = DATE('2024-10-10');
+        // $tanggal = DATE('2024-10-16');
         // $tanggal_estimasi = DATE('10-10-2024');
         $waktuestimasi = [];
         $jumlahdata = [];

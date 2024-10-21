@@ -112,13 +112,13 @@ class SEPController extends Controller
     public function autoSelisih()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2024-10-10');
+        // $tanggal = DATE('2024-10-18');
         
 
         MSEPSelisih::where('tglsep', $tanggal)->delete();
 
-        $result = MSEP::leftJoin('m_antrian_tanggals', 'm_s_e_p_s.nokartu', '=', 'm_antrian_tanggals.nokapst')
-                  ->whereNull('m_antrian_tanggals.nokapst')
+        $result = MSEP::leftJoin('m_antrian_tanggals', 'm_s_e_p_s.nomr', '=', 'm_antrian_tanggals.norekammedis')
+                  ->whereNull('m_antrian_tanggals.norekammedis')
                   ->where('m_s_e_p_s.tglsep', $tanggal)
                   ->select(
                       'm_s_e_p_s.nosep', 
@@ -135,10 +135,10 @@ class SEPController extends Controller
 
                   )
                   ->get();
- 
+        $nomor = 1; 
         foreach($result as $item)
         {
-            $nomor = rand(1,1000);
+            
             $template = $this->generateKodebooking();
             $kodebooking = $template.''.$nomor;
             MSEPSelisih::create([
@@ -155,6 +155,7 @@ class SEPController extends Controller
                 'kddpjp'        => $item->kddpjp,
                 'nmdpjp'        => $item->nmdpjp
             ]);
+            $nomor++;
             echo "Nama: ". $item->nama. ' NoMR: '.$item->nomr. ' Berhasil disimpan <br>';
         }
     }
