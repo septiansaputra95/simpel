@@ -28,7 +28,7 @@ class SEPController extends Controller
     {
 
         $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2024-10-09');
+        // $tanggal = DATE('2024-12-17');
         
         // JENIS LAYANAN 1 = RAWAT INAP, 2 = RAWAT JALAN
         $jenislayanan = 2;
@@ -66,8 +66,8 @@ class SEPController extends Controller
     public function autoStore()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2024-10-09');
-
+        // $tanggal = DATE('2024-12-17');
+        echo $tanggal;
         $data = MVclaimSEP::where('tanggal_sep', $tanggal)->get();
         
         foreach($data as $item)
@@ -111,8 +111,13 @@ class SEPController extends Controller
 
     public function autoSelisih()
     {
-        $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2024-10-18');
+        // $tanggal = DATE('Y-m-d');
+        $tanggal = DATE('2024-12-17');
+
+        /* The line `//  = DATE('Y-m-d');` is a commented-out line in PHP code. This means that
+        this line is not currently active or executed when the code runs. It is used to assign the
+        current date in the format 'Y-m-d' to the variable ``. */
+        // $tanggal = DATE('2024-12-04');
         
 
         MSEPSelisih::where('tglsep', $tanggal)->delete();
@@ -135,10 +140,10 @@ class SEPController extends Controller
 
                   )
                   ->get();
-        $nomor = 1; 
+         
         foreach($result as $item)
         {
-            
+            $nomor = RAND(1,100);
             $template = $this->generateKodebooking();
             $kodebooking = $template.''.$nomor;
             MSEPSelisih::create([
@@ -155,7 +160,7 @@ class SEPController extends Controller
                 'kddpjp'        => $item->kddpjp,
                 'nmdpjp'        => $item->nmdpjp
             ]);
-            $nomor++;
+            // $nomor++;
             echo "Nama: ". $item->nama. ' NoMR: '.$item->nomr. ' Berhasil disimpan <br>';
         }
     }
@@ -210,10 +215,114 @@ class SEPController extends Controller
 
     public function generateKodebooking()
     {
-        $kode = rand(36,37);
-        $tanggal = DATE('Ymd');
-        $template = $kode.''.$tanggal;
+        $kode = rand(36,40);
+        $tanggal = DATE('md');
+        $template = $kode.'24'.$tanggal;
         
         return $template;
+    }
+
+    public function cariselisih()
+    {
+        $tanggal = DATE('Y-m-d');
+        // $tanggal = '2024-12-04';
+        echo $tanggal.'<br>';
+        $data = MSEP::where('tglsep', $tanggal)
+                ->where('poli', '<>', 'INSTALASI GAWAT DARURAT')->get();
+
+        $dataAntrian = MAntrianTanggal::where('tanggal', $tanggal)->get();
+
+        foreach($data as $item)
+        {
+            // DIAMBIL KODEBOOKING NYA
+            $nosep[] = $item->nosep;
+            $tglsep[] = $item->tglsep;
+            $kelasrawat[] = $item->kelasrawat;
+            $diagnosa[] = $item->diagnosa;
+            $norujukan[] = $item->norujukan;
+            $poli[] = $item->poli;
+            $nokartu [] = $item->nokartu;
+            $nama[] = $item->nama;
+            $nomr[] = $item->nomr;
+            $kddpjp[] = $item->kddpjp;
+            $nmdpjp[] = $item->nmdpjp;
+        }
+
+        foreach($dataAntrian as $itemAntrian)
+        {
+            // DIAMBIL KODEBOOKING NYA
+            $nokapst [] = $itemAntrian->nokapst;
+            $norekammedis[] = $itemAntrian->norekammedis;
+        }
+        //dd($nama);
+        // for($i=0; $i > COUNT($nokartu); $i++)
+        // {
+        //     for($j=0; $j = COUNT($nokapst); $j++)
+        //     {
+        //         if($nokartu[$i] <> $nokapst[$j])
+        //         {
+        //             echo $nokartu[$i].'<br>';
+        //         }
+        //     }
+        // }
+        $nomorin = 1;
+        MSEPSelisih::where('tglsep', $tanggal)->delete();
+        // Bandingkan setiap nokartu dengan semua nokapst
+        foreach ($nomr as $index => $nomrValue) {
+            $found = false;
+    
+            // Periksa apakah nomr ada di norekammedis
+            foreach ($norekammedis as $rekamMedis) {
+                if ($nomrValue == $rekamMedis) {
+                    $found = true; // Jika ditemukan kecocokan
+                    break;
+                }
+            }
+    
+            // Jika tidak ditemukan kecocokan, tampilkan nomr dan nama yang sesuai
+            if (!$found) {
+
+                $nomor = RAND(1,9999);
+                $template = $this->generateKodebooking();
+                $kodebooking = $template.''.$nomor;
+                MSEPSelisih::create([
+                    'nosep'         => $nosep[$index],
+                    'tglsep'        => $tglsep[$index],
+                    'kelasrawat'    => $kelasrawat[$index],
+                    'diagnosa'      => $diagnosa[$index],
+                    'kodebooking'   => $kodebooking,
+                    'norujukan'     => $norujukan[$index],
+                    'poli'          => $poli[$index],
+                    'nokartu'       => $nokartu[$index],
+                    'nama'          => $nama[$index],
+                    'nomr'          => $nomr[$index],
+                    'kddpjp'        => $kddpjp[$index],
+                    'nmdpjp'        => $nmdpjp[$index]
+                ]);
+
+                echo $nomorin.'. '.$nomrValue . ' - ' . $nama[$index] . ' - ' . $nokartu[$index] . '- ' . $nosep[$index] .'<br>';
+                $nomorin++;
+            }
+        }
+
+        // foreach ($nokartu as $index => $nokartuValue) {
+        //     $found = false;
+    
+        //     // Periksa apakah nokartu ada di nokapst
+        //     foreach ($nokapst as $kapst) {
+        //         if ($nokartuValue == $kapst) {
+        //             $found = true; // Jika ditemukan kecocokan
+        //             break;
+        //         }
+        //     }
+    
+        //     // Jika tidak ditemukan kecocokan, tampilkan nokartu dan nama yang sesuai
+        //     if (!$found) {
+        //     echo $nomor.'. '.$nomrValue . ' - ' . $nama[$index] . ' - ' . $nokartu[$index] . ' - ' . $nosep[$index] .'<br>';
+        //         $nomor++; // Tambahkan nomor urut
+        //     }
+        // }
+
+        
     }
 }

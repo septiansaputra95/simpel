@@ -33,7 +33,8 @@
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-success" id="btn-update">Update Task</button>
                         <button type="submit" class="btn btn-warning" id="btn-update-error">Update Error Task</button>
-                        <button type="submit" class="btn btn-primary" id="btn-add">Add Antrean</button>
+                        <button type="submit" class="btn btn-secondary" id="btn-add">Add Task 3</button>
+                        <button type="submit" class="btn btn-primary" id="btn-addAntrean">Add Antrean</button>
                     </div>
                 </div>
             </div>

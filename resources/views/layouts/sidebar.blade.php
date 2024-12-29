@@ -50,3 +50,14 @@
         </a>
     </div>
 </div>
+
+<div class="menu-item py-2 px-4 cursor-pointer mt-4" onclick="toggleSubmenu('keuanganSubmenu')">
+    <span class="font-semibold text-lg">
+        <i class="fas fa-notes-medical mr-2"></i> Keuangan
+    </span>
+    <div id="keuanganSubmenu" class="submenu">
+        <a href="{{ route('honordokter.index') }}" class="submenu-item py-2 px-4 text-gray-300 hover:text-white cursor-pointer">
+            <i class="fas fa-list-alt mr-2"></i> Honor Dokter
+        </a>
+    </div>
+</div>

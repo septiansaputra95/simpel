@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BPJS\AntrianOnlineController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DokterEmail;
 
 Route::get('/', function () {
     return view('content');
@@ -24,17 +26,22 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/tasklist/digitalclock', 'TaskListController@digitalClock')->name('tasklist.digitalclock');
     
 
-    Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
     Route::post('/updatetask/postTask', 'UpdateTaskController@postTask');
+    Route::post('/updatetask/postAddAntrean', 'UpdateTaskController@postAddAntrean');
     Route::get('/updatetask/getKodeBooking', 'UpdateTaskController@getKodeBooking');
+    Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
     Route::get('/updatetask/antrean', 'UpdateTaskController@getAntrean');
     Route::get('/updatetask/getTask6', 'UpdateTaskController@getTask6');
+    Route::get('/updatetask/getSelisih', 'UpdateTaskController@getSelisih');
+    Route::get('/updatetask/getJadwalDokterPoli', 'UpdateTaskController@getJadwalDokterPoli');
+    Route::get('/updatetask/getPoliklinik', 'UpdateTaskController@getPoliklinik');
+    Route::get('/updatetask/getAntrianPoliklinik', 'UpdateTaskController@getAntrianPoliklinik');
     Route::get('/updatetask/autoupdate', 'UpdateTaskController@autoUpdateTask')->name('updatetask.autoupdate');
     Route::get('/updatetask/autoupdate7', 'UpdateTaskController@autoUpdateTask7')->name('updatetask.autoupdate7');
     Route::get('/updatetask/autoupdateerror', 'UpdateTaskController@autoUpdateTaskError')->name('updatetask.autoupdateerror');
-    Route::get('/updatetask/autoadd', 'UpdateTaskController@autoAddTask')->name('updatetask.autoadd');
     Route::get('/updatetask/autoaddantrean', 'UpdateTaskController@autoAddAntrean')->name('updatetask.autoaddantrean');
     Route::get('/updatetask/digitalclock', 'UpdateTaskController@digitalClock')->name('updatetask.digitalclock');
+    Route::get('/updatetask/autoadd', 'UpdateTaskController@autoAddTask')->name('updatetask.autoadd');
     
     Route::get('/referensidokter', 'ReferensiDokterController@index')->name('referensi.index');
     Route::get('/referensipoli', 'ReferensiPoliController@index')->name('referensipoli.index');
@@ -48,8 +55,32 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
 
     Route::get('/sep/autostore', 'SEPController@autoStore')->name('sep.autostore');
     Route::get('/sep/autostorekunjungan', 'SEPController@autoStoreKunjungan')->name('sep.autostorekunjungan');
-    Route::get('/sep/autoselisih', 'SEPController@autoSelisih')->name('sep.autoselisih');
+    Route::get('/sep/autoselisih', 'SEPController@cariselisih')->name('sep.autoselisih');
+    Route::get('/sep/cariselisih', 'SEPController@cariselisih')->name('sep.cariselisih');
 
 
+
+});
+
+Route::group(['namespace' => 'App\Http\Controllers\Keuangan', 'prefix' => 'Keuangan'], function() {
+    Route::get('/honordokter', 'PengirimanHDController@index')->name('honordokter.index');
+    Route::get('/honordokter/datatables', 'PengirimanHDController@loadDatatables');
+    Route::get('/honordokter/getDokter', 'PengirimanHDController@getDokter');
+    Route::post('/honordokter/simpan', 'PengirimanHDController@store');
+    Route::post('/honordokter/kirim', 'PengirimanHDController@send');
+
+    Route::get('/honordokter/auth/google', 'PengirimanHDController@redirectToGoogle');
+    Route::get('/honordokter/auth/google/callback', 'PengirimanHDController@handleGoogleCallback');
+
+});
+
+Route::get('/mail/send', function () {
+    $data = [
+        'subject' => 'Testing Kirim Email',
+        'title' => 'Testing Kirim Email',
+        'body' => 'Ini adalah email uji coba dari Tutorial Laravel: Send Email Via SMTP GMAIL @ qadrLabs.com'
+    ];
+
+    Mail::to('septiansap@gmail.com')->send(new DokterEmail($data));
 
 });

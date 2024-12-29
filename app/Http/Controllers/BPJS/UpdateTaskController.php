@@ -60,6 +60,15 @@ class UpdateTaskController extends Controller
         return response()->json($data);
 
     }
+
+    public function getSelisih(Request $request)
+    {
+        $data = MSEPSelisih::where('kodebooking', $request->kodebooking)
+                        ->with('peserta')
+                        ->get();
+        return response()->json($data);
+
+    }
     public function postTask(Request $request)
     {
         $kodebooking = $request->input('kodebooking');
@@ -68,6 +77,46 @@ class UpdateTaskController extends Controller
 
         // dd($kodebooking, $taskid, $newTime);
         $dataAntrian = $this->updateWkatu($kodebooking, $taskid, $newTime);
+        return response()->json($dataAntrian);
+    }
+    public function postAddAntrean(Request $request)
+    {
+        $kodebooking = $request->input('kodebooking');
+        $nokartu = $request->input('nokartu');
+        $nik = $request->input('nik');
+        $nohp = $request->input('nohp');
+        $kodepoli = $request->input('kodepoli');
+        $namapoli = $request->input('namapoli');
+        $nomr = $request->input('nomr');
+        $tanggal = $request->input('tanggal');
+        $kddpjp = $request->input('kddpjp');
+        $nmdpjp = $request->input('nmdpjp');
+        $jadwal = $request->input('jadwal');
+        $norujukan = $request->input('norujukan');
+        $nomorantrian = $request->input('nomorantrian');
+        $newTime = $request->input('newTime');
+        $sisa = $request->input('sisa');
+        $kapasitas = $request->input('kapasitas');
+        
+        // dd($kodebooking, $taskid, $newTime);
+        $dataAntrian = $this->addAntrean(
+            $kodebooking,
+            $nokartu,
+            $nik,
+            $nohp,
+            $kodepoli,
+            $namapoli,
+            $nomr,
+            $tanggal,
+            $kddpjp,
+            $nmdpjp,
+            $jadwal,
+            $norujukan,
+            $nomorantrian,
+            $newTime,
+            $sisa,
+            $kapasitas
+        );
         return response()->json($dataAntrian);
     }
 
@@ -201,13 +250,20 @@ class UpdateTaskController extends Controller
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
         $result = json_decode($requestBridge);
         $metadata = $result->metadata ?? null;
+
+        $pesan = $kodebooking;
+        $pesan2 = " " ;
+        $api = "Add Antrean";
+
+        $code = $metadata->code?? null;
+        $message = $metadata->message ?? null;
+        $this->storeLogsAlter($api, $code, $message, $pesan, $pesan2);
+
         if ($metadata) {
             $code = $metadata->code?? null;
             $message = $metadata->message ?? null;
 
-            $pesan = $kodebooking;
-            $pesan2 = " " ;
-            $api = "Add Antrean";
+           
             $this->storeLogsAlter($api, $code, $message, $pesan, $pesan2);
             // if ($code == 200)
             // {
@@ -226,10 +282,18 @@ class UpdateTaskController extends Controller
         return $result;
     }
 
+    // protected function addAntreanManual(
+        
+    // )
+    // {
+
+    // }
+
     public function autoUpdateTask()
     {
         $tanggal = DATE('Y-m-d');
-        //$tanggal = "2024-09-18";
+        // $tanggal = "2024-12-17";
+        echo $tanggal;
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
                         ->whereIn('status', ["Belum dilayani", "Sedang dilayani"])
@@ -312,7 +376,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask7()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2024-10-09";
+        // $tanggal = "2024-12-17";
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
                         ->where('status', "Selesai dilayani")
@@ -399,7 +463,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTaskError()
     {   
         $tanggal = DATE('Y-m-d');
-        //$tanggal = "2024-09-23";
+        // $tanggal = "2024-11-21";
         $data = MLogs::select('message', 'data')
                 ->whereDate('created_at', $tanggal)
                 ->where('message', 'LIKE', '%TaskId sebelumnya belum terkirim%')
@@ -714,7 +778,7 @@ class UpdateTaskController extends Controller
     {
         // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
         $tanggal = DATE('Y-m-d');
-        //$tanggal = "2024-09-18";
+        // $tanggal = "2024-12-17";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
                         ->with('antrian') 
@@ -791,7 +855,7 @@ class UpdateTaskController extends Controller
                 $nik[] =$peserta->nik;
             }
 
-            $nomor++;
+            
         }
         // dd($kodebooking);
         // GET JADWAL POLI
@@ -935,6 +999,26 @@ class UpdateTaskController extends Controller
         ];
     }
 
+    public function getPoliklinik(Request $request)
+    {
+        $data = MReferensiPoli::where('nmpoli', $request->namapoli)->first();
+        
+        // Jika tidak ditemukan, cari berdasarkan nmsubspesialis
+        if (!$data) {
+            $data = MReferensiPoli::where('nmsubspesialis', $request->namapoli)->first();
+        }
+
+        // Jika tetap tidak ditemukan, kembalikan null atau pesan error
+        if (!$data) {
+            return null; // atau bisa gunakan return ['error' => 'Poli not found'];
+        }
+
+        return [
+            'kodepoli' => $data->kdpoli,
+            'namapoli' => $data->nmpoli
+        ];
+    }
+
     public function getDokter($kodedokter)
     {
         $data = MReferensiDokter::where('kodedokter', $kodedokter)->get();
@@ -959,10 +1043,48 @@ class UpdateTaskController extends Controller
         ];
     }
 
+    public function getJadwalDokterPoli(Request $request)
+    {
+        $data = MJadwalDokter::where('kodedokter', $request->kddpjp)
+                                ->where('tanggal_data', $request->tanggal)
+                                ->first();
+
+        return [
+            'kodedokter' => $data->kodedokter,
+            'jadwal' => $data->jadwal,
+            'kapasitas' => $data->kapasitaspasien,
+        ];
+    }
+
     public function getAntrianPoli($norm, $tanggal)
     {
         $data = MBaymanagement::where('norm', $norm)
                             ->where('tanggal_data', $tanggal)
+                            ->first();
+        // dd($data);
+        // if (!$data) {
+        //     $data = new \stdClass();
+        //     $data->nomorantrian = null;
+        //     $data->mulaikonsul = null;
+        //     $data->selesaikonsul = null;
+        // }
+
+        // if (is_null($data->nomorantrian)) {
+        //     $data->nomorantrian = rand(1, 10);
+        // }
+
+        return [
+            'nomorantrian' => $data->nomorantrian,
+            'mulaikonsul' => $data->mulaikonsul,
+            'selesaikonsul' => $data->selesaikonsul
+        ];
+
+    }
+
+    public function getAntrianPoliklinik(Request $request)
+    {
+        $data = MBaymanagement::where('norm', $request->nomr)
+                            ->where('tanggal_data', $request->tanggal)
                             ->first();
 
         return [
