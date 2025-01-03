@@ -194,13 +194,21 @@ class PengirimanHDController extends Controller
     public function email($namadokter, $emaildokter, $tanggalawal, $tanggalakhir, $file)
     {
         
-        $subject = "Laporan Honor Dokter";
+        $subject = "Slip Honor Dokter Periode $tanggalawal - $tanggalakhir";
+        // $body = "
+        // Halo, $namadokter,\n
+        // Semoga Anda dalam keadaan sehat selalu. Kami ingin menginformasikan bahwa honor Anda untuk periode [$tanggalawal] hingga [$tanggalakhir] telah kami proses dan kirimkan.\n
+        // Mohon untuk memeriksa dan memastikan bahwa semua detail yang tercantum sudah benar. Jika ada pertanyaan atau ketidakcocokan, jangan ragu untuk menghubungi kami segera.\n
+        // Terima kasih atas dedikasi dan kerja keras Anda.\n
+        // Salam hormat,
+        // ";
         $body = "
-        Halo, $namadokter,\n
-        Semoga Anda dalam keadaan sehat selalu. Kami ingin menginformasikan bahwa honor Anda untuk periode [$tanggalawal] hingga [$tanggalakhir] telah kami proses dan kirimkan.\n
-        Mohon untuk memeriksa dan memastikan bahwa semua detail yang tercantum sudah benar. Jika ada pertanyaan atau ketidakcocokan, jangan ragu untuk menghubungi kami segera.\n
-        Terima kasih atas dedikasi dan kerja keras Anda.\n
-        Salam hormat,
+        Yth. $namadokter,\n
+        di tempat\n
+        Semoga Tuhan YME senantiasa melimpahkan rahmat-Nya kepada kita semua dalam menjalankan aktivitas kita sehari-hari dan semoga dokter selalu dalam keadaan sehat. Aamiin.
+        Sehubungan dengan pembayaran Honor Dokter/Terapis Periode $tanggalawal - $tanggalakhir, berikut kami kirimkan Slip beserta lampirannya.\n
+        Demikian yang kami sampaikan. Semoga dapat diterima dengan baik.
+        Atas perhatiannya kami ucapkan terima kasih
         ";
         
         try {
