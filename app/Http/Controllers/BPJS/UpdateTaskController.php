@@ -824,6 +824,7 @@ class UpdateTaskController extends Controller
     public function autoAddAntrean()
     {
         $tanggal = DATE('Y-m-d');
+        // dd($tanggal);
         $tanggal_estimasi = DATE('d-m-Y');
         // $tanggal = DATE('2024-10-16');
         // $tanggal_estimasi = DATE('10-10-2024');
@@ -861,7 +862,7 @@ class UpdateTaskController extends Controller
         // GET JADWAL POLI
         for($i=0; $i<COUNT($kddpjp); $i++)
         {
-            $dataJadwal = $this->getJadwalDokter($kddpjp[$i], $tanggal);
+            $dataJadwal = $this->getJadwalDokter($kddpjp[$i], $tanggal, $nomr[$i]);
 
             if ($dataJadwal) {  
                 $kodedokter[] = $dataJadwal['kodedokter'];
@@ -1030,12 +1031,16 @@ class UpdateTaskController extends Controller
         return $namadokter;
     }
 
-    public function getJadwalDokter($kodedokter, $tanggal)
+    public function getJadwalDokter($kodedokter, $tanggal, $nomr)
     {
         $data = MJadwalDokter::where('kodedokter', $kodedokter)
                             ->where('tanggal_data', $tanggal)
                             ->first();
-
+        // if(!$data)
+        // {
+        //     dd($kodedokter, $nomr);
+        // }
+        // dd($kodedokter);
         return [
             'kodedokter' => $data->kodedokter,
             'jadwal' => $data->jadwal,
@@ -1062,16 +1067,16 @@ class UpdateTaskController extends Controller
                             ->where('tanggal_data', $tanggal)
                             ->first();
         // dd($data);
-        // if (!$data) {
-        //     $data = new \stdClass();
-        //     $data->nomorantrian = null;
-        //     $data->mulaikonsul = null;
-        //     $data->selesaikonsul = null;
-        // }
+        if (!$data) {
+            $data = new \stdClass();
+            $data->nomorantrian = null;
+            $data->mulaikonsul = null;
+            $data->selesaikonsul = null;
+        }
 
-        // if (is_null($data->nomorantrian)) {
-        //     $data->nomorantrian = rand(1, 10);
-        // }
+        if (is_null($data->nomorantrian)) {
+            $data->nomorantrian = rand(1, 10);
+        }
 
         return [
             'nomorantrian' => $data->nomorantrian,
