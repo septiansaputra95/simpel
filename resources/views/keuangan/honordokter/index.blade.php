@@ -50,5 +50,5 @@
 @endsection
 @include('keuangan.honordokter.modal-data')
 @push('scripts')
-@vite(['resources/js/keuangan/honordokter.js'])
+@vite('resources/js/keuangan/honordokter.js')
 @endpush

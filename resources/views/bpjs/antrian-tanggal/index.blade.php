@@ -52,5 +52,5 @@
     </div>
 @endsection
 @push('scripts')
-@vite(['resources/js/bpjs/antrianonline.js'])
+@vite('resources/js/bpjs/antrianonline.js')
 @endpush
