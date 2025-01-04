@@ -28,7 +28,7 @@ class SEPController extends Controller
     {
 
         $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2024-12-17');
+        // $tanggal = DATE('2025-01-03');
         
         // JENIS LAYANAN 1 = RAWAT INAP, 2 = RAWAT JALAN
         $jenislayanan = 2;
@@ -66,7 +66,7 @@ class SEPController extends Controller
     public function autoStore()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2024-12-17');
+        // $tanggal = DATE('2025-01-03');
         echo $tanggal;
         $data = MVclaimSEP::where('tanggal_sep', $tanggal)->get();
         
@@ -111,8 +111,8 @@ class SEPController extends Controller
 
     public function autoSelisih()
     {
-        // $tanggal = DATE('Y-m-d');
-        $tanggal = DATE('2024-12-17');
+        $tanggal = DATE('Y-m-d');
+        // $tanggal = DATE('2024-12-17');
 
         /* The line `//  = DATE('Y-m-d');` is a commented-out line in PHP code. This means that
         this line is not currently active or executed when the code runs. It is used to assign the
@@ -217,7 +217,7 @@ class SEPController extends Controller
     {
         $kode = rand(36,40);
         $tanggal = DATE('md');
-        $template = $kode.'24'.$tanggal;
+        $template = $kode.'25'.$tanggal;
         
         return $template;
     }
@@ -225,7 +225,7 @@ class SEPController extends Controller
     public function cariselisih()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = '2024-12-04';
+        // $tanggal = '2025-01-03';
         echo $tanggal.'<br>';
         $data = MSEP::where('tglsep', $tanggal)
                 ->where('poli', '<>', 'INSTALASI GAWAT DARURAT')->get();

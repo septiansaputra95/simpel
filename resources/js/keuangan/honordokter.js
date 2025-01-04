@@ -24,14 +24,18 @@ $(function () {
 
     document.getElementById("btn-kirim").onclick = () => {
         const checkedBoxes = document.querySelectorAll('#tabel-data tbody input[type="checkbox"]:checked');
-
         const selectedId = Array.from(checkedBoxes).map(box => box.value);
+        document.getElementById('loadinglogo').style.visibility = 'visible';
+        document.getElementById('loadinglabel').style.visibility = 'visible';
+        // throw new Error("sengaja error");
 
         if(selectedId.length > 0)
         {
             axios
                 .post(urlSend, {selectedId})
                 .then(response => {
+                    document.getElementById('loadinglogo').style.visibility = 'hidden';
+                    document.getElementById('loadinglabel').style.visibility = 'hidden';
                     loadtable();
                     const { success, error } = response.data;
                     alert(`Pengiriman selesai! Berhasil: ${success}, Gagal: ${error}`);
@@ -47,12 +51,6 @@ $(function () {
         console.log(selectedId);
     };
 
-    // document.addEventListener("DOMContentLoaded", () => {
-    //     document.getElementById("btn-kirim").onclick = () => {
-    //         const checkedBoxes = document.querySelectorAll('#table-data tbody input[type="checkbox"]:checked');
-    //         console.log("Checked Boxes (NodeList):", checkedBoxes);
-    //     };
-    // });
 
     const showModal = (method = "POST") => {
         let modal = $("#modal-data");
@@ -94,6 +92,11 @@ $(function () {
         const tanggalAkhir  = document.getElementById('form-tanggal-akhir').value;
         const dokter        = document.getElementById('dokter-field').value;
         const fileInput     = document.getElementById('file');
+        const tanggalawal2 = document.getElementById('tanggal-awal').value;
+        let modal = $("#modal-data");
+        console.log(modal);
+        
+        // throw new Error("sengaja error");
 
         if(fileInput.files.length === 0)
         {
@@ -110,12 +113,12 @@ $(function () {
             return;
         }
 
-        console.log("Tanggal Awal:", tanggalAwal);
-        console.log("Tanggal Akhir:", tanggalAkhir);
-        console.log("Dokter:", dokter);
-        console.log("Nama File:", file.name);
-        console.log("Tipe File:", fileType);
-        console.log("File:", file);
+        // console.log("Tanggal Awal:", tanggalAwal);
+        // console.log("Tanggal Akhir:", tanggalAkhir);
+        // console.log("Dokter:", dokter);
+        // console.log("Nama File:", file.name);
+        // console.log("Tipe File:", fileType);
+        // console.log("File:", file);
         // throw new Error("sengaja error");
 
         const formData = new FormData();
@@ -125,6 +128,7 @@ $(function () {
         formData.append("nama_file", file.name);
         formData.append("file", file);
         
+        modal.modal("hide");
         axios
             // .post(urlSimpan, formData, {
             //     headers: {
@@ -138,8 +142,9 @@ $(function () {
                 },
             })
         .then(response => {
-            console.log("Simpan Data berhasil", response.data)
+            // console.log("Simpan Data berhasil", response.data)
             alert(response.data.message);
+            loadtable(tanggalawal2);
         })
         .catch(error => {
             console.error("Error saat menyimpan data ", error)
@@ -213,6 +218,8 @@ $(function () {
 
     (() => {
         const tanggal = document.getElementById("tanggal-awal").value;
+        document.getElementById('loadinglogo').style.visibility = 'hidden';
+        document.getElementById('loadinglabel').style.visibility = 'hidden';
         loadtable(tanggal);
     })();
 });

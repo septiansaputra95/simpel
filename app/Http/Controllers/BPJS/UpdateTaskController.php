@@ -292,7 +292,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2024-12-17";
+        // $tanggal = "2025-01-03";
         echo $tanggal;
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
@@ -368,6 +368,7 @@ class UpdateTaskController extends Controller
             echo $pesan = "Pesan: " . $message . " ". $code. "<br>";
             echo $pesan2 = "Update Data Task Lokal Database " . $kodeBooking . " Task id " . $postTaskid .". Selesai.";
         }
+        echo $tanggal;
 
         //return redirect()->route('updatetask.digitalclock');
 
@@ -778,7 +779,7 @@ class UpdateTaskController extends Controller
     {
         // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2024-12-17";
+        // $tanggal = "2025-01-03";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
                         ->with('antrian') 

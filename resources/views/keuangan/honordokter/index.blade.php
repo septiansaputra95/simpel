@@ -27,6 +27,7 @@
             <div class="card-body">
                 <table class="table table-bordered" id="tabel-data">
 				    <div class="d-flex justify-content-end mb-3">
+                        <img src="../../ajax-loader.gif" id="loadinglogo"><label id="loadinglabel">Loading</label>
                         <button type="button" class="btn btn-outline-secondary ms-3" id="btn-kirim">Kirim</button>
                     </div>
                     <thead class="thead-light">
