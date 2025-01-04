@@ -48,6 +48,13 @@
             </div>
         </div>
     </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('loadinglogo').style.visibility = 'hidden';
+    document.getElementById('loadinglabel').style.visibility = 'hidden';
+});
+
+</script>
 @endsection
 @include('keuangan.honordokter.modal-data')
 @push('scripts')

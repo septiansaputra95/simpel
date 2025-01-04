@@ -5,6 +5,8 @@ $(function () {
     let urlSimpan = '/Keuangan/honordokter/simpan';
     let urlLoadData = '/Keuangan/honordokter/datatables';
     let urlSend = '/Keuangan/honordokter/kirim';
+    let logo = document.getElementById('loadinglogo');
+    let label = document.getElementById('loadinglabel');
 
     let dataTabel = $("#tabel-data");
 
@@ -25,8 +27,8 @@ $(function () {
     document.getElementById("btn-kirim").onclick = () => {
         const checkedBoxes = document.querySelectorAll('#tabel-data tbody input[type="checkbox"]:checked');
         const selectedId = Array.from(checkedBoxes).map(box => box.value);
-        document.getElementById('loadinglogo').style.visibility = 'visible';
-        document.getElementById('loadinglabel').style.visibility = 'visible';
+        logo.style.visibility = 'visible';
+        label.style.visibility = 'visible';
         // throw new Error("sengaja error");
 
         if(selectedId.length > 0)
