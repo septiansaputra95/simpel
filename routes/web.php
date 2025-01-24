@@ -71,6 +71,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Keuangan', 'prefix' => 'Keuan
 
     Route::get('/honordokter/auth/google', 'PengirimanHDController@redirectToGoogle');
     Route::get('/honordokter/auth/google/callback', 'PengirimanHDController@handleGoogleCallback');
+});
+
+Route::group(['namespace' => 'App\Http\Controllers\Master', 'prefix' => 'Master'], function() {
+    Route::get('/masterdokter', 'MasterDokterController@index')->name('masterdokter.index');
+    Route::get('/masterdokter/datatables', 'MasterDokterController@loadDatatables');
+    Route::post('/masterdokter/simpan', 'MasterDokterController@store');
+    Route::post('/masterdokter/update', 'MasterDokterController@update');
 
 });
 

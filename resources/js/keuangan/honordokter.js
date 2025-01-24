@@ -93,35 +93,47 @@ $(function () {
         const tanggalAwal   = document.getElementById('form-tanggal-awal').value;
         const tanggalAkhir  = document.getElementById('form-tanggal-akhir').value;
         const dokter        = document.getElementById('dokter-field').value;
-        const fileInput     = document.getElementById('file');
+        const fileInput     = document.getElementById('file1');
+        const fileInput2    = document.getElementById('file2');
+        const fileInput3    = document.getElementById('file3');
         const tanggalawal2 = document.getElementById('tanggal-awal').value;
         let modal = $("#modal-data");
-        console.log(modal);
+        // console.log(modal);
         
         // throw new Error("sengaja error");
 
         if(fileInput.files.length === 0)
         {
-            alert("Di Upload Dulu File PDF nya");
+            alert("File Upload PDF Minimal 1 ya Kak");
             return;
         }
 
         const file = fileInput.files[0];
         const fileType = file.type;
 
+        const file2 = fileInput2.files[0];
+        const fileType2 = file2.type;
+
+        const file3 = fileInput3.files[0];
+        const fileType3 = file2.type;
+
         if(fileType !== "application/pdf")
         {
-            alert("File Upload Harus PDF Donggg");
+            alert("File 1 Upload Harus PDF Donggg");
             return;
         }
 
-        // console.log("Tanggal Awal:", tanggalAwal);
-        // console.log("Tanggal Akhir:", tanggalAkhir);
-        // console.log("Dokter:", dokter);
-        // console.log("Nama File:", file.name);
-        // console.log("Tipe File:", fileType);
-        // console.log("File:", file);
-        // throw new Error("sengaja error");
+        if(fileType2 !== "application/pdf")
+        {
+            alert("File 2 Upload Harus PDF Donggg");
+            return;
+        }
+
+        if(fileType3 !== "application/pdf")
+        {
+            alert("File 3 Upload Harus PDF Donggg");
+            return;
+        }
 
         const formData = new FormData();
         formData.append("tanggal_awal", tanggalAwal);
@@ -129,7 +141,15 @@ $(function () {
         formData.append("dokter", dokter);
         formData.append("nama_file", file.name);
         formData.append("file", file);
+        formData.append("file2", file2);
+        formData.append("file3", file3);
         
+        console.log("File 1: ", formData.get("file"));
+        console.log("File 2: ", formData.get("file2"));
+        console.log("File 3: ", formData.get("file3"));
+        
+        // throw new Error("sengaja error");
+
         modal.modal("hide");
         axios
             // .post(urlSimpan, formData, {
@@ -146,6 +166,7 @@ $(function () {
         .then(response => {
             // console.log("Simpan Data berhasil", response.data)
             alert(response.data.message);
+            resetModal();
             loadtable(tanggalawal2);
         })
         .catch(error => {
@@ -159,6 +180,17 @@ $(function () {
             }
         })
     }
+
+    const resetModal = () => {
+        document.getElementById('form-tanggal-awal').value = '';
+        document.getElementById('form-tanggal-akhir').value = '';
+        document.getElementById('dokter-field').value = '';
+        document.getElementById('file1').value = '';
+        document.getElementById('file2').value = '';
+        document.getElementById('file3').value = '';
+
+        // document.getElementById('modal-data').reset();
+    };
 
     const loadtable = (tanggal) => {
         $("#tabel-data").dataTable({

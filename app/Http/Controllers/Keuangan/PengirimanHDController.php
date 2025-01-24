@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Mail\Events\MessageFailed;
 use App\Models\MPengirimanHonorDokter;
+use App\Models\MLogsEmailHD;
 use App\Models\MMasterDokter;
+use App\Models\MFileHonorDokter;
 
 use Google_Client;
 use Google_Service_Gmail;
@@ -16,9 +20,19 @@ use Google_Service_Gmail_Draft;
 use Google_Service_Gmail_MessagePart;
 use Google_Service_Gmail_MessagePartHeader;
 
+
 class PengirimanHDController extends Controller
 {
     //
+    private $emailFailed = false;
+
+    public function __construct()
+    {
+        Event::listen(MessageFailed::class, function () {
+            $this->emailFailed = true;
+        });
+    }
+
     public function index()
     {
         return view('keuangan.honordokter.index'); 
@@ -88,10 +102,31 @@ class PengirimanHDController extends Controller
     public function store(Request $request)
     {
         try{
+            $no = 0;
             // dd($request->tanggal_awal, $request->tanggal_akhir, $request->dokter, $request->nama_file);
             if($request->hasFile('file'))
             {
                 $file = $request->file('file');
+                $file2 = $request->file('file2');
+                $file3 = $request->file('file3');
+
+                if ($request->hasFile('file')) {
+                    $filePaths[] = $file->store('uploads', 'private');
+                }
+                if ($request->hasFile('file2')) {
+                    $filePaths[] = $file2->store('uploads', 'private');
+                }
+                if ($request->hasFile('file3')) {
+                    $filePaths[] = $file3->store('uploads', 'private');
+                }
+    
+                if ($file->getClientMimeType() !== 'application/pdf') {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'File harus berupa PDF'
+                    ], 422);
+                }
+    
 
                 if ($file->getClientMimeType() !== 'application/pdf') {
                     return response()->json([
@@ -99,17 +134,31 @@ class PengirimanHDController extends Controller
                         'message' => 'File harus berupa PDF'
                     ], 422);
                 }
-
-                $filePath = $file->store('uploads', 'private');
                 
+                $lastData = MPengirimanHonorDokter::orderBy('id', 'DESC')->first();
+
+                if ($lastData) {
+                    $lastId = $lastData->id + 1;
+                } else {
+                    $lastId = 1;
+                }
                 // dd($file, $filePath,  $request);
                 MPengirimanHonorDokter::create([
                     'kodedokter' => $request->dokter,
                     'tanggalawal' => $request->tanggal_awal,
                     'tanggalakhir' => $request->tanggal_akhir,
-                    'file' => $filePath,
+                    'file' => null,
                     'flagkirim' => false
                 ]);
+
+                foreach ($filePaths as $filePath) {
+                    MFileHonorDokter::create([
+                        'idpengiriman' => $lastId,
+                        'kodedokter' => $request->dokter,
+                        'file' => $filePath,
+                    ]);
+                }
+                
 
                 return response()->json([
                     'status' => 'success',
@@ -160,13 +209,15 @@ class PengirimanHDController extends Controller
                 $data->dokter->emaildokter,
                 $data->tanggalawal,
                 $data->tanggalakhir,
-                $data->file
+                $data->id
             );
             
             if ($result) {
                 $successCount++;
+                $this->logsKirim($data, true);
             } else {
                 $errorCount++;
+                $this->logsKirim($data, false);
             }
 
             $resultUpdate = $this->updateKirim(
@@ -182,6 +233,18 @@ class PengirimanHDController extends Controller
         ]);
     }
 
+    public function logsKirim($data, $status)
+    {
+        MLogsEmailHD::create([
+            'idpengiriman' => $data->id,
+            'kodedokter' => $data->dokter->kodedokter,
+            'emaildokter' => $data->dokter->emaildokter,
+            'tanggalawal' => $data->tanggalawal,
+            'tanggalakhir' => $data->tanggalakhir,
+            'statuspengiriman' => $status
+        ]);
+    }
+
     public function updateKirim($id)
     {
         // dd($id);
@@ -191,7 +254,7 @@ class PengirimanHDController extends Controller
 
     }
 
-    public function email($namadokter, $emaildokter, $tanggalawal, $tanggalakhir, $file)
+    public function email($namadokter, $emaildokter, $tanggalawal, $tanggalakhir, $id)
     {
         
         $subject = "Slip Honor Dokter Periode $tanggalawal - $tanggalakhir";
@@ -212,29 +275,50 @@ class PengirimanHDController extends Controller
         ";
         
         try {
-            \Illuminate\Support\Facades\Mail::raw($body, function ($message) use ($emaildokter, $subject, $file) {
+            \Illuminate\Support\Facades\Mail::raw($body, function ($message) use ($emaildokter, $subject, $id) {
                 $message->to($emaildokter)
                         ->subject($subject);
                         
-                if ($file) {
-                    $filePath = storage_path('app\\private\\' . str_replace('/', '\\', $file));
-                    // dd($filePath);
+                // if ($file) {
+                //     $filePath = storage_path('app\\private\\' . str_replace('/', '\\', $file));
+                //     // dd($filePath);
+                //     if (file_exists($filePath)) {
+                //         // Attach file only if it exists
+                //         $message->attach($filePath);
+                //     } else {
+                //         // Log if the file is not found
+                //         \Log::error("File tidak ditemukan di path: " . $filePath);
+                //     }
+                // }
+                $files = $this->getFile($id);
+
+                // Loop untuk setiap file dan attach ke email
+                foreach ($files as $file) {
+                    $filePath = storage_path('app\\private\\' . str_replace('/', '\\', $file->file));
+                    
                     if (file_exists($filePath)) {
-                        // Attach file only if it exists
+                        // Attach file jika file ditemukan
                         $message->attach($filePath);
                     } else {
-                        // Log if the file is not found
+                        // Log jika file tidak ditemukan
                         \Log::error("File tidak ditemukan di path: " . $filePath);
                     }
                 }
             });
             
-            return true; // Indikator sukses
+            // return true; // Indikator sukses
+            return !$this->emailFailed;
         } catch (\Exception $e) {
             \Log::error('Gagal mengirim email: ' . $e->getMessage());
             return false; // Indikator gagal
         }
+    }
 
+    public function getFile($id)
+    {
+        $data = MFileHonorDokter::where('idpengiriman', $id)
+                                ->get();
+        return $data;
     }
 
     public function redirectToGoogle()

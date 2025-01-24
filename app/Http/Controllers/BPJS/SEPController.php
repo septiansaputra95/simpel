@@ -225,7 +225,7 @@ class SEPController extends Controller
     public function cariselisih()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = '2025-01-03';
+        // $tanggal = '2025-01-17';
         echo $tanggal.'<br>';
         $data = MSEP::where('tglsep', $tanggal)
                 ->where('poli', '<>', 'INSTALASI GAWAT DARURAT')->get();

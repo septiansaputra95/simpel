@@ -4,7 +4,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="modal-title-kategori">
-                    FORM INPUT HONOR DOKTER
+                    FORM INPUT MASTER DOKTER
 				</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 				</button>
@@ -12,37 +12,28 @@
 			<div class="modal-body">
 				<form id="form-hd">
                     <div class="input-group mb-3">
-                        <label><b>Tanggal Awal: </b></label>
+                        <label><b>Kode Dokter:</b></label>
                         &nbsp;&nbsp;
-                        <input type="date" class="form-control" id="form-tanggal-awal">
+                        <input type="text" class="form-control" id="kode-dokter" placeholder="Kode Dokter HINAI" readonly>
                     </div>
                     
                     <div class="input-group mb-3">
-                        <label><b>Tanggal Akhir: </b></label>
+                        <label><b>Nama Dokter: </b></label>
                         &nbsp;&nbsp;
-                        <input type="date" class="form-control" id="form-tanggal-akhir">
+                        <input type="text" class="form-control" id="nama-dokter" placeholder="Nama Dokter">
                     </div>
 
                     <div class="input-group mb-3">
-                        <label><b>Dokter: </b></label>
+                        <label><b>Email Dokter: </b></label>
                         &nbsp;&nbsp;
-                        <select class="form-control" name="dokter_filed" id="dokter-field">
-                        </select>
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file1">
-                    </div><div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file2">
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file3">
+                        <input type="text" class="form-control" id="email-dokter" placeholder="Email Pribadi Dokter">
                     </div>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-success" id="btn-simpan"></button>
+				<button type="button" class="btn btn-warning" id="btn-update"></button>
 			</div>
 		</div>
 	</div>

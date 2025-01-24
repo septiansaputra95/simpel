@@ -292,7 +292,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2025-01-03";
+        // $tanggal = "2025-01-17";
         echo $tanggal;
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
@@ -464,7 +464,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTaskError()
     {   
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2024-11-21";
+        // $tanggal = "2025-01-17";
         $data = MLogs::select('message', 'data')
                 ->whereDate('created_at', $tanggal)
                 ->where('message', 'LIKE', '%TaskId sebelumnya belum terkirim%')
@@ -827,8 +827,8 @@ class UpdateTaskController extends Controller
         $tanggal = DATE('Y-m-d');
         // dd($tanggal);
         $tanggal_estimasi = DATE('d-m-Y');
-        // $tanggal = DATE('2024-10-16');
-        // $tanggal_estimasi = DATE('10-10-2024');
+        // $tanggal = DATE('2025-01-17');
+        // $tanggal_estimasi = DATE('17-01-2025');
         $waktuestimasi = [];
         $jumlahdata = [];
         
@@ -836,6 +836,7 @@ class UpdateTaskController extends Controller
                         ->where('poli', '<>', 'INSTALASI GAWAT DARURAT')
                         ->where('flagaddantrean', 'f')
                         ->with('peserta')
+// ->limit('50')
                         ->get();
 
         // FETECH DATA DARI MSEPSELISIH
@@ -952,6 +953,7 @@ class UpdateTaskController extends Controller
                 $kapasitas[$i]
             );
         //dd($kodebooking, $nokartu, $nomr, $nohp, $kddpjp, $kodedokter, $jadwal, $kodepoli, $namapoli, $kapasitas, $nomorantrian, $mulaikonsul, $waktuestimasi, $newTime, $sisa);
+        echo response()->json($data);
         echo $kodebooking[$i].'<br>';
 
         

@@ -28,6 +28,11 @@
         <div class="submenu-item py-2 px-4 text-gray-300 hover:text-white cursor-pointer">
             <i class="fas fa-ruler mr-2"></i> Satuan
         </div>
+        <div class="submenu-item py-2 px-4 text-gray-300 hover:text-white cursor-pointer">
+            <a href="{{ route('masterdokter.index') }}" class="submenu-item py-2 px-4 text-gray-300 hover:text-white cursor-pointer">
+                <i class="fas fa-user-doctor mr-2"></i> Dokter
+            </a>
+        </div>
     </div>
 </div>
 

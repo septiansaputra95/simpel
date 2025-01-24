@@ -13,6 +13,7 @@ class MMasterDokter extends Model
     protected $table = 'm_master_dokters';
 
     protected $fillable = [
+        'id',
         'kodedokter',
         'namadokter', 
         'emaildokter', 

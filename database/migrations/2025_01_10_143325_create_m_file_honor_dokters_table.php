@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_pengiriman_honor_dokters', function (Blueprint $table) {
+        Schema::create('m_file_honor_dokters', function (Blueprint $table) {
             $table->id();
+            $table->string('idpengiriman', 150);
             $table->string('kodedokter', 150);
-            $table->date('tanggalawal');
-            $table->date('tanggalakhir');
             $table->string('file', 150)->nullable();
-            $table->boolean('flagkirim');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_pengiriman_honor_dokters');
+        Schema::dropIfExists('m_file_honor_dokters');
     }
 };
