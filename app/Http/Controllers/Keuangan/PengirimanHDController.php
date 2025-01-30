@@ -109,6 +109,10 @@ class PengirimanHDController extends Controller
                 $file = $request->file('file');
                 $file2 = $request->file('file2');
                 $file3 = $request->file('file3');
+                $file4 = $request->file('file4');
+                $file5 = $request->file('file5');
+                $file6 = $request->file('file6');
+                $file7 = $request->file('file7');
 
                 if ($request->hasFile('file')) {
                     $filePaths[] = $file->store('uploads', 'private');
@@ -118,6 +122,18 @@ class PengirimanHDController extends Controller
                 }
                 if ($request->hasFile('file3')) {
                     $filePaths[] = $file3->store('uploads', 'private');
+                }
+                if ($request->hasFile('file4')) {
+                    $filePaths[] = $file4->store('uploads', 'private');
+                }
+                if ($request->hasFile('file5')) {
+                    $filePaths[] = $file5->store('uploads', 'private');
+                }
+                if ($request->hasFile('file6')) {
+                    $filePaths[] = $file6->store('uploads', 'private');
+                }
+                if ($request->hasFile('file7')) {
+                    $filePaths[] = $file7->store('uploads', 'private');
                 }
     
                 if ($file->getClientMimeType() !== 'application/pdf') {

@@ -38,6 +38,17 @@
                     <div class="input-group mb-3">
                         <input type="file" class="form-control" id="file3">
                     </div>
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" id="file4">
+                    </div><div class="input-group mb-3">
+                        <input type="file" class="form-control" id="file5">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" id="file6">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" id="file7">
+                    </div>
 				</form>
 			</div>
 			<div class="modal-footer">

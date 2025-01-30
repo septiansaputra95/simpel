@@ -96,6 +96,10 @@ $(function () {
         const fileInput     = document.getElementById('file1');
         const fileInput2    = document.getElementById('file2');
         const fileInput3    = document.getElementById('file3');
+        const fileInput4    = document.getElementById('file4');
+        const fileInput5    = document.getElementById('file5');
+        const fileInput6    = document.getElementById('file6');
+        const fileInput7    = document.getElementById('file7');
         const tanggalawal2 = document.getElementById('tanggal-awal').value;
         let modal = $("#modal-data");
         // console.log(modal);
@@ -115,8 +119,20 @@ $(function () {
         const fileType2 = file2.type;
 
         const file3 = fileInput3.files[0];
-        const fileType3 = file2.type;
+        const fileType3 = file3.type;
 
+        const file4 = fileInput4.files[0];
+        const fileType4 = file4.type;
+        
+        const file5 = fileInput5.files[0];
+        const fileType5 = file5.type;
+        
+        const file6 = fileInput6.files[0];
+        const fileType6 = file6.type;
+        
+        const file7 = fileInput7.files[0];
+        const fileType7 = file7.type;
+        
         if(fileType !== "application/pdf")
         {
             alert("File 1 Upload Harus PDF Donggg");
@@ -135,6 +151,30 @@ $(function () {
             return;
         }
 
+        if(fileType4 !== "application/pdf")
+        {
+            alert("File 4 Upload Harus PDF Donggg");
+            return;
+        }
+
+        if(fileType5 !== "application/pdf")
+        {
+            alert("File 5 Upload Harus PDF Donggg");
+            return;
+        }
+
+        if(fileType6 !== "application/pdf")
+        {
+            alert("File 6 Upload Harus PDF Donggg");
+            return;
+        }
+
+        if(fileType7 !== "application/pdf")
+        {
+            alert("File 7 Upload Harus PDF Donggg");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("tanggal_awal", tanggalAwal);
         formData.append("tanggal_akhir", tanggalAkhir);
@@ -143,10 +183,14 @@ $(function () {
         formData.append("file", file);
         formData.append("file2", file2);
         formData.append("file3", file3);
+        formData.append("file4", file4);
+        formData.append("file5", file5);
+        formData.append("file6", file6);
+        formData.append("file7", file7);
         
-        console.log("File 1: ", formData.get("file"));
-        console.log("File 2: ", formData.get("file2"));
-        console.log("File 3: ", formData.get("file3"));
+        console.log("File 4: ", formData.get("file4"));
+        console.log("File 5: ", formData.get("file5"));
+        console.log("File 6: ", formData.get("file6"));
         
         // throw new Error("sengaja error");
 
@@ -188,6 +232,11 @@ $(function () {
         document.getElementById('file1').value = '';
         document.getElementById('file2').value = '';
         document.getElementById('file3').value = '';
+        document.getElementById('file4').value = '';
+        document.getElementById('file5').value = '';
+        document.getElementById('file6').value = '';
+        document.getElementById('file7').value = '';
+
 
         // document.getElementById('modal-data').reset();
     };
