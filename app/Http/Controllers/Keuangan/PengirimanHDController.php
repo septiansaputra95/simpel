@@ -45,9 +45,9 @@ class PengirimanHDController extends Controller
         if(is_null($tanggalawal))
         {
             $tanggalawal = $this->getDataTerbaru();
- 
+
         } else {
-             
+
         }
         $data =  MPengirimanHonorDokter::where('tanggalawal', $tanggalawal)
                                             ->with('dokter')
@@ -74,9 +74,6 @@ class PengirimanHDController extends Controller
 
     public function getDataTerbaru()
     {
-        // $data = MPengirimanHonorDokter::with('dokter')
-        //                                 ->latest('tanggalawal')
-        //                                 ->get();
         $data = MPengirimanHonorDokter::orderByDesc('tanggalawal')
                                         ->first();
         
@@ -90,111 +87,104 @@ class PengirimanHDController extends Controller
     public function getDokter(Request $request)
     {
         $data = MMasterDokter::get();
-
-        // return [
-        //     'kodedokter' => $data->kodedokter,
-        //     'namadokter' => $data->namadokter
-        // ];
-        // dd($data);
         return response()->json($data);
     }
 
     public function store(Request $request)
     {
-        try{
-            $no = 0;
-            // dd($request->tanggal_awal, $request->tanggal_akhir, $request->dokter, $request->nama_file);
-            if($request->hasFile('file'))
-            {
-                $file = $request->file('file');
-                $file2 = $request->file('file2');
-                $file3 = $request->file('file3');
-                $file4 = $request->file('file4');
-                $file5 = $request->file('file5');
-                $file6 = $request->file('file6');
-                $file7 = $request->file('file7');
+        // dd($request->file()); // FILE sudah masuk ke store
 
-                if ($request->hasFile('file')) {
-                    $filePaths[] = $file->store('uploads', 'private');
-                }
-                if ($request->hasFile('file2')) {
-                    $filePaths[] = $file2->store('uploads', 'private');
-                }
-                if ($request->hasFile('file3')) {
-                    $filePaths[] = $file3->store('uploads', 'private');
-                }
-                if ($request->hasFile('file4')) {
-                    $filePaths[] = $file4->store('uploads', 'private');
-                }
-                if ($request->hasFile('file5')) {
-                    $filePaths[] = $file5->store('uploads', 'private');
-                }
-                if ($request->hasFile('file6')) {
-                    $filePaths[] = $file6->store('uploads', 'private');
-                }
-                if ($request->hasFile('file7')) {
-                    $filePaths[] = $file7->store('uploads', 'private');
-                }
-    
-                if ($file->getClientMimeType() !== 'application/pdf') {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'File harus berupa PDF'
-                    ], 422);
-                }
-    
+        $tanggal_awal = $request->input('tanggal_awal');
+        $tanggal_akhir = $request->input('tanggal_akhir');
+        $dokter = $request->input('dokter');
 
-                if ($file->getClientMimeType() !== 'application/pdf') {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'File harus berupa PDF'
-                    ], 422);
-                }
-                
-                $lastData = MPengirimanHonorDokter::orderBy('id', 'DESC')->first();
+        $filePaths = [];
+        // $lastData = MPengirimanHonorDokter::orderBy('id', 'DESC')->first();
+        // $lastId = $lastData ? $lastData->id + 1 : 1;
+        $files = $request->file('file1');
+        $uploadedFiles = $request->allFiles();
+        
+        MPengirimanHonorDokter::create([
+            'kodedokter' => $dokter,
+            'tanggalawal' => $tanggal_awal,
+            'tanggalakhir' => $tanggal_akhir,
+            'file' => null,
+            'flagkirim' => false
+        ]);
 
-                if ($lastData) {
-                    $lastId = $lastData->id + 1;
-                } else {
-                    $lastId = 1;
-                }
-                // dd($file, $filePath,  $request);
-                MPengirimanHonorDokter::create([
-                    'kodedokter' => $request->dokter,
-                    'tanggalawal' => $request->tanggal_awal,
-                    'tanggalakhir' => $request->tanggal_akhir,
-                    'file' => null,
-                    'flagkirim' => false
-                ]);
+        $lastData = MPengirimanHonorDokter::orderBy('id', 'DESC')->first();
+        $lastId = $lastData->id;
 
-                foreach ($filePaths as $filePath) {
-                    MFileHonorDokter::create([
-                        'idpengiriman' => $lastId,
-                        'kodedokter' => $request->dokter,
-                        'file' => $filePath,
-                    ]);
-                }
-                
-
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Data Berhasil Disimpan',
-                    'file_path' => $filePath
-                ], 200);
-            }
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'File tidak ditemukan'
-            ], 400);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Terjadi kesalahan saat menyimpan data',
-                'error' => $e->getMessage()
-            ], 500);
+        // Simpan file ke folder private
+        foreach ($uploadedFiles as $file) {
+            $path = $file->store("uploads", 'private');
+        
+            MFileHonorDokter::create([
+                'idpengiriman' => $lastId,
+                'kodedokter' => $dokter,
+                'file' => $path,
+            ]);
         }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data dan file berhasil disimpan',
+            'file_paths' => $filePaths
+        ]);
+
+
+        // =============================
+
+        // $filePaths = [];
+
+        // try{
+        //     $no = 0;
+        //     if($request->hasFile('file1'))
+        //     {
+        //         $lastData = MPengirimanHonorDokter::orderBy('id', 'DESC')->first();
+
+        //         if ($lastData) {
+        //             $lastId = $lastData->id + 1;
+        //         } else {
+        //             $lastId = 1;
+        //         }
+        //         // dd($file, $filePath,  $request);
+        //         MPengirimanHonorDokter::create([
+        //             'kodedokter' => $request->dokter,
+        //             'tanggalawal' => $request->tanggal_awal,
+        //             'tanggalakhir' => $request->tanggal_akhir,
+        //             'file' => null,
+        //             'flagkirim' => false
+        //         ]);
+
+        //         foreach ($filePaths as $filePath) {
+        //             MFileHonorDokter::create([
+        //                 'idpengiriman' => $lastId,
+        //                 'kodedokter' => $request->dokter,
+        //                 'file' => $filePath,
+        //             ]);
+        //         }
+                
+
+        //         return response()->json([
+        //             'status' => 'success',
+        //             'message' => 'Data Berhasil Disimpan',
+        //             'file_path' => $filePath
+        //         ], 200);
+        //     }
+
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'File tidak ditemukan'
+        //     ], 400);
+
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Terjadi kesalahan saat menyimpan data',
+        //         'error' => $e->getMessage()
+        //     ], 500);
+        // }
     }
 
     public function send(Request $request)
@@ -235,7 +225,8 @@ class PengirimanHDController extends Controller
                 $errorCount++;
                 $this->logsKirim($data, false);
             }
-
+            
+            // UPDATE FLAG KIRIM
             $resultUpdate = $this->updateKirim(
                 $data->id
             );
@@ -307,11 +298,13 @@ class PengirimanHDController extends Controller
                 //     }
                 // }
                 $files = $this->getFile($id);
+                
 
                 // Loop untuk setiap file dan attach ke email
                 foreach ($files as $file) {
+                    // dd($file->file);
                     $filePath = storage_path('app\\private\\' . str_replace('/', '\\', $file->file));
-                    
+                    // dd($filePath);
                     if (file_exists($filePath)) {
                         // Attach file jika file ditemukan
                         $message->attach($filePath);

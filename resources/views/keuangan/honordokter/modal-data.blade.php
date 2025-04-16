@@ -29,26 +29,15 @@
                         <select class="form-control" name="dokter_filed" id="dokter-field">
                         </select>
                     </div>
-
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file1">
-                    </div><div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file2">
+                    
+                    <div id="file-inputs-container">
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" id="file_1">
+                            <button type="button" class="btn btn-outline-primary" id="add-file-button">+</button>
+                            <button type="button" class="btn btn-outline-danger" id="remove-file-button">-</button>
+                        </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file3">
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file4">
-                    </div><div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file5">
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file6">
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file7">
-                    </div>
+                    
 				</form>
 			</div>
 			<div class="modal-footer">

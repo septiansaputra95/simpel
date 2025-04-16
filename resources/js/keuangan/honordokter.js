@@ -9,6 +9,8 @@ $(function () {
     let label = document.getElementById('loadinglabel');
 
     let dataTabel = $("#tabel-data");
+    let fileCounter = 1;
+    let modal = $("#modal-data");
 
     document.getElementById("btn-tambah").onclick = () => {
         showModal();
@@ -16,6 +18,10 @@ $(function () {
 
     document.getElementById("btn-simpan").onclick = () => {
         simpanData();
+        // modal.modal("hide");
+        // const tanggalawal = document.getElementById('tanggal-awal').value;
+        // loadtable(tanggalawal);
+        // document.getElementById("form-hd").reset();
     };
     
 
@@ -23,6 +29,9 @@ $(function () {
         const tanggalawal = document.getElementById('tanggal-awal').value;
         loadtable(tanggalawal);
     };
+
+    document.getElementById('add-file-button').addEventListener('click', addFileInput);
+    document.getElementById('remove-file-button').addEventListener('click', removeFileInput);
 
     document.getElementById("btn-kirim").onclick = () => {
         const checkedBoxes = document.querySelectorAll('#tabel-data tbody input[type="checkbox"]:checked');
@@ -50,12 +59,39 @@ $(function () {
         } else {
             alert("Tolong di pilih dulu kalo mau kirim");
         }
-        console.log(selectedId);
+        // console.log(selectedId);
     };
 
+    function addFileInput() {
+        fileCounter++; // Increment counter
+
+        // Buat elemen input file baru
+        const newFileInput = document.createElement('input');
+        newFileInput.type = 'file';
+        newFileInput.className = 'form-control';
+        newFileInput.id = 'file_' + fileCounter; // Set ID sesuai dengan counter
+
+        // Buat elemen div untuk mengelompokkan input file
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'input-group mb-3';
+        inputGroup.appendChild(newFileInput);
+
+        // Tambahkan input file baru ke dalam wadah
+        const container = document.getElementById('file-inputs-container');
+        container.appendChild(inputGroup);
+    }
+
+    function removeFileInput() {
+        if (fileCounter > 1) { // Pastikan ada lebih dari satu input file
+            const container = document.getElementById('file-inputs-container');
+            // Hapus elemen terakhir yang ditambahkan
+            container.removeChild(container.lastChild);
+            fileCounter--; // Decrement counter
+        }
+    }
 
     const showModal = (method = "POST") => {
-        let modal = $("#modal-data");
+        
         loadDokter();
 
         $("#btn-simpan").text("Simpan");
@@ -63,7 +99,7 @@ $(function () {
         $("#btn-update").hide();
 
         modal.modal("show");
-        modal.removeAttr("style");
+        // modal.removeAttr("style");
         return false;
 
     };
@@ -93,18 +129,64 @@ $(function () {
         const tanggalAwal   = document.getElementById('form-tanggal-awal').value;
         const tanggalAkhir  = document.getElementById('form-tanggal-akhir').value;
         const dokter        = document.getElementById('dokter-field').value;
-        const fileInput     = document.getElementById('file1');
-        const fileInput2    = document.getElementById('file2');
-        const fileInput3    = document.getElementById('file3');
-        const fileInput4    = document.getElementById('file4');
-        const fileInput5    = document.getElementById('file5');
-        const fileInput6    = document.getElementById('file6');
-        const fileInput7    = document.getElementById('file7');
+        const fileInput = document.getElementById('file_1');
         const tanggalawal2 = document.getElementById('tanggal-awal').value;
-        let modal = $("#modal-data");
-        // console.log(modal);
+        // const fileInputs = [fileInput, fileInput2, fileInput3, fileInput4, fileInput5, fileInput6, fileInput7];
+        // const fileInputs = [];
+        const fileInputs = document.querySelectorAll('#file-inputs-container input[type="file"]');
+        const files = [];
+        let fileType, fileType2, fileType3, fileType4, fileType5, fileType6, fileType7;
+        let allFilesArePDF = true; 
+        let hasFile = false;
         
-        // throw new Error("sengaja error");
+        let modal = $("#modal-data");
+
+        const formData = new FormData();
+        formData.append("tanggal_awal", tanggalAwal);
+        formData.append("tanggal_akhir", tanggalAkhir);
+        formData.append("dokter", dokter);
+
+        // console.log('di luar IF'); //  fileInputs.forEach(input => { tidak ter-eksekusi sehingga semua logika salah
+        // console.log(fileInputs); // fileInputs file input isinya kosong harus cari tahu gimana kok bisa kosong
+        // fileInputs.forEach(input => {
+        //     if (input.files.length > 0) {
+        //         hasFile = true; // Set hasFile menjadi true jika ada f
+        //         console.log('Masuk ke ke IF');
+        //         // ile
+        //         // Periksa setiap file
+        //         for (let i = 0; i < input.files.length; i++) {
+        //             const file = input.files[i];
+        //             console.log('Masuk ke perulangan');
+        //             console.log(`File Name: ${file.name}, File Type: ${file.type}`);
+        //             // Periksa ekstensi file
+        //             if (file.type !== 'application/pdf') {
+        //                 allFilesArePDF = false;
+        //             }
+        //         }
+        //     }
+        // });
+
+        fileInputs.forEach((input, index) => {
+            if (input.files.length > 0) {
+                hasFile = true;
+                // console.log('Masuk ke IF');
+        
+                for (let i = 0; i < input.files.length; i++) {
+                    const file = input.files[i];
+                    const key = `file${index + 1}`;
+                    formData.append(key, file);
+                    // console.log(`File Name: ${file.name}, File Type: ${file.type}`);
+        
+                    // Cek apakah file adalah PDF
+                    if (file.type !== 'application/pdf') {
+                        allFilesArePDF = false;
+                    }
+        
+                    // files.push(file);
+                }
+            }
+        });
+
 
         if(fileInput.files.length === 0)
         {
@@ -112,96 +194,30 @@ $(function () {
             return;
         }
 
-        const file = fileInput.files[0];
-        const fileType = file.type;
-
-        const file2 = fileInput2.files[0];
-        const fileType2 = file2.type;
-
-        const file3 = fileInput3.files[0];
-        const fileType3 = file3.type;
-
-        const file4 = fileInput4.files[0];
-        const fileType4 = file4.type;
-        
-        const file5 = fileInput5.files[0];
-        const fileType5 = file5.type;
-        
-        const file6 = fileInput6.files[0];
-        const fileType6 = file6.type;
-        
-        const file7 = fileInput7.files[0];
-        const fileType7 = file7.type;
-        
-        if(fileType !== "application/pdf")
-        {
-            alert("File 1 Upload Harus PDF Donggg");
+        // console.log('allfilesArePDF : ' + allFilesArePDF);
+        if (!allFilesArePDF) {
+            alert("Semua file yang diunggah harus berformat PDF.");
             return;
         }
+        const tanggalAwalValue = formData.get("tanggal_awal");
+        const tanggalAkhirValue = formData.get("tanggal_akhir");
+        const dokterValue = formData.get("dokter");
 
-        if(fileType2 !== "application/pdf")
-        {
-            alert("File 2 Upload Harus PDF Donggg");
-            return;
+        // console.log("Cek Data Form:");
+        // console.log("Tanggal Awal:", tanggalAwalValue);
+        // console.log("Tanggal Akhir:", tanggalAkhirValue);
+        // console.log("Dokter:", dokterValue);
+
+        // **Cek apakah file berhasil ditambahkan**
+        // console.log("Cek file yang ada di FormData:");
+        for (let pair of formData.entries()) {
+            if (pair[0].startsWith("file")) {
+                // console.log(`File key: ${pair[0]}, File name: ${pair[1].name}, File type: ${pair[1].type}`);
+            }
         }
-
-        if(fileType3 !== "application/pdf")
-        {
-            alert("File 3 Upload Harus PDF Donggg");
-            return;
-        }
-
-        if(fileType4 !== "application/pdf")
-        {
-            alert("File 4 Upload Harus PDF Donggg");
-            return;
-        }
-
-        if(fileType5 !== "application/pdf")
-        {
-            alert("File 5 Upload Harus PDF Donggg");
-            return;
-        }
-
-        if(fileType6 !== "application/pdf")
-        {
-            alert("File 6 Upload Harus PDF Donggg");
-            return;
-        }
-
-        if(fileType7 !== "application/pdf")
-        {
-            alert("File 7 Upload Harus PDF Donggg");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("tanggal_awal", tanggalAwal);
-        formData.append("tanggal_akhir", tanggalAkhir);
-        formData.append("dokter", dokter);
-        formData.append("nama_file", file.name);
-        formData.append("file", file);
-        formData.append("file2", file2);
-        formData.append("file3", file3);
-        formData.append("file4", file4);
-        formData.append("file5", file5);
-        formData.append("file6", file6);
-        formData.append("file7", file7);
-        
-        console.log("File 4: ", formData.get("file4"));
-        console.log("File 5: ", formData.get("file5"));
-        console.log("File 6: ", formData.get("file6"));
-        
         // throw new Error("sengaja error");
 
-        modal.modal("hide");
         axios
-            // .post(urlSimpan, formData, {
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     }
-            // })
-            // .post(urlSimpan, formData)
             .post(urlSimpan, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -210,19 +226,21 @@ $(function () {
         .then(response => {
             // console.log("Simpan Data berhasil", response.data)
             alert(response.data.message);
-            resetModal();
+            // resetModal();
             loadtable(tanggalawal2);
+            modal.modal("hide");
+            document.getElementById("form-hd").reset();
         })
-        .catch(error => {
-            console.error("Error saat menyimpan data ", error)
-            // alert("Gagal Saat Simpan Data");
+        // .catch(error => {
+        //     console.error("Error saat menyimpan data ", error)
+        //     // alert("Gagal Saat Simpan Data");
 
-            if (error.response) {
-                alert(error.response.data.message || "Gagal Saat Simpan Dataaa");
-            } else {
-                alert("Terjadi kesalahan jaringan");
-            }
-        })
+        //     if (error.response) {
+        //         alert(error.response.data.message || "Gagal Saat Simpan Dataaa");
+        //     } else {
+        //         alert("Terjadi kesalahan jaringan");
+        //     }
+        // })
     }
 
     const resetModal = () => {
