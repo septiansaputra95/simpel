@@ -190,7 +190,6 @@ class PengirimanHDController extends Controller
     public function send(Request $request)
     {
         $selectedId = $request->input('selectedId');
-        // dd($selectedId);
 
         if (!$selectedId || !is_array($selectedId)) {
             return response()->json(['message' => 'Tidak Ada Data Yang Di Kirim'], 400);
@@ -265,13 +264,7 @@ class PengirimanHDController extends Controller
     {
         
         $subject = "Slip Honor Dokter Periode $tanggalawal - $tanggalakhir";
-        // $body = "
-        // Halo, $namadokter,\n
-        // Semoga Anda dalam keadaan sehat selalu. Kami ingin menginformasikan bahwa honor Anda untuk periode [$tanggalawal] hingga [$tanggalakhir] telah kami proses dan kirimkan.\n
-        // Mohon untuk memeriksa dan memastikan bahwa semua detail yang tercantum sudah benar. Jika ada pertanyaan atau ketidakcocokan, jangan ragu untuk menghubungi kami segera.\n
-        // Terima kasih atas dedikasi dan kerja keras Anda.\n
-        // Salam hormat,
-        // ";
+
         $body = "
         Yth. $namadokter,\n
         di tempat\n
