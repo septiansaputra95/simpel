@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="{{ asset('lib/datatables/FixedColumns-5.0.0/css/fixedColumns.dataTables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('lib/select2-4.1/css/select2.min.css') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- FILEPOND --}}
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
     <style>
         .submenu {
             display: none;
@@ -61,7 +64,9 @@
     <script src="{{ asset('lib/datatables/datatables.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
-    
+
+    {{-- FILEPOND --}}
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     <script>
         function toggleSubmenu(id) {
             var submenu = document.getElementById(id);
@@ -71,6 +76,17 @@
                 submenu.style.display = "none";
             }
         }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputElement = document.querySelector('input.filepond');
+        if (inputElement) {
+            FilePond.create(inputElement, {
+                allowMultiple: true,
+                acceptedFileTypes: ['application/pdf'],
+            });
+        }
+    });
+
     </script>
     @stack('scripts')
 </body>

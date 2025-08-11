@@ -8,20 +8,22 @@ $(function () {
     let logo = document.getElementById('loadinglogo');
     let label = document.getElementById('loadinglabel');
 
+    let hasilUpload = []; // untuk menampung status setiap dokter
+    let totalDokter = 0;
+    let selesaiUpload = 0;
+
     let dataTabel = $("#tabel-data");
     let fileCounter = 1;
     let modal = $("#modal-data");
+    let sudahAlert = false;
 
     document.getElementById("btn-tambah").onclick = () => {
         showModal();
     };
 
     document.getElementById("btn-simpan").onclick = () => {
-        simpanData();
-        // modal.modal("hide");
-        // const tanggalawal = document.getElementById('tanggal-awal').value;
-        // loadtable(tanggalawal);
-        // document.getElementById("form-hd").reset();
+        // simpanData();
+        simpanDataFilePond();
     };
     
 
@@ -30,8 +32,8 @@ $(function () {
         loadtable(tanggalawal);
     };
 
-    document.getElementById('add-file-button').addEventListener('click', addFileInput);
-    document.getElementById('remove-file-button').addEventListener('click', removeFileInput);
+    // document.getElementById('add-file-button').addEventListener('click', addFileInput);
+    // document.getElementById('remove-file-button').addEventListener('click', removeFileInput);
 
     document.getElementById("btn-kirim").onclick = () => {
         const checkedBoxes = document.querySelectorAll('#tabel-data tbody input[type="checkbox"]:checked');
@@ -62,33 +64,33 @@ $(function () {
         // console.log(selectedId);
     };
 
-    function addFileInput() {
-        fileCounter++; // Increment counter
+    // function addFileInput() {
+    //     fileCounter++; // Increment counter
 
-        // Buat elemen input file baru
-        const newFileInput = document.createElement('input');
-        newFileInput.type = 'file';
-        newFileInput.className = 'form-control';
-        newFileInput.id = 'file_' + fileCounter; // Set ID sesuai dengan counter
+    //     // Buat elemen input file baru
+    //     const newFileInput = document.createElement('input');
+    //     newFileInput.type = 'file';
+    //     newFileInput.className = 'form-control';
+    //     newFileInput.id = 'file_' + fileCounter; // Set ID sesuai dengan counter
 
-        // Buat elemen div untuk mengelompokkan input file
-        const inputGroup = document.createElement('div');
-        inputGroup.className = 'input-group mb-3';
-        inputGroup.appendChild(newFileInput);
+    //     // Buat elemen div untuk mengelompokkan input file
+    //     const inputGroup = document.createElement('div');
+    //     inputGroup.className = 'input-group mb-3';
+    //     inputGroup.appendChild(newFileInput);
 
-        // Tambahkan input file baru ke dalam wadah
-        const container = document.getElementById('file-inputs-container');
-        container.appendChild(inputGroup);
-    }
+    //     // Tambahkan input file baru ke dalam wadah
+    //     const container = document.getElementById('file-inputs-container');
+    //     container.appendChild(inputGroup);
+    // }
 
-    function removeFileInput() {
-        if (fileCounter > 1) { // Pastikan ada lebih dari satu input file
-            const container = document.getElementById('file-inputs-container');
-            // Hapus elemen terakhir yang ditambahkan
-            container.removeChild(container.lastChild);
-            fileCounter--; // Decrement counter
-        }
-    }
+    // function removeFileInput() {
+    //     if (fileCounter > 1) { // Pastikan ada lebih dari satu input file
+    //         const container = document.getElementById('file-inputs-container');
+    //         // Hapus elemen terakhir yang ditambahkan
+    //         container.removeChild(container.lastChild);
+    //         fileCounter--; // Decrement counter
+    //     }
+    // }
 
     const showModal = (method = "POST") => {
         
@@ -243,24 +245,122 @@ $(function () {
         // })
     }
 
-    const resetModal = () => {
-        document.getElementById('form-tanggal-awal').value = '';
-        document.getElementById('form-tanggal-akhir').value = '';
-        document.getElementById('dokter-field').value = '';
-        document.getElementById('file1').value = '';
-        document.getElementById('file2').value = '';
-        document.getElementById('file3').value = '';
-        document.getElementById('file4').value = '';
-        document.getElementById('file5').value = '';
-        document.getElementById('file6').value = '';
-        document.getElementById('file7').value = '';
+    const simpanDataFilePond = () => {
+        const tanggalAwal   = document.getElementById('form-tanggal-awal').value;
+        const tanggalAkhir  = document.getElementById('form-tanggal-akhir').value;
 
+        const pond = FilePond.find(document.getElementById('filepond-input'));
 
-        // document.getElementById('modal-data').reset();
+        if (pond) {
+            const files = pond.getFiles(); // array of file objects
+
+            const fileNames = files.map(file => file.filename);
+
+            const shortNames = fileNames.map(name => {
+                const index = name.indexOf('_');
+                return index !== -1 ? name.substring(0, index) : name;
+            });
+
+            console.log("Tanggal Awal:", tanggalAwal);
+            console.log("Tanggal Akhir:", tanggalAkhir);
+            console.log("File yang diupload (asli):");
+            // fileNames.forEach(name => console.log(name));
+
+            console.log("Nama pendek (sebelum '_'):");
+            // shortNames.forEach(name => console.log(name));
+
+            const uniqueShortNames = [...new Set(shortNames)];
+            console.log("Short names:", shortNames);
+            console.log("Short names (UNIQUE):", uniqueShortNames);
+
+            for (let i = 0; i < uniqueShortNames.length; i++) {
+                const dokter = uniqueShortNames[i];
+                const filesDokter = files.filter(file => file.filename.startsWith(dokter + '_'));
+                prosesSimpan(tanggalAwal, tanggalAkhir, dokter, filesDokter);
+            }
+            
+            // Sekarang kamu punya:/
+            // fileNames → nama lengkap
+            // shortNames → versi nama singkat/
+        } else {
+            console.warn("FilePond belum ter-inisialisasi");
+        }
+    }
+
+    const prosesSimpan = (tanggalAwal, tanggalAkhir, dokter, filesDokter) => {
+        totalDokter++;
+
+        // const fileDokter = files.find(file => file.filename.startsWith(dokter + '_'));
+        const semuaPDF = filesDokter.every(file => file.fileType === 'application/pdf');
+        if(!semuaPDF){
+            alert("Semua file yang diunggah harus berformat PDF.");
+            return;
+        }
+
+        console.log("dokter: ", dokter);
+        console.log(`Jumlah file untuk dokter ${dokter}:`, filesDokter.length);
+
+        filesDokter.forEach(file => {
+            console.log(`Nama file: ${file.filename}`);
+        });
+
+        const formData = new FormData();
+
+        formData.append('tanggalAwal', tanggalAwal);
+        formData.append('tanggalAkhir', tanggalAkhir);
+        formData.append('dokter', dokter);
+
+        filesDokter.forEach((fileObj, index) => {
+            formData.append(`file_${index}`, fileObj.file); // fileObj.file adalah file asli
+        });
+        
+        axios
+            .post(urlSimpan, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(function (res) {
+            if (res.data.code == 200) {
+                hasilUpload.push({ dokter, status: 'sukses', pesan: res.data.message });
+
+                // alert(res.data.message);
+                // location.reload();
+            } else {
+                hasilUpload.push({ dokter, status: 'gagal', pesan: 'Penyimpanan gagal' });
+                // alert("Penyimpanan data gagal untuk dokter: " + dokter);
+            }
+        })
+        .catch(function (err) {
+            hasilUpload.push({ dokter, status: 'gagal', pesan: 'Error koneksi' });
+            // alert("Gagal menyimpan data dokter " + dokter);
+            console.error("Error:", err);
+        })
+        .finally(() => {
+            selesaiUpload++;
+            cekSelesai();
+        });
+    }
+
+    const cekSelesai = () => {
+        if (selesaiUpload === totalDokter) {
+            const gagal = hasilUpload.filter(item => item.status === 'gagal');
+            if (gagal.length > 0) {
+                alert("Upload selesai, tapi ada yang gagal:\n" +
+                    gagal.map(g => `${g.dokter}: ${g.pesan}`).join("\n"));
+            } else {
+                alert("Semua file berhasil diupload!");
+            }
+            location.reload();
+        }
     };
 
+    const uploadFiles = () => {
+
+    }
+
     const loadtable = (tanggal) => {
-        $("#tabel-data").dataTable({
+        const table = $("#tabel-data").dataTable({
             processing: true,
             serverSide: true,
             paging: true,
@@ -307,6 +407,12 @@ $(function () {
                     $("#btn-kirim").hide(); // Sembunyikan tombol jika tidak ada data
                 }
             },
+        });
+
+        table.one('xhr.dt', function (e, settings, json, xhr) {
+            if (json && json.error_message) {
+                alert(json.error_message);
+            }
         });
 
         dataTabel = $("#tabel-data").DataTable();

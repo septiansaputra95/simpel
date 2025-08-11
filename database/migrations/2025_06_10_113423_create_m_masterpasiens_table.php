@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('mrn', 150)->nullable();
             $table->string('patientname', 150)->nullable();
-            $table->string('dateofbirth', 150)->nullable();
+            // $table->string('dateofbirth', 150)->nullable();
+            $table->date('dateofbirth')->nullable();
             $table->string('registrationtype', 150)->nullable();
-            $table->string('registrationdate', 150)->nullable();
+            // $table->string('registrationdate', 150)->nullable();
+            $table->date('registrationdate')->nullable();
             $table->string('mobileno', 150)->nullable();
             $table->string('maritalstatus', 150)->nullable();
             $table->string('religion', 150)->nullable();
@@ -25,6 +27,7 @@ return new class extends Migration
             $table->string('address', 150)->nullable();
             $table->string('phoneno', 150)->nullable();
             $table->string('city', 150)->nullable();
+            $table->string('district', 150)->nullable();
             $table->string('state', 150)->nullable();
             $table->string('country', 150)->nullable();
             $table->string('identitytype', 150)->nullable();
@@ -32,7 +35,7 @@ return new class extends Migration
             $table->string('emergencycontactperson', 150)->nullable();
             $table->string('relationship', 150)->nullable();
             $table->string('emergencyphoneno', 150)->nullable();
-            $table->string('planename', 150)->nullable();
+            $table->string('planname', 150)->nullable();
             $table->string('user', 150)->nullable();
             $table->string('servicecenter', 150)->nullable();
             $table->timestamps();

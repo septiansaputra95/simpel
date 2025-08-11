@@ -52,7 +52,27 @@ class PengirimanHDController extends Controller
         $data =  MPengirimanHonorDokter::where('tanggalawal', $tanggalawal)
                                             ->with('dokter')
                                             ->get();
-        // dd($data);
+
+        $dokter = MMasterDokter::pluck('kodedokter')->toArray();
+        // $dokter = MMasterDokter->get();
+        // Cek kalau tidak ada data sama sekali
+        // if ($data->isEmpty()) {
+        //     return response()->json([
+        //         'data' => [],
+        //         'error_message' => 'Data tidak tersedia'
+        //     ]);
+        // }
+
+        $kodeData = $data->pluck('kodedokter')->toArray();
+
+        $beda = array_diff($kodeData, $dokter);
+        if (!empty($beda)) {
+            return response()->json([
+                'data' => [],
+                'error_message' => 'Ada data yang salah pada tanggal awal tersebut silahkan hubungi Administrator'
+            ]);
+        }
+
         
         $no = 1;
             foreach($data as $item) {
@@ -94,10 +114,10 @@ class PengirimanHDController extends Controller
     {
         // dd($request->file()); // FILE sudah masuk ke store
 
-        $tanggal_awal = $request->input('tanggal_awal');
-        $tanggal_akhir = $request->input('tanggal_akhir');
+        $tanggalAwal = $request->input('tanggalAwal');
+        $tanggalAkhir = $request->input('tanggalAkhir');
         $dokter = $request->input('dokter');
-
+        dd($tanggalAwal, $tanggalAkhir, $dokter);
         $filePaths = [];
         // $lastData = MPengirimanHonorDokter::orderBy('id', 'DESC')->first();
         // $lastId = $lastData ? $lastData->id + 1 : 1;
@@ -106,8 +126,8 @@ class PengirimanHDController extends Controller
         
         MPengirimanHonorDokter::create([
             'kodedokter' => $dokter,
-            'tanggalawal' => $tanggal_awal,
-            'tanggalakhir' => $tanggal_akhir,
+            'tanggalawal' => $tanggalAwal,
+            'tanggalakhir' => $tanggalAkhir,
             'file' => null,
             'flagkirim' => false
         ]);
@@ -132,59 +152,52 @@ class PengirimanHDController extends Controller
             'file_paths' => $filePaths
         ]);
 
+    }
 
-        // =============================
+    public function storeHonor(Request $request)
+    {
+        $tanggalAwal = $request->input('tanggalAwal');
+        $tanggalAkhir = $request->input('tanggalAkhir');
+        $dokter = $request->input('dokter');
 
-        // $filePaths = [];
+        MPengirimanHonorDokter::create([
+            'kodedokter' => $dokter,
+            'tanggalawal' => $tanggalAwal,
+            'tanggalakhir' => $tanggalAkhir,
+            'file' => null,
+            'flagkirim' => false
+        ]);
 
-        // try{
-        //     $no = 0;
-        //     if($request->hasFile('file1'))
-        //     {
-        //         $lastData = MPengirimanHonorDokter::orderBy('id', 'DESC')->first();
+        $lastData = MPengirimanHonorDokter::orderBy('id', 'DESC')->first();
+        $lastId = $lastData->id;
 
-        //         if ($lastData) {
-        //             $lastId = $lastData->id + 1;
-        //         } else {
-        //             $lastId = 1;
-        //         }
-        //         // dd($file, $filePath,  $request);
-        //         MPengirimanHonorDokter::create([
-        //             'kodedokter' => $request->dokter,
-        //             'tanggalawal' => $request->tanggal_awal,
-        //             'tanggalakhir' => $request->tanggal_akhir,
-        //             'file' => null,
-        //             'flagkirim' => false
-        //         ]);
+        $uploadedFiles = $request->allFiles();
 
-        //         foreach ($filePaths as $filePath) {
-        //             MFileHonorDokter::create([
-        //                 'idpengiriman' => $lastId,
-        //                 'kodedokter' => $request->dokter,
-        //                 'file' => $filePath,
-        //             ]);
-        //         }
-                
+        foreach ($uploadedFiles as $file) {
+            // Nama asli file
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $file->getClientOriginalExtension();
 
-        //         return response()->json([
-        //             'status' => 'success',
-        //             'message' => 'Data Berhasil Disimpan',
-        //             'file_path' => $filePath
-        //         ], 200);
-        //     }
+            // Tambahkan random number untuk menghindari duplikat
+            $newFileName = $originalName . '_' . rand(100000, 999999) . '.' . $extension;
 
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'File tidak ditemukan'
-        //     ], 400);
+            // Simpan ke folder storage/app/private/uploads
+            $path = $file->storeAs('private/uploads', $newFileName);
 
-        // } catch (\Exception $e) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Terjadi kesalahan saat menyimpan data',
-        //         'error' => $e->getMessage()
-        //     ], 500);
-        // }
+            // Simpan ke tabel file honor
+            MFileHonorDokter::create([
+                'idpengiriman' => $lastId,
+                'kodedokter' => $dokter,
+                'file' => $path,
+            ]);
+        }
+
+        return response()->json([
+            'code' => 200,
+            'status' => 'success',
+            'message' => 'File berhasil diupload',
+        ]);
+
     }
 
     public function send(Request $request)

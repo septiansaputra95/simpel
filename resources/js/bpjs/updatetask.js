@@ -3,6 +3,7 @@ $(function () {
     let urlCariData = "/BPJS/updatetask/getKodeBooking";
     let urlPost = "/BPJS/updatetask/postTask";
     let urlPostAddAntrean = "/BPJS/updatetask/postAddAntrean";
+    let urlPostBatal = "/BPJS/updatetask/batal";
     let urlSimpan = "/BPJS/tasklist/simpan";
     let urlAntrean = "/BPJS/updatetask/antrean";
     let urlCariDataTask6 = "/BPJS/updatetask/getTask6"
@@ -92,6 +93,16 @@ $(function () {
         AddAntrean(kodebooking, caritask);
 
         // postTask(kodebooking, taskid)
+        
+    };
+
+    document.getElementById("btn-batalAntrean").onclick = () => {
+        const kodebooking = document.getElementById("kodebooking").value;
+        
+        console.log("Batal  " + kodebooking);
+
+        // batalAntrean(kodebooking);
+        postBatal(kodebooking);
         
     };
 
@@ -321,6 +332,11 @@ $(function () {
                     console.error("Terjadi kesalahan CariData:", err.message);
                 }
             });
+    }
+
+    function batalAntrean(kodebooking)
+    {
+
     }
 
     // async function AddAntrean(kodebooking, caritask)
@@ -652,6 +668,30 @@ $(function () {
                 }
             });
     };
+
+    const postBatal = (kodebooking) => {
+        console.log("post batal "+ kodebooking );
+        axios
+            .post(urlPostBatal, {
+                kodebooking: kodebooking
+            })
+            .then(function (res) {
+                if (res.status === 200) {
+                console.log(res);
+                alert("Pembatalan Kodebooking Berhasil");
+                } else {
+                    alert("Pembatalan Kodebooking Gagal");
+                }
+            })
+            .catch(function (err) {
+                if (err.response && err.response.status !== 200) {
+                    alert("Error Pada Post Batal");
+                } else {
+                    console.error("Terjadi kesalahan Pada SimpanData:", err.message);
+                }
+            });
+
+    }
     const data = (kodebooking) => {
     $("#tabel-data").dataTable({
         processing: true,  // "Processing" should be lowercase.

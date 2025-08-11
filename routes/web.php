@@ -4,11 +4,15 @@ use App\Http\Controllers\BPJS\AntrianOnlineController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\DokterEmail;
+use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', function () {
     return view('content');
-});
-
+})->middleware('auth');
+// Route::get('/', function () {
+//     return view('content');
+// });
+// Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS', 'middleware' => ['auth', 'role:admin']], function() {
 Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], function() {
     //Route::get('/antrianonline', [AntrianOnlineController::class, 'index'])->name('antrianonline.index');
     Route::get('/antrianonline', 'AntrianOnlineController@index')->name('antrianonline.index');
@@ -27,6 +31,7 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     
 
     Route::post('/updatetask/postTask', 'UpdateTaskController@postTask');
+    Route::post('/updatetask/batal', 'UpdateTaskController@batalAntrean');
     Route::post('/updatetask/postAddAntrean', 'UpdateTaskController@postAddAntrean');
     Route::get('/updatetask/getKodeBooking', 'UpdateTaskController@getKodeBooking');
     Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
@@ -62,11 +67,17 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
 
 });
 
-Route::group(['namespace' => 'App\Http\Controllers\Keuangan', 'prefix' => 'Keuangan'], function() {
+Route::group([
+    'namespace' => 'App\Http\Controllers\Keuangan',
+    'prefix' => 'Keuangan',
+    'middleware' => ['auth', 'role:admin|keuangan']
+], function () {
+// Route::group(['namespace' => 'App\Http\Controllers\Keuangan', 'prefix' => 'Keuangan'], function() {
     Route::get('/honordokter', 'PengirimanHDController@index')->name('honordokter.index');
     Route::get('/honordokter/datatables', 'PengirimanHDController@loadDatatables');
     Route::get('/honordokter/getDokter', 'PengirimanHDController@getDokter');
-    Route::post('/honordokter/simpan', 'PengirimanHDController@store');
+    // Route::post('/honordokter/simpan', 'PengirimanHDController@store');
+    Route::post('/honordokter/simpan', 'PengirimanHDController@storeHonor');
     Route::post('/honordokter/kirim', 'PengirimanHDController@send');
 
     Route::get('/honordokter/auth/google', 'PengirimanHDController@redirectToGoogle');
@@ -91,3 +102,7 @@ Route::get('/mail/send', function () {
     Mail::to('septiansap@gmail.com')->send(new DokterEmail($data));
 
 });
+
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login']);
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');

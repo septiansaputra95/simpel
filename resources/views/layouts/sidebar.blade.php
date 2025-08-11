@@ -28,15 +28,18 @@
         <div class="submenu-item py-2 px-4 text-gray-300 hover:text-white cursor-pointer">
             <i class="fas fa-ruler mr-2"></i> Satuan
         </div>
+        @hasanyrole('admin|keuangan')
         <div class="submenu-item py-2 px-4 text-gray-300 hover:text-white cursor-pointer">
             <a href="{{ route('masterdokter.index') }}" class="submenu-item py-2 px-4 text-gray-300 hover:text-white cursor-pointer">
                 <i class="fas fa-user-doctor mr-2"></i> Dokter
             </a>
         </div>
+        @endhasanyrole
     </div>
 </div>
 
 <!-- Menu BPJS -->
+
 <div class="menu-item py-2 px-4 cursor-pointer mt-4" onclick="toggleSubmenu('bpjsSubmenu')">
     <span class="font-semibold text-lg">
         <i class="fas fa-notes-medical mr-2"></i> BPJS
@@ -56,6 +59,7 @@
     </div>
 </div>
 
+@hasanyrole('admin|keuangan')
 <div class="menu-item py-2 px-4 cursor-pointer mt-4" onclick="toggleSubmenu('keuanganSubmenu')">
     <span class="font-semibold text-lg">
         <i class="fas fa-file-invoice mr-2"></i> Keuangan
@@ -66,3 +70,4 @@
         </a>
     </div>
 </div>
+@endhasanyrole

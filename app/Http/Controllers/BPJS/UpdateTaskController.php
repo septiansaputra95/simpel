@@ -184,11 +184,12 @@ class UpdateTaskController extends Controller
 
     }
 
-    protected function batalAntrean($kodebooking)
+    public function batalAntrean(Request $request)
     {
+        $kodebooking = $request->input('kodebooking');
         $data = [
             'kodebooking' => $kodebooking,
-            "keterangan"=> "Batal Antrean"
+            "keterangan"=> "Penggantian Jadwal HFIS"
         ];
 
         $dataRequest = json_encode($data);
@@ -196,8 +197,11 @@ class UpdateTaskController extends Controller
         $endpoint = 'antrean/batal';
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
         $result = json_decode($requestBridge);
-        return $result;
+        // echo $result;
+        // return $result;
+        return response()->json($result);
     }
+
 
     protected function addAntrean(
         $kodebooking,
@@ -292,7 +296,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2025-02-15";
+        // $tanggal = "2025-07-31";
         echo $tanggal;
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
@@ -377,7 +381,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask7()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2024-12-17";
+        // $tanggal = "20205-07-25";
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
                         ->where('status', "Selesai dilayani")
@@ -779,7 +783,7 @@ class UpdateTaskController extends Controller
     {
         // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2025-02-15";
+        // $tanggal = "2025-07-31";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
                         ->with('antrian') 

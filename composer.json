@@ -9,6 +9,7 @@
         "google/apiclient": "2.18",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
+        "spatie/laravel-permission": "^6.20",
         "virusphp/bridging-bpjs": "^2.1"
     },
     "require-dev": {

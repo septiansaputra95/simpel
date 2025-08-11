@@ -35,6 +35,7 @@
                         <button type="submit" class="btn btn-warning" id="btn-update-error">Update Error Task</button>
                         <button type="submit" class="btn btn-secondary" id="btn-add">Add Task 3</button>
                         <button type="submit" class="btn btn-primary" id="btn-addAntrean">Add Antrean</button>
+                        <button type="submit" class="btn btn-danger" id="btn-batalAntrean">Batal Antrean</button>
                     </div>
                 </div>
             </div>

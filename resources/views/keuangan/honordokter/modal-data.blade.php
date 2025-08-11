@@ -23,18 +23,24 @@
                         <input type="date" class="form-control" id="form-tanggal-akhir">
                     </div>
 
-                    <div class="input-group mb-3">
+                    {{-- <div class="input-group mb-3">
                         <label><b>Dokter: </b></label>
                         &nbsp;&nbsp;
                         <select class="form-control" name="dokter_filed" id="dokter-field">
                         </select>
-                    </div>
+                    </div> --}}
                     
-                    <div id="file-inputs-container">
+                    {{-- <div id="file-inputs-container">
                         <div class="input-group mb-3">
                             <input type="file" class="form-control" id="file_1">
                             <button type="button" class="btn btn-outline-primary" id="add-file-button">+</button>
                             <button type="button" class="btn btn-outline-danger" id="remove-file-button">-</button>
+                        </div>
+                    </div> --}}
+                    <input type="file" class="filepond" name="files[]" id="filepond-input" multiple accept="application/pdf">
+
+                    <div id="file-inputs-container">
+                        <div class="input-group mb-3">
                         </div>
                     </div>
                     

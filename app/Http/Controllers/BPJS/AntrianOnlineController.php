@@ -130,7 +130,8 @@ class AntrianOnlineController extends Controller
     
     public function autoStore()
     {
-        $tanggal = DATE('Y-m-d');
+        // $tanggal = DATE('Y-m-d');
+        $tanggal = DATE('2025-07-28');
 
         $request = new Request();
         $request->replace(['tanggal' => $tanggal]);
