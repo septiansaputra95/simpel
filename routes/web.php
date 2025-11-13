@@ -7,7 +7,7 @@ use App\Mail\DokterEmail;
 use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', function () {
-    return view('content');
+    return view('newcontent');
 })->middleware('auth');
 // Route::get('/', function () {
 //     return view('content');
@@ -54,6 +54,7 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/jadwaldokter', 'JadwalDokterController@index')->name('jadwaldokter.index');
     Route::get('/baymanagement', 'BaymanagementController@index')->name('baymanagement.index');
     
+    Route::get('/suratkontrol', 'TanggalSuratKontrolController@index')->name('suratkontrol.index');
 
     Route::get('/peserta/digitalclock', 'PesertaController@digitalClock');
     Route::get('/jadwaldokter/digitalclock', 'JadwalDokterController@digitalClock');
@@ -90,6 +91,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Master', 'prefix' => 'Master'
     Route::post('/masterdokter/simpan', 'MasterDokterController@store');
     Route::post('/masterdokter/update', 'MasterDokterController@update');
 
+});
+
+Route::group(['namespace' => 'App\Http\Controllers\User', 'prefix' => 'User'], function() {
+    Route::get('/', 'UserController@index')->name('user.index');
+    Route::get('/datatables', 'UserController@loadDatatables');
 });
 
 Route::get('/mail/send', function () {

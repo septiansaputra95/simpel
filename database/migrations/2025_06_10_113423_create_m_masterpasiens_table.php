@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('mrn', 150)->nullable();
             $table->string('patientname', 150)->nullable();
-            // $table->string('dateofbirth', 150)->nullable();
+            $table->string('gender', 150)->nullable();
             $table->date('dateofbirth')->nullable();
             $table->string('registrationtype', 150)->nullable();
             // $table->string('registrationdate', 150)->nullable();
@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('planname', 150)->nullable();
             $table->string('user', 150)->nullable();
             $table->string('servicecenter', 150)->nullable();
+            // $table->date('tanggaldata')->nullable();
             $table->timestamps();
         });
     }

@@ -309,7 +309,7 @@ class PengirimanHDController extends Controller
                 // Loop untuk setiap file dan attach ke email
                 foreach ($files as $file) {
                     // dd($file->file);
-                    $filePath = storage_path('app\\private\\' . str_replace('/', '\\', $file->file));
+                    $filePath = storage_path('app\\' . str_replace('/', '\\', $file->file));
                     // dd($filePath);
                     if (file_exists($filePath)) {
                         // Attach file jika file ditemukan
