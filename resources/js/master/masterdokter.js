@@ -1,9 +1,9 @@
 
 $(function () {
-    let urlLoadData = '/Master/masterdokter/datatables';
+    let urlLoadData = '/masterdokter/datatables';
     // let urlSimpan = "{{ route('masterdokter.store') }}";
-    let urlSimpan = '/Master/masterdokter/simpan';
-    let urlUpdate = '/Master/masterdokter/update';
+    let urlSimpan = '/masterdokter/simpan';
+    let urlUpdate = '/masterdokter/update';
 
     let dataTabel = $("#tabel-data");
 
@@ -194,7 +194,7 @@ $(function () {
             ServerSide: true,
             paging: true,
             sDom: "<t <'float-end' i><p >>",
-            iDisplayLength: 25,
+            iDisplayLength: 15,
             bDestroy: true,
             autoWidth: false,
             ordering: false,

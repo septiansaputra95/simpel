@@ -13,6 +13,7 @@ use App\Models\MReferensiPoli;
 use App\Models\MReferensiDokter;
 use App\Models\MJadwalDokter;
 use App\Models\MBaymanagement;
+use App\Models\MQueueList;
 use App\Models\MSEPSelisih;
 
 use DateTime;
@@ -216,6 +217,7 @@ class UpdateTaskController extends Controller
         $namadokter,
         $jadwal,
         $nomorreferensi,
+        $queue_no,
         $nomorantrian,
         $estimasidilayani,
         $sisakapasitas,
@@ -238,7 +240,7 @@ class UpdateTaskController extends Controller
             "jampraktek" => $jadwal,
             "jeniskunjungan" => 2,
             "nomorreferensi" => $nomorreferensi,
-            "nomorantrean" => $nomorantrian,
+            "nomorantrean" => $queue_no,
             "angkaantrean" => $nomorantrian,
             "estimasidilayani" => $estimasidilayani,
             "sisakuotajkn" => $sisakapasitas,
@@ -296,7 +298,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2025-10-16";
+        // $tanggal = "2025-12-30";
         echo $tanggal;
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
@@ -381,7 +383,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask7()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "20205-08-15";
+        // $tanggal = "20205-12-30";
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
                         ->where('status', "Selesai dilayani")
@@ -782,8 +784,8 @@ class UpdateTaskController extends Controller
     public function autoAddTask()
     {
         // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
-        $tanggal = DATE('Y-m-d');
-        // $tanggal = "2025-08-15";
+        // $tanggal = DATE('Y-m-d');
+        $tanggal = "2025-12-30";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
                         ->with('antrian') 
@@ -893,12 +895,13 @@ class UpdateTaskController extends Controller
         // GET ANTRIAN POLI
         for($i=0; $i<COUNT($nomr); $i++)
         {
-            $dataAntrian = $this->getAntrianPoli($nomr[$i], $tanggal);
+            // $dataAntrian = $this->getAntrianPoli($nomr[$i], $tanggal);
+            $dataAntrian = $this->getQueueList($nomr[$i], $tanggal);
 
             if ($dataAntrian) {  
                 $nomorantrian[] = abs($dataAntrian['nomorantrian']);
-                $mulaikonsul[] = $dataAntrian['mulaikonsul'];
-                $selesaikonsul[] = $dataAntrian['selesaikonsul'];
+                $queue_no[] = $dataAntrian['queue_no'];
+                // $selesaikonsul[] = $dataAntrian['selesaikonsul'];
             }
 
         }
@@ -938,6 +941,7 @@ class UpdateTaskController extends Controller
         for($i=0; $i<COUNT($nokartu); $i++)
         {
 
+            // dd($nokartu[$i], $queue_no[$i], $nomorantrian[$i]);
             $data = $this->addAntrean(
                 $kodebooking[$i], 
                 $nokartu[$i], 
@@ -951,12 +955,12 @@ class UpdateTaskController extends Controller
                 $nmdpjp[$i],
                 $jadwal[$i],
                 $norujukan[$i],
+                $queue_no[$i],
                 $nomorantrian[$i],
                 $newTime[$i],
                 $sisa[$i],
                 $kapasitas[$i]
             );
-        //dd($kodebooking, $nokartu, $nomr, $nohp, $kddpjp, $kodedokter, $jadwal, $kodepoli, $namapoli, $kapasitas, $nomorantrian, $mulaikonsul, $waktuestimasi, $newTime, $sisa);
         echo response()->json($data);
         echo $kodebooking[$i].'<br>';
 
@@ -1089,6 +1093,29 @@ class UpdateTaskController extends Controller
             'nomorantrian' => $data->nomorantrian,
             'mulaikonsul' => $data->mulaikonsul,
             'selesaikonsul' => $data->selesaikonsul
+        ];
+
+    }
+
+    public function getQueueList($norm, $tanggal)
+    {
+        $data = MQueueList::where('medical_record_no', $norm)
+                           ->whereDate('date', $tanggal)
+                           ->first();
+        if (!$data) {
+            $data = new \stdClass();
+            $data->no = null;
+            $data->queue_no = null;
+        }
+
+        if (is_null($data->queue_no)) {
+            $data->no = rand(1, 10);
+            $data->queue_no = $data->no;
+        }
+
+        return [
+            'nomorantrian' => $data->no,
+            'queue_no' => $data->queue_no
         ];
 
     }

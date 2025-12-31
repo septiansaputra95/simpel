@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('m_menus', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable()->index(); // untuk submenu
-            $table->string('name');       // Nama menu (contoh: Users, Master Dokter)
-            $table->string('route')->nullable(); // nama route Laravel (contoh: user.index)
-            $table->string('icon')->nullable();  // material icon / fontawesome
-            $table->integer('order_no')->default(0); // urutan tampil
-            $table->boolean('is_active')->default(true); // menu aktif / nonaktif
+            $table->string('menuname');
+            $table->string('route')->nullable();
+            $table->string('icon')->nullable();
+            $table->foreignId('parent_id')->nullable()->constrained('m_menus');
+            $table->integer('order')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

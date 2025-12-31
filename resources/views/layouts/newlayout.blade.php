@@ -12,10 +12,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('lib/datatables/datatables.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('lib/datatables/FixedColumns-5.0.0/css/fixedColumns.dataTables.min.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('lib/datatables/datatables.min.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ asset('lib/datatables/FixedColumns-5.0.0/css/fixedColumns.dataTables.min.css') }}"> -->
     <link rel="stylesheet" href="{{ asset('lib/select2-4.1/css/select2.min.css') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
     {{-- FILEPOND --}}
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
@@ -45,9 +47,12 @@
 
         <!-- Logout -->
         <div class="p-4 border-t border-gray-200">
-            <a href="#" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-200 transition">
-                <span class="material-icons-outlined mr-3">logout</span> Logout
-            </a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-200 transition w-full text-left">
+                    <span class="material-icons-outlined mr-3">logout</span> Logout
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -62,13 +67,18 @@
 
     {{-- DARI LAYOUT LAMA --}}
     <script src="{{ asset('lib/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('lib/datatables/datatables.min.js') }}"></script>
+    <!-- <script src="{{ asset('lib/datatables/datatables.min.js') }}"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
     {{-- FILEPOND --}}
     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     {{-- END DARI LAYOUT LAMA --}}
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    
+    <script src="//unpkg.com/alpinejs" defer></script>
 
     <!-- Script -->
     <script>

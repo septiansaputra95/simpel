@@ -12,8 +12,18 @@ class MMasterBarang extends Model
 
     protected $fillable = [
         'kode_barang',
-        'nama_barang', 
-        'harga_barang', 
-        'kode_satuan'
+        'nama_barang'
     ];
+
+    public function stokGudang()
+    {
+        return $this->hasMany(GudangStok::class, 'kode_barang', 'kode_barang');
+    }
+    
+    public function satuan()
+    {
+        return $this->belongsTo(MSatuan::class, 'kode_satuan', 'kode_satuan');
+    }
+    
+
 }
