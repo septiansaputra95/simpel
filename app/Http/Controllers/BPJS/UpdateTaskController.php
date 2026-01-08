@@ -298,7 +298,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2025-12-30";
+        // $tanggal = "2026-01-07";
         echo $tanggal;
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
@@ -784,8 +784,8 @@ class UpdateTaskController extends Controller
     public function autoAddTask()
     {
         // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
-        // $tanggal = DATE('Y-m-d');
-        $tanggal = "2025-12-30";
+        $tanggal = DATE('Y-m-d');
+        // $tanggal = "2026-01-07";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
                         ->with('antrian') 
