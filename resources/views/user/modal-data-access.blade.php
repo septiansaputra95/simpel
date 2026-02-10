@@ -38,52 +38,8 @@
                                 <th class="px-4 py-2 text-center">Delete</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            @foreach ($menus as $parent)
-
-                                {{-- PARENT MENU --}}
-                                <tr class="bg-gray-50">
-                                    <td colspan="5" class="font-semibold text-gray-700 px-4 py-2">
-                                        📁 {{ $parent->menuname }}
-                                    </td>
-                                </tr>
-
-                                {{-- CHILD MENU --}}
-                                @foreach ($parent->children as $menu)
-                                    @php
-                                        $akses = $menu->roles->first()?->pivot;
-                                    @endphp
-
-                                    <tr>
-                                        <td class="px-4 py-2 pl-6">— {{ $menu->menuname }}</td>
-
-                                        <td class="text-center">
-                                            <input type="checkbox"
-                                                name="akses[{{ $menu->id }}][view]"
-                                                {{ $akses?->can_view ? 'checked' : '' }}>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <input type="checkbox"
-                                                name="akses[{{ $menu->id }}][create]"
-                                                {{ $akses?->can_create ? 'checked' : '' }}>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <input type="checkbox"
-                                                name="akses[{{ $menu->id }}][edit]"
-                                                {{ $akses?->can_edit ? 'checked' : '' }}>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <input type="checkbox"
-                                                name="akses[{{ $menu->id }}][delete]"
-                                                {{ $akses?->can_delete ? 'checked' : '' }}>
-                                        </td>
-                                    </tr>
-                                @endforeach
-
-                            @endforeach
+                        <tbody class="divide-y divide-gray-200" id="access-table-body">
+                            
                         </tbody>
                     </table>
                 </div>

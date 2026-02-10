@@ -11,7 +11,6 @@ class MRolesMenu extends Model
     protected $table = 'm_roles_menus';
 
     protected $fillable = [
-        'id',
         'role_id',
         'menu_id', 
         'can_view', 

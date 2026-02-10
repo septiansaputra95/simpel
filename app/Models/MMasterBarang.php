@@ -17,7 +17,7 @@ class MMasterBarang extends Model
 
     public function stokGudang()
     {
-        return $this->hasMany(GudangStok::class, 'kode_barang', 'kode_barang');
+        return $this->hasMany(MGudangStok::class, 'kode_barang', 'kode_barang');
     }
     
     public function satuan()

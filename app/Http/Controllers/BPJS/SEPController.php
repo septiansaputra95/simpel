@@ -34,8 +34,8 @@ class SEPController extends Controller
         $jenislayanan = 2;
         $kunjungan = $this->kunjungan($tanggal, $jenislayanan);
         $responseKunjungan = $kunjungan->response;
-        //$nomor = DATE('Ymd');
-        $nomor = DATE('20241008');
+        $nomor = DATE('Ymd');
+        // $nomor = DATE('20241008');
         
         //dd($tanggal, $jenislayanan, $responseKunjungan->sep);
 

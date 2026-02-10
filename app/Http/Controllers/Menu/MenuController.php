@@ -54,14 +54,14 @@ class MenuController extends Controller
         $nextOrder = $lastOrder ? $lastOrder + 1 : 1; // kalau null, mulai dari 1
         // dd($lastId);
 
-        // MMenu::create([
-        //     'menuname'      => $request->menuname,
-        //     'route'         => $request->route,
-        //     'icon'          => $request->icon,
-        //     'parent_id'     => $request->parent_id,
-        //     'order'         => $nextOrder,
-        //     'is_active'     => $request->is_active
-        // ]);
+        MMenu::create([
+            'menuname'      => $request->menuname,
+            'route'         => $request->route,
+            'icon'          => $request->icon,
+            'parent_id'     => $request->parent_id,
+            'order'         => $nextOrder,
+            'is_active'     => $request->is_active
+        ]);
 
         return response()->json(['status' => '200', 'message' => 'Berhasil Simpan Data']);
     }

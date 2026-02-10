@@ -1,40 +1,119 @@
-<div class="modal fade" id="modal-data" tabindex="-1" aria-labelledby="exampleModalFullscreenLabel"
-	aria-modal="true" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="modal-title-kategori">
-                    FORM INPUT MASTER DOKTER
-				</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-				</button>
-			</div>
-			<div class="modal-body">
-				<form id="form-hd">
-                    <div class="input-group mb-3">
-                        <label><b>Kode Dokter:</b></label>
-                        &nbsp;&nbsp;
-                        <input type="text" class="form-control" id="kode-dokter" placeholder="Kode Dokter HINAI" readonly>
-                    </div>
-                    
-                    <div class="input-group mb-3">
-                        <label><b>Nama Dokter: </b></label>
-                        &nbsp;&nbsp;
-                        <input type="text" class="form-control" id="nama-dokter" placeholder="Nama Dokter">
-                    </div>
+<!-- resources/views/menu/modal-data.blade.php -->
+<div id="modal-data"
+     class="fixed inset-0 hidden z-50 flex items-center justify-center bg-gray-800 bg-opacity-40 backdrop-blur-sm">
 
-                    <div class="input-group mb-3">
-                        <label><b>Email Dokter: </b></label>
-                        &nbsp;&nbsp;
-                        <input type="text" class="form-control" id="email-dokter" placeholder="Email Pribadi Dokter">
-                    </div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-success" id="btn-simpan"></button>
-				<button type="button" class="btn btn-warning" id="btn-update"></button>
-			</div>
-		</div>
-	</div>
+    <!-- Modal Box -->
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 animate-fadeIn relative 
+            max-h-[90vh] overflow-y-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b px-6 py-4">
+            <h5 id="modal-title" class="text-lg font-semibold text-gray-800">
+				MAPPING STOK GUDANG
+            </h5>
+            <button id="close-modal"
+                    class="absolute top-4 right-5 text-gray-500 hover:text-gray-700 text-2xl font-bold">&times;</button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 space-y-4">
+            <form id="form-data">
+                @csrf
+
+                <div>
+                    <input type="text" id="id">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Gudang</label>
+					<select id="gudang" class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5">
+					</select>
+                    <!-- <input type="text" id="id" name="id"
+                        class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5" readonly> -->
+                </div>
+				<br>
+				<div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Barang:</label>
+					<select id="barang" class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5">
+					</select>
+                    <!-- <input type="text" id="id" name="id"
+                        class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5" readonly> -->
+                </div>
+				<br>
+				<div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Satuan:</label>
+					<select id="satuan" class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5">
+					</select>
+                    <!-- <input type="text" id="id" name="id"
+                        class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5" readonly> -->
+                </div>
+                <br>
+				<div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Harga:</label>
+					<!-- <select id="satuan" class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5">
+					</select> -->
+                    <input type="text" id="harga" name="harga"
+                        class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5">
+                </div>
+				<br>
+				<div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Stok:</label>
+                    <input type="text" id="stok" name="aktif"
+                        class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5">
+                </div>
+				<br>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select id="is_active" name="is_active"
+                        class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                    >
+                    <option value="1">ACTIVE</option>
+                    <option value="0">IN ACTIVE</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-end gap-2 border-t px-6 py-4 bg-gray-50 rounded-b-xl">
+            <button type="button" id="cancel-modal"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                Close
+            </button>
+            <button type="button" id="btn-simpan"
+                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+            </button>
+            <button type="button" id="btn-update"
+                class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition">
+            </button>
+        </div>
+    </div>
 </div>
+
+<!-- Animasi -->
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out;
+}
+</style>
+
+<!-- Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('modal-data');
+    const closeModalBtn = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-modal');
+
+    // buka modal
+    window.showModal = function (title = 'FORM INPUT MENU', data = null) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('form-data').reset();
+        modal.classList.remove('hidden');
+    };
+
+    // tutup modal
+    const closeModal = () => modal.classList.add('hidden');
+    closeModalBtn?.addEventListener('click', closeModal);
+    cancelBtn?.addEventListener('click', closeModal);
+});
+</script>

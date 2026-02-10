@@ -10,12 +10,16 @@ class MGudangStok extends Model
     protected $table = 'm_gudang_stoks';
 
     protected $fillable = [
+        'gudang_id',
+        'barang_id',
         'kode_gudang',
         'kode_barang',
         'batch_barang',
+        'kode_satuan',
         'expired_date',
         'harga_barang',
-        'stok_barang'
+        'stok_barang',
+        'is_active'
     ];
 
     public function gudang()

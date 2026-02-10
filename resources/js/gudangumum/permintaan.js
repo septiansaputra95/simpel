@@ -1,6 +1,6 @@
 
 $(function () {
-    let urlLoadData = '/stokgudang/datatables';
+    let urlLoadData = '/permintaan/datatables';
     // let urlSimpan = "{{ route('masterdokter.store') }}";
     let urlSimpan = '/stokgudang/simpan';
     let urlUpdate = '/stokgudang/update';
@@ -437,12 +437,12 @@ $(function () {
             columns: [
                 { mData: "no" },
                 // { mData: no },
-                { mData: "nama_gudang" },
-                { mData: "nama_barang" },
-                { mData: "nama_satuan" },
-                { mData: "batch_barang" },
-                { mData: "stok_barang" },
-                { mData: "harga_barang" },
+                { mData: "kode_permintaan" },
+                { mData: "tanggal_permintaan" },
+                { mData: "unitnama" },
+                { mData: "total_harga" },
+                { mData: "keterangan" },
+                { mData: "nama" },
                 { mData: "action" }
             ],
         });

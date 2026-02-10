@@ -9,6 +9,7 @@ use App\Http\Controllers\Menu\MenuController;
 use App\Http\Controllers\Master\MasterDokterController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\GudangUmum\GudangStokController;
+use App\Http\Controllers\GudangUmum\PermintaanController;
 
 
 // Route::get('/', function () {
@@ -37,7 +38,7 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     
 
     Route::post('/updatetask/postTask', 'UpdateTaskController@postTask');
-    Route::post('/updatetask/batal', 'UpdateTaskController@batalAntrean');
+    Route::get('/updatetask/batal', 'UpdateTaskController@batalAntrean');
     Route::post('/updatetask/postAddAntrean', 'UpdateTaskController@postAddAntrean');
     Route::get('/updatetask/getKodeBooking', 'UpdateTaskController@getKodeBooking');
     Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
@@ -113,6 +114,7 @@ Route::middleware(['auth', 'check.menu.access'])->group(function () {
     Route::get('/user/datatables', [UserController::class, 'loadDatatables'])->name('user.loadDatatables');
     Route::get('/user/rolesdatatables', [UserController::class, 'rolesloadDatatables'])->name('user.rolesloadDatatables');
     Route::get('/user/{id}/accessRole', [UserController::class, 'accessRole'])->name('user.accessRole');
+    Route::post('/user/{id}/updateAccessRole', [UserController::class, 'updateAccessRole'])->name('user.updateAccessRole');
 });
 
 // GUDANG UMUM
@@ -121,6 +123,18 @@ Route::middleware(['auth', 'check.menu.access'])->group(function () {
     Route::get('/stokgudang/datatables', [GudangStokController::class, 'loadDatatables'])->name('stokgudang.loadDatatables');
     Route::post('/stokgudang/simpan', [GudangStokController::class, 'store'])->name('stokgudang.simpan');
     Route::post('/stokgudang/update', [GudangStokController::class, 'update'])->name('stokgudang.update');
+    Route::get('/stokgudang/getGudang', [GudangStokController::class, 'getGudang'])->name('stokgudang.getGudang');
+    Route::get('/stokgudang/getBarang', [GudangStokController::class, 'getBarang'])->name('stokgudang.getBarang');
+    Route::get('/stokgudang/getSatuan', [GudangStokController::class, 'getSatuan'])->name('stokgudang.getSatuan');
+    Route::get('/stokgudang/{id}/getEdit', [GudangStokController::class, 'getEdit'])->name('stokgudang.getEdit');
+    // Route::get('/stokgudang/{id}/getEdit', [GudangStokController::class, 'getEdit'])->name('stokgudang.getEdit');
+});
+
+Route::middleware(['auth', 'check.menu.access'])->group(function () {
+    Route::get('/permintaan', [PermintaanController::class, 'index'])->name('permintaan.index');
+    Route::get('/permintaan/datatables', [PermintaanController::class, 'loadDatatables'])->name('permintaan.loadDatatables');
+    Route::post('/permintaan/simpan', [PermintaanController::class, 'store'])->name('stokgudang.simpan');
+    Route::get('/permintaan/input', [PermintaanController::class, 'input'])->name('permintaan.input');
 });
 
 Route::get('/mail/send', function () {

@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('unitid', 150)->index()->unique();
             $table->string('unitnama', 150);
+            $table->foreignId('parent_id')->nullable()->constrained('m_units')->nullOnDelete();
+            $table->integer('limit_nominal')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
