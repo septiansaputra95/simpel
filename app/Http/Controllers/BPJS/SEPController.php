@@ -225,7 +225,7 @@ class SEPController extends Controller
     public function cariselisih()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = '2025-01-17';
+        // $tanggal = '2026-07-21';
         echo $tanggal.'<br>';
         $data = MSEP::where('tglsep', $tanggal)
                 ->where('poli', '<>', 'INSTALASI GAWAT DARURAT')->get();
@@ -254,17 +254,7 @@ class SEPController extends Controller
             $nokapst [] = $itemAntrian->nokapst;
             $norekammedis[] = $itemAntrian->norekammedis;
         }
-        //dd($nama);
-        // for($i=0; $i > COUNT($nokartu); $i++)
-        // {
-        //     for($j=0; $j = COUNT($nokapst); $j++)
-        //     {
-        //         if($nokartu[$i] <> $nokapst[$j])
-        //         {
-        //             echo $nokartu[$i].'<br>';
-        //         }
-        //     }
-        // }
+
         $nomorin = 1;
         MSEPSelisih::where('tglsep', $tanggal)->delete();
         // Bandingkan setiap nokartu dengan semua nokapst
@@ -305,24 +295,27 @@ class SEPController extends Controller
             }
         }
 
-        // foreach ($nokartu as $index => $nokartuValue) {
-        //     $found = false;
-    
-        //     // Periksa apakah nokartu ada di nokapst
-        //     foreach ($nokapst as $kapst) {
-        //         if ($nokartuValue == $kapst) {
-        //             $found = true; // Jika ditemukan kecocokan
-        //             break;
-        //         }
-        //     }
-    
-        //     // Jika tidak ditemukan kecocokan, tampilkan nokartu dan nama yang sesuai
-        //     if (!$found) {
-        //     echo $nomor.'. '.$nomrValue . ' - ' . $nama[$index] . ' - ' . $nokartu[$index] . ' - ' . $nosep[$index] .'<br>';
-        //         $nomor++; // Tambahkan nomor urut
-        //     }
-        // }
+        return $this->perbaikanDokter($tanggal);
 
-        
+    }
+
+    public function perbaikanDokter($tanggal)
+    {
+        $updatedCount = MSEPSelisih::where('poli', 'REHABILITASI MEDIK')
+            ->where('kddpjp', '!=', 463640)
+            ->where('tglsep', $tanggal)
+            // ->get();
+        ->update([
+            'kddpjp' => 463640,
+            'nmdpjp' => 'SORACCA FELLICITA SUGIARTO'
+        ]);
+
+        // dd($updatedCount);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => "Berhasil memperbarui {$updatedCount} data dokter.",
+            'tanggal' => $tanggal
+        ]);
     }
 }

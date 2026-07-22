@@ -6,7 +6,8 @@
 <!-- Tabs -->
 <div class="border-b border-gray-200">
     <nav class="-mb-px flex space-x-4" id="tabs">
-        <button class="tab-btn border-b-2 border-blue-500 text-blue-600 px-3 py-2 text-sm font-medium" data-tab="tab1">Permintaan</button>
+        <button class="tab-btn border-b-2 border-blue-500 text-blue-600 px-3 py-2 text-sm font-medium"
+            data-tab="tab1">Permintaan</button>
         <!-- <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium" data-tab="tab2">Sub Menu</button> -->
         <!-- <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium" data-tab="tab3">Settings</button> -->
     </nav>
@@ -23,23 +24,19 @@
             <!-- Right Section -->
             <div class="flex items-center gap-3">
                 <!-- Search -->
-                <input 
-                    type="text" 
-                    placeholder="Search Nama Barang"
+                <input type="text" placeholder="Search Nama Barang"
                     class="w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                    id="searchbar"
-                >
+                    id="searchbar">
 
                 <!-- Button -->
-                <button 
+                <!-- <button 
                     class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                     id="btn-tambah">
                     Tambah
-                </button>
-                <a href="permintaan.input"
-                class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"            
-                >
-                Tambah
+                </button> -->
+                <a href="{{ route('permintaan.input') }}"
+                    class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    Tambah
                 </a>
 
             </div>
@@ -58,7 +55,7 @@
                     <th class="px-4 py-2 font-semibold border border-gray-300 text-left">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">  
+            <tbody class="divide-y divide-gray-200">
             </tbody>
         </table>
     </div>

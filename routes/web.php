@@ -20,7 +20,7 @@ Route::get('/', function () {
 })->name('home')->middleware(['auth']);
 
 // Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS', 'middleware' => ['auth', 'role:admin']], function() {
-Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], function() {
+Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], function () {
     //Route::get('/antrianonline', [AntrianOnlineController::class, 'index'])->name('antrianonline.index');
     Route::get('/antrianonline', 'AntrianOnlineController@index')->name('antrianonline.index');
     Route::get('/antrianonline/datatables', 'AntrianOnlineController@loadDatatables');
@@ -35,10 +35,11 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/tasklist/simpan', 'TaskListController@store');
     Route::get('/tasklist/autostore', 'TaskListController@autoStore')->name('tasklist.autostore');
     Route::get('/tasklist/digitalclock', 'TaskListController@digitalClock')->name('tasklist.digitalclock');
-    
+
 
     Route::post('/updatetask/postTask', 'UpdateTaskController@postTask');
     Route::get('/updatetask/batal', 'UpdateTaskController@batalAntrean');
+    Route::get('/updatetask/loopbatal', 'UpdateTaskController@loopBatalAntrean');
     Route::post('/updatetask/postAddAntrean', 'UpdateTaskController@postAddAntrean');
     Route::get('/updatetask/getKodeBooking', 'UpdateTaskController@getKodeBooking');
     Route::get('/updatetask', 'UpdateTaskController@index')->name('updatetask.index');
@@ -54,13 +55,15 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
     Route::get('/updatetask/autoaddantrean', 'UpdateTaskController@autoAddAntrean')->name('updatetask.autoaddantrean');
     Route::get('/updatetask/digitalclock', 'UpdateTaskController@digitalClock')->name('updatetask.digitalclock');
     Route::get('/updatetask/autoadd', 'UpdateTaskController@autoAddTask')->name('updatetask.autoadd');
-    
+
     Route::get('/referensidokter', 'ReferensiDokterController@index')->name('referensi.index');
     Route::get('/referensipoli', 'ReferensiPoliController@index')->name('referensipoli.index');
     Route::get('/peserta', 'PesertaController@index')->name('peserta.index');
     Route::get('/jadwaldokter', 'JadwalDokterController@index')->name('jadwaldokter.index');
     Route::get('/baymanagement', 'BaymanagementController@index')->name('baymanagement.index');
-    
+    Route::get('/rujukanpasien', 'RujukanPasienController@index')->name('rujukanpasien.index');
+    Route::get('/referensifaskes', 'ReferensiFaskesController@index')->name('referensifaskes.index');
+
     Route::get('/suratkontrol', 'TanggalSuratKontrolController@index')->name('suratkontrol.index');
 
     Route::get('/peserta/digitalclock', 'PesertaController@digitalClock');
@@ -80,7 +83,7 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
 //     'prefix' => 'Keuangan',
 //     'middleware' => ['auth', 'role:admin|keuangan']
 // ], function () {
-Route::group(['namespace' => 'App\Http\Controllers\Keuangan', 'prefix' => 'Keuangan'], function() {
+Route::group(['namespace' => 'App\Http\Controllers\Keuangan', 'prefix' => 'Keuangan'], function () {
     Route::get('/honordokter', 'PengirimanHDController@index')->name('honordokter.index');
     Route::get('/honordokter/datatables', 'PengirimanHDController@loadDatatables');
     Route::get('/honordokter/getDokter', 'PengirimanHDController@getDokter');
@@ -94,47 +97,49 @@ Route::group(['namespace' => 'App\Http\Controllers\Keuangan', 'prefix' => 'Keuan
 
 // Route::group(['namespace' => 'App\Http\Controllers\Master', 'prefix' => 'Master'], function() {
 Route::middleware(['auth', 'check.menu.access'])->group(function () {
-    Route::get('/masterdokter', [MasterDokterController::class, 'index'])->name('masterdokter.index');
-    Route::get('/masterdokter/datatables', [MasterDokterController::class, 'loadDatatables'])->name('masterdokter.loadDatatables');
-    Route::post('/masterdokter/simpan', [MasterDokterController::class, 'simpan'])->name('masterdokter.simpan');
-    Route::post('/masterdokter/update', [MasterDokterController::class, 'update'])->name('masterdokter.update');
+    Route::get('/masterdokter', [MasterDokterController::class , 'index'])->name('masterdokter.index');
+    Route::get('/masterdokter/datatables', [MasterDokterController::class , 'loadDatatables'])->name('masterdokter.loadDatatables');
+    Route::post('/masterdokter/simpan', [MasterDokterController::class , 'simpan'])->name('masterdokter.simpan');
+    Route::post('/masterdokter/update', [MasterDokterController::class , 'update'])->name('masterdokter.update');
 });
 
 // Route::prefix('menu')->group(function () {
 Route::middleware(['auth', 'check.menu.access'])->group(function () {
-    Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
-    Route::get('/menu/datatables', [MenuController::class, 'loadDatatables'])->name('menu.datatables');
-    Route::get('/menu/getParent', [MenuController::class, 'getParent'])->name('menu.getParent');
-    Route::post('/menu/simpan', [MenuController::class, 'store'])->name('menu.simpan');
+    Route::get('/menu', [MenuController::class , 'index'])->name('menu.index');
+    Route::get('/menu/datatables', [MenuController::class , 'loadDatatables'])->name('menu.datatables');
+    Route::get('/menu/getParent', [MenuController::class , 'getParent'])->name('menu.getParent');
+    Route::post('/menu/simpan', [MenuController::class , 'store'])->name('menu.simpan');
 });
 
 // Route::group(['namespace' => 'App\Http\Controllers\User', 'prefix' => 'User'], function() {
 Route::middleware(['auth', 'check.menu.access'])->group(function () {
-    Route::get('/user', [UserController::class, 'index'])->name('user.index');
-    Route::get('/user/datatables', [UserController::class, 'loadDatatables'])->name('user.loadDatatables');
-    Route::get('/user/rolesdatatables', [UserController::class, 'rolesloadDatatables'])->name('user.rolesloadDatatables');
-    Route::get('/user/{id}/accessRole', [UserController::class, 'accessRole'])->name('user.accessRole');
-    Route::post('/user/{id}/updateAccessRole', [UserController::class, 'updateAccessRole'])->name('user.updateAccessRole');
+    Route::get('/user', [UserController::class , 'index'])->name('user.index');
+    Route::get('/user/datatables', [UserController::class , 'loadDatatables'])->name('user.loadDatatables');
+    Route::get('/user/rolesdatatables', [UserController::class , 'rolesloadDatatables'])->name('user.rolesloadDatatables');
+    Route::get('/user/{id}/accessRole', [UserController::class , 'accessRole'])->name('user.accessRole');
+    Route::post('/user/{id}/updateAccessRole', [UserController::class , 'updateAccessRole'])->name('user.updateAccessRole');
 });
 
 // GUDANG UMUM
 Route::middleware(['auth', 'check.menu.access'])->group(function () {
-    Route::get('/stokgudang', [GudangStokController::class, 'index'])->name('stokgudang.index');
-    Route::get('/stokgudang/datatables', [GudangStokController::class, 'loadDatatables'])->name('stokgudang.loadDatatables');
-    Route::post('/stokgudang/simpan', [GudangStokController::class, 'store'])->name('stokgudang.simpan');
-    Route::post('/stokgudang/update', [GudangStokController::class, 'update'])->name('stokgudang.update');
-    Route::get('/stokgudang/getGudang', [GudangStokController::class, 'getGudang'])->name('stokgudang.getGudang');
-    Route::get('/stokgudang/getBarang', [GudangStokController::class, 'getBarang'])->name('stokgudang.getBarang');
-    Route::get('/stokgudang/getSatuan', [GudangStokController::class, 'getSatuan'])->name('stokgudang.getSatuan');
-    Route::get('/stokgudang/{id}/getEdit', [GudangStokController::class, 'getEdit'])->name('stokgudang.getEdit');
-    // Route::get('/stokgudang/{id}/getEdit', [GudangStokController::class, 'getEdit'])->name('stokgudang.getEdit');
+    Route::get('/stokgudang', [GudangStokController::class , 'index'])->name('stokgudang.index');
+    Route::get('/stokgudang/datatables', [GudangStokController::class , 'loadDatatables'])->name('stokgudang.loadDatatables');
+    Route::post('/stokgudang/simpan', [GudangStokController::class , 'store'])->name('stokgudang.simpan');
+    Route::post('/stokgudang/update', [GudangStokController::class , 'update'])->name('stokgudang.update');
+    Route::get('/stokgudang/getGudang', [GudangStokController::class , 'getGudang'])->name('stokgudang.getGudang');
+    Route::get('/stokgudang/getBarang', [GudangStokController::class , 'getBarang'])->name('stokgudang.getBarang');
+    Route::get('/stokgudang/getSatuan', [GudangStokController::class , 'getSatuan'])->name('stokgudang.getSatuan');
+    Route::get('/stokgudang/{id}/getEdit', [GudangStokController::class , 'getEdit'])->name('stokgudang.getEdit');
+// Route::get('/stokgudang/{id}/getEdit', [GudangStokController::class, 'getEdit'])->name('stokgudang.getEdit');
 });
 
 Route::middleware(['auth', 'check.menu.access'])->group(function () {
-    Route::get('/permintaan', [PermintaanController::class, 'index'])->name('permintaan.index');
-    Route::get('/permintaan/datatables', [PermintaanController::class, 'loadDatatables'])->name('permintaan.loadDatatables');
-    Route::post('/permintaan/simpan', [PermintaanController::class, 'store'])->name('stokgudang.simpan');
-    Route::get('/permintaan/input', [PermintaanController::class, 'input'])->name('permintaan.input');
+    Route::get('/permintaan', [PermintaanController::class , 'index'])->name('permintaan.index');
+    Route::get('/permintaan/datatables', [PermintaanController::class , 'loadDatatables'])->name('permintaan.loadDatatables');
+    Route::post('/permintaan/simpan', [PermintaanController::class , 'store'])->name('stokgudang.simpan');
+    Route::get('/permintaan/input', [PermintaanController::class , 'input'])->name('permintaan.input');
+    Route::get('/permintaan/cariBarang', [PermintaanController::class , 'cariBarang'])->name('permintaan.cariBarang');
+    Route::get('/permintaan/get-limit/{id}', [PermintaanController::class , 'getUnitLimit'])->name('permintaan.getUnitLimit');
 });
 
 Route::get('/mail/send', function () {
@@ -147,7 +152,7 @@ Route::get('/mail/send', function () {
     Mail::to('septiansap@gmail.com')->send(new DokterEmail($data));
 
 });
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 // Route::post('login', [LoginController::class, 'login']);

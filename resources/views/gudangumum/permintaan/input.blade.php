@@ -18,7 +18,7 @@
                 </p>
                 <p class="text-sm text-blue-700">
                     Limit unit Anda:
-                    <span class="font-bold">Rp 10.000.000</span>
+                    <span class="font-bold" id="unit-limit">Rp 10.000.000</span>
                 </p>
             </div>
         </div>
@@ -31,10 +31,20 @@
 
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                    <p><span class="font-semibold">No Permintaan:</span> PRM-001</p>
-                    <p><span class="font-semibold">Tanggal:</span> 24-04-2024</p>
-                    <p><span class="font-semibold">Pemohon:</span> Andi</p>
-                    <p><span class="font-semibold">Unit:</span> ICU</p>
+                    <p><span class="font-semibold">No Permintaan:</span> {{ $no_permintaan }}</p>
+                    <p><span class="font-semibold">Tanggal:</span> {{ $tanggal }}</p>
+                    <p><span class="font-semibold">Pemohon:</span> {{ $pemohon }}</p>
+                    <p class="flex items-center gap-2">
+                        <span class="font-semibold">Unit:</span>
+                        <select name="unit_id" id="unit_id"
+                            class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white cursor-pointer"
+                            style="min-width: 150px;">
+                            <option value="">-- Pilih Unit --</option>
+                            @foreach($units as $unit)
+                            <option value="{{ $unit->id }}">{{ $unit->unitnama }}</option>
+                            @endforeach
+                        </select>
+                    </p>
                 </div>
 
                 <div>
@@ -44,36 +54,34 @@
                             Proses
                         </span>
                     </p>
-                    <p>
+                    <!-- <p>
                         <span class="font-semibold">Keterangan:</span>
-                        Pengadaan alat medis
-                    </p>
+                        <input type="text" name="keterangan" id="keterangan"
+                            class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none w-full mt-1"
+                            placeholder="Masukkan keterangan">
+                    </p> -->
                 </div>
             </div>
 
             <div class="mt-4">
                 <label class="block text-sm font-semibold mb-1">
-                    Catatan
+                    Keterangan
                 </label>
-                <textarea
-                    class="w-full border rounded p-2 text-sm"
-                    rows="3"
-                    placeholder="Masukkan catatan..."></textarea>
+                <textarea class="w-full border rounded p-2 text-sm" rows="3" placeholder="Masukkan keterangan..."
+                    name="keterangan" id="keterangan"></textarea>
             </div>
 
             <div class="flex justify-between items-center mt-6 border-t pt-4">
                 <div>
                     <p class="text-sm text-gray-500">Total Permintaan</p>
-                    <p class="text-xl font-bold">Rp 900.000</p>
+                    <p class="text-xl font-bold" id="totalpermintaan">Rp 0</p>
                 </div>
 
                 <div class="flex gap-3">
-                    <button
-                        class="px-4 py-2 border rounded text-gray-700 hover:bg-gray-100">
+                    <button class="px-4 py-2 border rounded text-gray-700 hover:bg-gray-100">
                         Simpan Draft
                     </button>
-                    <button
-                        class="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                    <button class="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700">
                         Ajukan
                     </button>
                 </div>
@@ -95,34 +103,24 @@
                         <th class="border p-2 text-right">Subtotal</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td class="border p-2">Infus Set</td>
-                        <td class="border p-2">Rp 100.000</td>
-                        <td class="border p-2 text-center">
-                            <input type="number" value="5"
-                                class="w-16 border rounded text-center">
-                        </td>
-                        <td class="border p-2 text-right">Rp 500.000</td>
-                    </tr>
-                    <tr>
-                        <td class="border p-2">Syringe 10ml</td>
-                        <td class="border p-2">Rp 200.000</td>
-                        <td class="border p-2 text-center">
-                            <input type="number" value="2"
-                                class="w-16 border rounded text-center">
-                        </td>
-                        <td class="border p-2 text-right">Rp 400.000</td>
-                    </tr>
+                <tbody id="tabel-barang">
+
                 </tbody>
             </table>
 
-            <div class="flex justify-between items-center mt-4">
-                <button
-                    class="px-3 py-2 border rounded text-sm hover:bg-gray-100">
+            <div class="flex flex-1 max-w-md relative">
+                <input type="text"
+                    class="w-full border border-gray-300 rounded-l-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+                    placeholder="Nama Barang" name="namabarang" id="nama-barang" autocomplete="off">
+
+                <div id="suggestion-box"
+                    class="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-b-lg shadow-lg hidden">
+                </div>
+
+                <button type="button" id="btn-tambah"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition-colors text-sm font-semibold border-l-0">
                     + Tambah Barang
                 </button>
-                <p class="font-semibold">Total: Rp 900.000</p>
             </div>
         </div>
 

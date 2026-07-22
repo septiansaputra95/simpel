@@ -32,6 +32,25 @@ return new class extends Migration
             $table->string('source_file_name')->nullable();
             $table->boolean('pengecekan')->default(false);
 
+            // $table->string('docket_number', 50)->nullable();
+            // $table->dateTime('docket_date')->nullable();
+            // $table->string('delivery_order_no', 50)->nullable();
+            // $table->dateTime('receive_date')->nullable();
+            // $table->string('producer_key', 50)->nullable();
+            // $table->decimal('currency', 15, 2)->nullable();
+            // $table->integer('exchange_rate')->nullable();
+            // $table->boolean('completed')->nullable();
+            // $table->dateTime('time')->nullable();
+            // $table->string('transaction_user', 100)->nullable();
+            // $table->integer('id_lokasi')->nullable();
+            // $table->integer('partner_key')->nullable();
+            // $table->string('partner_name', 100)->nullable();
+            // $table->string('source_file', 100)->nullable();
+            // $table->dateTime('entered_date')->nullable();
+            // $table->string('data_area_id', 10)->nullable();
+            // $table->boolean('pengecekan')->default(false);
+
+
             $table->timestamps();
         });
     }

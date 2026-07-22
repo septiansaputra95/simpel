@@ -188,10 +188,10 @@ class UpdateTaskController extends Controller
     public function batalAntrean(Request $request)
     {
         // $kodebooking = $request->input('kodebooking');
-        $kodebooking = ' ';
+        $kodebooking = '2607280012';
         $data = [
             'kodebooking' => $kodebooking,
-            "keterangan"=> "Penggantian Jadwal HFIS"
+            "keterangan"=> "Batal Permintaan Pasien"
         ];
 
         $dataRequest = json_encode($data);
@@ -202,6 +202,102 @@ class UpdateTaskController extends Controller
         // echo $result;
         // return $result;
         return response()->json($result);
+    }
+
+    public function loopBatalAntrean(Request $request)
+    {
+        // $kodebooking = $request->input('kodebooking');
+        // $kodebooking = '362503102023';
+        $kodebookingList = [
+            '362503109039',
+            '40250310792',
+            '402503107549',
+            '382503104811',
+            '372503101027',
+            '402503109154',
+            '362503104190',
+            '402503103998',
+            '382503104426',
+            '382503101868',
+            '382503103404',
+            '392503105855',
+            '392503104533',
+            '372503102786',
+            '402503103678',
+            '2603100271',
+            '38250310882',
+            '382503107820',
+            '372503107693',
+            '362503107789',
+            '382503104736',
+            '382503104443',
+            '2603100279',
+            '392503103718',
+            '392503103269',
+            '382503103988',
+            '37250310855',
+            '362503102977',
+            '36250310661',
+            '382503107494',
+            '382503101620',
+            '2603100103',
+            '402503101235',
+            '2603100281',
+            '402503101625',
+            '402503106670',
+            '392503108689',
+            '372503104368',
+            '2603100305',
+            '402503103036',
+            '2603100164',
+            '3725031058',
+            '2603100079',
+            '362503106514',
+            '382503108983',
+            '38250310772',
+            '40250310765',
+            '2603100306',
+            '392503108866',
+            '392503102968',
+            '372503102227',
+            '2603100293',
+            '36250310435',
+            '362503101988',
+            '372503107176',
+            '362503107437',
+            '402503107329',
+            '2603100311',
+            '362503104847',
+            '392503106582'
+        ];
+
+        $results = []; // Wadah untuk menampung respon dari tiap request
+
+        foreach ($kodebookingList as $kb) {
+            $data = [
+                'kodebooking' => $kb,
+                "keterangan"  => "Penggantian Jadwal HFIS"
+            ];
+
+            $dataRequest = json_encode($data);
+            $endpoint = 'antrean/batal';
+
+            // Melakukan request untuk tiap kode booking
+            $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
+            
+            // Simpan hasil respon ke dalam array agar bisa dipantau mana yang sukses/gagal
+            $results[] = [
+                'kodebooking' => $kb,
+                'response'    => json_decode($requestBridge)
+            ];
+        }
+
+        // Mengembalikan semua hasil perulangan dalam bentuk JSON
+        return response()->json([
+            'status' => 'Proses Selesai',
+            'total_data' => count($results),
+            'details' => $results
+        ]);
     }
 
 

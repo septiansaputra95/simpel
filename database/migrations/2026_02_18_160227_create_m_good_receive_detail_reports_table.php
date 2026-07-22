@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_good_receive_details', function (Blueprint $table) {
+        Schema::create('m_good_receive_detail_reports', function (Blueprint $table) {
             $table->id();
 
             $table->date('transaction_date')->nullable();
@@ -29,20 +29,8 @@ return new class extends Migration
             $table->decimal('cost_price', 15, 3)->default(0);
             $table->string('notes')->nullable();
             $table->string('created_by')->nullable();
-            $table->date('create_date')->nullable();
-
-            // $table->integer('id_goods_receive_detail')->nullable();
-            // $table->integer('line_number')->nullable();
-            // $table->string('docket_number', 50)->nullable();
-            // $table->string('kode_item', 20)->nullable();
-            // $table->decimal('qty', 15, 2)->nullable();
-            // $table->string('batch_number', 50)->nullable();
-            // $table->dateTime('expired_date')->nullable();
-            // $table->string('uom', 50)->nullable();
-            // $table->string('receive_type', 50)->nullable();
-            // $table->integer('id_lokasi')->nullable();
-            // $table->decimal('unit_cost', 15, 2)->nullable();
-            // $table->string('remark', 100)->nullable();
+            $table->string('diff_percent')->nullable();
+            $table->boolean('reporting')->default(false);
 
             $table->timestamps();
         });
@@ -53,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_good_receive_details');
+        Schema::dropIfExists('m_good_receive_detail_reports');
     }
 };
