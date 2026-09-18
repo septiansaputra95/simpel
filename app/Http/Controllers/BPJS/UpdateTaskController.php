@@ -34,6 +34,11 @@ class UpdateTaskController extends Controller
         return view('bpjs.update-task.index'); // Pastikan view ini ada di resources/views/bpjs/index.blade.php
     }
 
+    public function pagebatalAntrean()
+    {
+        return view('bpjs.update-task.batal');
+    }
+
     public function getKodeBooking(Request $request)
     {
         $data = MTaskList::where('kodebooking', $request->kodebooking)
@@ -185,10 +190,30 @@ class UpdateTaskController extends Controller
 
     }
 
+    public function postBatalAntrean(Request $request)
+    {
+        $kodebooking = $request->input('kodebooking');
+        // dd($kodebooking);
+        // $kodebooking = '2608270024';
+        $data = [
+            'kodebooking' => $kodebooking,
+            "keterangan"=> "Batal Permintaan Pasien"
+        ];
+
+        $dataRequest = json_encode($data);
+
+        $endpoint = 'antrean/batal';
+        $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
+        $result = json_decode($requestBridge);
+        // echo $result;
+        // return $result;
+        return response()->json($result);
+    }
+
     public function batalAntrean(Request $request)
     {
         // $kodebooking = $request->input('kodebooking');
-        $kodebooking = '2607280012';
+        // $kodebooking = '2608270024';
         $data = [
             'kodebooking' => $kodebooking,
             "keterangan"=> "Batal Permintaan Pasien"
@@ -209,66 +234,19 @@ class UpdateTaskController extends Controller
         // $kodebooking = $request->input('kodebooking');
         // $kodebooking = '362503102023';
         $kodebookingList = [
-            '362503109039',
-            '40250310792',
-            '402503107549',
-            '382503104811',
-            '372503101027',
-            '402503109154',
-            '362503104190',
-            '402503103998',
-            '382503104426',
-            '382503101868',
-            '382503103404',
-            '392503105855',
-            '392503104533',
-            '372503102786',
-            '402503103678',
-            '2603100271',
-            '38250310882',
-            '382503107820',
-            '372503107693',
-            '362503107789',
-            '382503104736',
-            '382503104443',
-            '2603100279',
-            '392503103718',
-            '392503103269',
-            '382503103988',
-            '37250310855',
-            '362503102977',
-            '36250310661',
-            '382503107494',
-            '382503101620',
-            '2603100103',
-            '402503101235',
-            '2603100281',
-            '402503101625',
-            '402503106670',
-            '392503108689',
-            '372503104368',
-            '2603100305',
-            '402503103036',
-            '2603100164',
-            '3725031058',
-            '2603100079',
-            '362503106514',
-            '382503108983',
-            '38250310772',
-            '40250310765',
-            '2603100306',
-            '392503108866',
-            '392503102968',
-            '372503102227',
-            '2603100293',
-            '36250310435',
-            '362503101988',
-            '372503107176',
-            '362503107437',
-            '402503107329',
-            '2603100311',
-            '362503104847',
-            '392503106582'
+            '2609030074',
+            '2609030085',
+            '2609030088',
+            '2609170018',
+            '2609020067',
+            '2609020148',
+            '2609300003',
+            '2609030071',
+            '2609030081',
+            '2609030086',
+            '2609030089',
+            '2609030090',
+            '2609240014'
         ];
 
         $results = []; // Wadah untuk menampung respon dari tiap request
@@ -395,7 +373,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2026-01-07";
+        // $tanggal = "2026-08-03";
         echo $tanggal;
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
@@ -882,7 +860,7 @@ class UpdateTaskController extends Controller
     {
         // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2025-12-30";
+        // $tanggal = "2026-08-03";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
                         ->with('antrian') 

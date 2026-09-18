@@ -32,7 +32,9 @@ class MMenu extends Model
 
     public function children()
     {
-        return $this->hasMany(MMenu::class, 'parent_id')->orderBy('order');
+        return $this->hasMany(MMenu::class, 'parent_id')
+        ->where('is_active', true)
+        ->orderBy('order');
     }
 
     public function parent()

@@ -28,7 +28,7 @@ class SEPController extends Controller
     {
 
         $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2025-01-03');
+        // $tanggal = DATE('2026-08-03');
         
         // JENIS LAYANAN 1 = RAWAT INAP, 2 = RAWAT JALAN
         $jenislayanan = 2;
@@ -66,7 +66,7 @@ class SEPController extends Controller
     public function autoStore()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2025-01-03');
+        // $tanggal = DATE('2026-08-03');
         echo $tanggal;
         $data = MVclaimSEP::where('tanggal_sep', $tanggal)->get();
         
@@ -225,7 +225,7 @@ class SEPController extends Controller
     public function cariselisih()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = '2026-07-21';
+        // $tanggal = '2026-08-03';
         echo $tanggal.'<br>';
         $data = MSEP::where('tglsep', $tanggal)
                 ->where('poli', '<>', 'INSTALASI GAWAT DARURAT')->get();

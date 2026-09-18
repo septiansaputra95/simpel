@@ -38,6 +38,8 @@ Route::group(['namespace' => 'App\Http\Controllers\BPJS', 'prefix' => 'BPJS'], f
 
 
     Route::post('/updatetask/postTask', 'UpdateTaskController@postTask');
+    Route::get('/updatetask/pagebatalAntrean', 'UpdateTaskController@pagebatalAntrean')->name('updatetask.pagebatalAntrean');
+    Route::post('/updatetask/postBatal', 'UpdateTaskController@postBatalAntrean');
     Route::get('/updatetask/batal', 'UpdateTaskController@batalAntrean');
     Route::get('/updatetask/loopbatal', 'UpdateTaskController@loopBatalAntrean');
     Route::post('/updatetask/postAddAntrean', 'UpdateTaskController@postAddAntrean');

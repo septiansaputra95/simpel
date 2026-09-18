@@ -19,6 +19,49 @@ $(function () {
     let parentSelect    = document.getElementById('parent_id');
     let is_active       = document.getElementById('is_active');
 
+    const menuColorPalette = [
+    {
+        bg: "bg-accent-bg",
+        text: "text-accent"
+    },
+    {
+        bg: "bg-blue-bg",
+        text: "text-blue"
+    },
+    {
+        bg: "bg-teal-bg",
+        text: "text-teal"
+    },
+    {
+        bg: "bg-amber-bg",
+        text: "text-amber"
+    },
+    {
+        bg: "bg-rose-bg",
+        text: "text-rose"
+    },
+    {
+        bg: "bg-violet-100",
+        text: "text-violet-600"
+    },
+    {
+        bg: "bg-indigo-100",
+        text: "text-indigo-600"
+    },
+    {
+        bg: "bg-cyan-100",
+        text: "text-cyan-600"
+    },
+    {
+        bg: "bg-orange-100",
+        text: "text-orange-600"
+    },
+    {
+        bg: "bg-pink-100",
+        text: "text-pink-600"
+    }
+];
+
     parentSelect.disabled = false;
     checkbox.checked = false;
 
@@ -48,6 +91,12 @@ $(function () {
         showModal();
     };
 
+    const getMenuColor = (id) => {
+        return menuColorPalette[
+            Number(id) % menuColorPalette.length
+        ];
+    };
+    
     const simpanData = () => {
         const menunameValue   = menuname.value;
         const isParentChecked = checkbox.checked;  // untuk checkbox pakai .checked
@@ -193,24 +242,90 @@ $(function () {
                 type: "GET"
             },
             columns: [
-                { mData: "id" },
-                { mData: "menuname" },
-                { mData: "route" },
-                { mData: "icon" },
-                { mData: "parent_id" },
-                { 
-                    mData: "is_active",
+                // { mData: "id" },
+                {
+                    mData: "id",
+                    
+                    createdCell: function (td) {
+                        $(td).addClass("px-5 py-3.5 text-center");
+                    },
+
                     render: function (data, type, row) {
-                        return data ? '<span class="text-green-600 font-semibold">Aktif</span>' 
-                                    : '<span class="text-red-600 font-semibold">Tidak Aktif</span>';
+                        return `
+                            <span class="text-slate-400 font-mono text-xs">
+                                ${data ?? '-'}
+                            </span>
+                        `;
                     }
                 },
-                { 
+                // { mData: "menuname" },
+                {
+                    mData: "menuname",
+                    render: function (data, type, row) {
+
+                        const color = getMenuColor(row.id);
+
+                        return `
+                            <div class="flex items-center gap-3 font-semibold text-ink">
+                                <span class="w-8 h-8 rounded-lg flex items-center justify-center ${color.bg} ${color.text}">
+                                    <i class="bi ${row.icon ?? 'bi-list'}"></i>
+                                </span>
+                                ${data}
+                            </div>
+                        `;
+                    }
+                },
+                {
+                    mData: "route",
+                    render: function (data, type, row) {
+                        return data
+                            ? `<span class="bg-slate-100 text-slate-500 font-mono text-xs px-2 py-1 rounded">${data}</span>`
+                            : `<span class="text-slate-300">—</span>`;
+                    }
+                },
+                // { mData: "icon" },
+                {
+                    mData: "icon",
+                    render: function (data, type, row) {
+                        return `
+                            <span class="text-slate-400 font-mono text-xs">
+                                ${data ?? '-'}
+                            </span>
+                        `;
+                    }
+                },
+                {
+                    mData: "parent_id",
+                    render: function (data, type, row) {
+                        return data
+                            ? `<span class="text-slate-400 font-semibold text-xs">#${data}</span>`
+                            : `<span class="text-slate-300">—</span>`;
+                    }
+                },
+                {
+                    mData: "is_active",
+                    render: function (data, type, row) {
+                        return data
+                            ? `
+                                <span class="inline-flex items-center gap-1.5 bg-green-bg text-green font-semibold text-xs px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green"></span>
+                                    Aktif
+                                </span>
+                            `
+                            : `
+                                <span class="inline-flex items-center gap-1.5 bg-red-bg text-red font-semibold text-xs px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red"></span>
+                                    Tidak Aktif
+                                </span>
+                            `;
+                    }
+                },
+                {
                     mData: "id",
                     render: function (data, type, row) {
                         return `
-                            <button 
-                                class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition edit-btn" 
+                            <button
+                                class="border border-bd text-blue font-semibold text-xs rounded-md px-3 py-1.5 hover:bg-blue-bg"
                                 data-id="${data}">
                                 Edit
                             </button>

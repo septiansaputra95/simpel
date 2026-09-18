@@ -1,9 +1,10 @@
 $(function () {
+
     let urlPostTask = "/BPJS/updatetask/postTask";
     let urlCariData = "/BPJS/updatetask/getKodeBooking";
     let urlPost = "/BPJS/updatetask/postTask";
     let urlPostAddAntrean = "/BPJS/updatetask/postAddAntrean";
-    let urlPostBatal = "/BPJS/updatetask/batal";
+    let urlPostBatal = "/BPJS/updatetask/postBatal";
     let urlSimpan = "/BPJS/tasklist/simpan";
     let urlAntrean = "/BPJS/updatetask/antrean";
     let urlCariDataTask6 = "/BPJS/updatetask/getTask6"
@@ -36,74 +37,137 @@ $(function () {
 
     let formModal = $("#form-data");
     
-    document.getElementById("btn-update").onclick = () => {
-        const kodebooking = document.getElementById("kodebooking").value;
-        const taskid = document.getElementById('taskid').value;
+    // document.getElementById("btn-update").onclick = () => {
+    //     const kodebooking = document.getElementById("kodebooking").value;
+    //     const taskid = document.getElementById('taskid').value;
 
-        console.log("Pencarian Taskid " + taskid);
-        const caritask = taskid - 1;
+    //     console.log("Pencarian Taskid " + taskid);
+    //     const caritask = taskid - 1;
 
-        console.log(caritask);
+    //     console.log(caritask);
 
-        cariData(kodebooking, caritask);
+    //     cariData(kodebooking, caritask);
 
-        // postTask(kodebooking, taskid)
+    //     // postTask(kodebooking, taskid)
         
+    // };
+
+    // document.getElementById("btn-update-error").onclick = () => {
+    //     const kodebooking = document.getElementById("kodebooking").value;
+    //     const taskid = document.getElementById('taskid').value;
+
+    //     console.log("Pencarian Taskid " + taskid);
+    //     const caritask = taskid;
+
+    //     console.log(caritask);
+
+    //     cariDataError(kodebooking, caritask);
+
+    //     // postTask(kodebooking, taskid)
+        
+    // };
+
+    // document.getElementById("btn-add").onclick = () => {
+    //     const kodebooking = document.getElementById("kodebooking").value;
+    //     const taskid = document.getElementById('taskid').value;
+
+    //     console.log("Add Task " + kodebooking);
+    //     const caritask = taskid;
+
+    //     // console.log(caritask);
+
+    //     AddTask3(kodebooking, caritask);
+
+    //     // postTask(kodebooking, taskid)
+        
+    // };
+
+    // document.getElementById("btn-addAntrean").onclick = () => {
+    //     const kodebooking = document.getElementById("kodebooking").value;
+    //     const taskid = document.getElementById('taskid').value;
+
+    //     console.log("Add Antrean " + kodebooking);
+    //     const caritask = taskid;
+
+    //     // console.log(caritask);
+
+    //     AddAntrean(kodebooking, caritask);
+
+    //     // postTask(kodebooking, taskid)
+        
+    // };
+    // const btn = document.getElementById("btn-batalAntrean");
+
+    // console.log("BUTTON:", btn);
+
+    // document.getElementById("btn-batalAntrean").onclick = () => {
+    //     const kodebooking = document.getElementById("singleCode").value;
+        
+    //     console.log("Batal  " + kodebooking);
+
+    //     // batalAntrean(kodebooking);
+    //     // postBatal(kodebooking);
+        
+    // };
+
+    $(document).on("click", "#btn-batalAntrean", function () {
+
+        cancelSingle();
+
+    });
+
+    $(document).on("click", "#btn-bulkBatal", function () {
+
+        cancelBulk();
+
+    });
+
+    const cancelSingle = () => {
+
+        const kodebooking = $("#singleCode").val().trim();
+
+        if (!kodebooking) {
+            alert("Kode booking wajib diisi");
+            return;
+        }
+        // console.log("cancelSingle" + kodebooking);
+
+        postBatal(kodebooking).then(function (result) {
+
+            renderSingleResult(result);
+
+        });
+
     };
 
-    document.getElementById("btn-update-error").onclick = () => {
-        const kodebooking = document.getElementById("kodebooking").value;
-        const taskid = document.getElementById('taskid').value;
+    const cancelBulk = async () => {
 
-        console.log("Pencarian Taskid " + taskid);
-        const caritask = taskid;
+        const input = $("#bulkInput").val();
+        const kodebookings = input
+            .split(/[\n,]+/)
+            .map(kode => kode.trim())
+            .filter(kode => kode !== "");
 
-        console.log(caritask);
+        if (kodebookings.length === 0) {
+            alert("Minimal masukkan satu kode booking");
+            return;
+        }
 
-        cariDataError(kodebooking, caritask);
+        console.log("Daftar kode:", kodebookings);
+        const results = [];
 
-        // postTask(kodebooking, taskid)
-        
-    };
+        for (const kodebooking of kodebookings) {
 
-    document.getElementById("btn-add").onclick = () => {
-        const kodebooking = document.getElementById("kodebooking").value;
-        const taskid = document.getElementById('taskid').value;
+            console.log("Memproses:", kodebooking);
+            const result = await postBatal(kodebooking);
+            results.push(result);
 
-        console.log("Add Task " + kodebooking);
-        const caritask = taskid;
+        }
 
-        // console.log(caritask);
+        console.log("Semua hasil:", results);
 
-        AddTask3(kodebooking, caritask);
+        renderBulkResults(results);
 
-        // postTask(kodebooking, taskid)
-        
-    };
-
-    document.getElementById("btn-addAntrean").onclick = () => {
-        const kodebooking = document.getElementById("kodebooking").value;
-        const taskid = document.getElementById('taskid').value;
-
-        console.log("Add Antrean " + kodebooking);
-        const caritask = taskid;
-
-        // console.log(caritask);
-
-        AddAntrean(kodebooking, caritask);
-
-        // postTask(kodebooking, taskid)
-        
-    };
-
-    document.getElementById("btn-batalAntrean").onclick = () => {
-        const kodebooking = document.getElementById("kodebooking").value;
-        
-        console.log("Batal  " + kodebooking);
-
-        // batalAntrean(kodebooking);
-        postBatal(kodebooking);
-        
     };
 
     async function getJadwalDokterPoli(kddpjp, tanggal) {
@@ -670,28 +734,149 @@ $(function () {
     };
 
     const postBatal = (kodebooking) => {
-        console.log("post batal "+ kodebooking );
-        axios
+
+        return axios
             .post(urlPostBatal, {
                 kodebooking: kodebooking
             })
             .then(function (res) {
-                if (res.status === 200) {
-                console.log(res);
-                alert("Pembatalan Kodebooking Berhasil");
-                } else {
-                    alert("Pembatalan Kodebooking Gagal");
-                }
+                // console.log(res)
+                return {
+                    kodebooking: kodebooking,
+                    success: true,
+                    response: res.data
+                };
+
             })
             .catch(function (err) {
-                if (err.response && err.response.status !== 200) {
-                    alert("Error Pada Post Batal");
-                } else {
-                    console.error("Terjadi kesalahan Pada SimpanData:", err.message);
-                }
+
+                return {
+                    kodebooking: kodebooking,
+                    success: false,
+                    response: err.response?.data ?? {
+                        message: err.message
+                    }
+                };
+
             });
 
-    }
+    };
+
+    const renderSingleResult = (result) => {
+        // console.log(result);
+        const response = result.response;
+        $("#singleResultWrap").removeClass("hidden");
+        let messageHtml = "";
+        if (result.success && (response.status === "OK" || response.code === 200)) {
+
+            messageHtml = `
+                <div class="flex items-start gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                    <i class="bi bi-check-circle-fill text-green-600 mt-0.5"></i>
+
+                    <div>
+                        <div class="text-sm font-semibold text-green-700">
+                            ${response.message ?? "Pembatalan berhasil"}
+                        </div>
+
+                        <div class="text-xs text-green-600 mt-1">
+                            Kode booking: ${result.kodebooking}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        } else {
+
+            messageHtml = `
+                <div class="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                    <i class="bi bi-x-circle-fill text-red-600 mt-0.5"></i>
+
+                    <div>
+                        <div class="text-sm font-semibold text-red-700">
+                            ${response.message ?? "Pembatalan gagal"}
+                        </div>
+
+                        <div class="text-xs text-red-600 mt-1">
+                            Kode booking: ${result.kodebooking}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        $("#singleResultMessage").html(messageHtml);
+        $("#singleResultJson").text(
+            JSON.stringify(response, null, 2)
+        );
+    };
+
+    const renderBulkResults = (results) => {
+
+        $("#bulkResultWrap").removeClass("hidden");
+
+        let html = "";
+
+        results.forEach(function (result) {
+
+            const response = result.response;
+
+            const berhasil =
+                result.success &&
+                (response.status === "OK" || response.code === 200);
+
+            if (berhasil) {
+
+                html += `
+                    <div class="flex items-start gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+
+                        <i class="bi bi-check-circle-fill text-green-600 mt-0.5"></i>
+
+                        <div>
+                            <div class="text-sm font-semibold text-green-700">
+                                ${response.message ?? "Pembatalan berhasil"}
+                            </div>
+
+                            <div class="text-xs text-green-600 mt-1">
+                                Kode booking: ${result.kodebooking}
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+
+            } else {
+
+                html += `
+                    <div class="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+
+                        <i class="bi bi-x-circle-fill text-red-600 mt-0.5"></i>
+
+                        <div>
+                            <div class="text-sm font-semibold text-red-700">
+                                ${response.message ?? "Pembatalan gagal"}
+                            </div>
+
+                            <div class="text-xs text-red-600 mt-1">
+                                Kode booking: ${result.kodebooking}
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+
+            }
+
+        });
+
+        $("#bulkResultMessage").html(html);
+
+        // Tampilkan seluruh response dalam bentuk JSON
+        $("#bulkResultJson").text(
+            JSON.stringify(results, null, 2)
+        );
+
+    };
+
     const data = (kodebooking) => {
     $("#tabel-data").dataTable({
         processing: true,  // "Processing" should be lowercase.

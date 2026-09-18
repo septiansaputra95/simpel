@@ -1,56 +1,58 @@
 @extends('layouts.newlayout')
 
 @section('newcontent')
-<h1 class="text-2xl font-bold mb-4">SIMPEL RS HERMINA PEKALONGAN</h1>
+<h1 class="font-bold text-lg mb-6">SIMPEL RS HERMINA PEKALONGAN</h1>
 
 <!-- Tabs -->
-<div class="border-b border-gray-200">
-    <nav class="-mb-px flex space-x-4" id="tabs">
-        <button class="tab-btn border-b-2 border-blue-500 text-blue-600 px-3 py-2 text-sm font-medium" data-tab="tab1">Menu</button>
-        <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium" data-tab="tab2">Sub Menu</button>
-        <!-- <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium" data-tab="tab3">Settings</button> -->
-    </nav>
+<div class="flex gap-6 border-b border-bd mb-6" id="tabs">
+    <button class="tab-btn pb-3 text-sm font-semibold text-accent border-b-2 border-accent" data-tab="tab1">Menu</button>
+    <button class="tab-btn pb-3 text-sm font-semibold text-muted border-b-2 border-transparent" data-tab="tab2">Sub Menu</button>
+    <!-- <button class="tab-btn pb-3 text-sm font-semibold text-muted border-b-2 border-transparent" data-tab="tab3">Settings</button> -->
 </div>
 
 <!-- Tab 1 -->
 <div id="tab1" class="tab-content">
     <!-- Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 class="text-lg font-bold">Menu</h2>
-            <button class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition" id="btn-tambah">Tambah</button>
+    <div class="bg-white border border-bd rounded-2xl overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-bd">
+            <h2 class="font-bold text-[15px]">Menu</h2>
+            <button class="bg-accent hover:opacity-90 text-white text-sm font-semibold rounded-lg px-4 py-2 transition" id="btn-tambah">
+                <i class="bi bi-plus-lg mr-1"></i>Tambah
+            </button>
         </div>
-        <table class="min-w-full text-sm text-left border border-gray-200" id="tabel-data">
-            <thead class="bg-gray-100 border-b border-gray-200">
-                <tr>
-                    <th class="px-4 py-2 font-semibold border border-gray-300 text-left">Menu Id</th>
-                    <th class="px-4 py-2 font-semibold border border-gray-300 text-left">Nama Menu</th>
-                    <th class="px-4 py-2 font-semibold border border-gray-300 text-left">Route</th>
-                    <th class="px-4 py-2 font-semibold border border-gray-300 text-left">Icon</th>
-                    <th class="px-4 py-2 font-semibold border border-gray-300 text-left">Parent Id</th>
-                    <th class="px-4 py-2 font-semibold border border-gray-300 text-left">Status</th>
-                    <th class="px-4 py-2 font-semibold border border-gray-300 text-left">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">  
-            </tbody>
-        </table>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm" id="tabel-data">
+                <thead>
+                    <tr class="bg-slate-50">
+                        <th class="text-left text-[11px] uppercase tracking-wide text-slate-400 font-semibold px-5 py-3">Menu Id</th>
+                        <th class="text-left text-[11px] uppercase tracking-wide text-slate-400 font-semibold px-5 py-3">Nama Menu</th>
+                        <th class="text-left text-[11px] uppercase tracking-wide text-slate-400 font-semibold px-5 py-3">Route</th>
+                        <th class="text-left text-[11px] uppercase tracking-wide text-slate-400 font-semibold px-5 py-3">Icon</th>
+                        <th class="text-left text-[11px] uppercase tracking-wide text-slate-400 font-semibold px-5 py-3">Parent Id</th>
+                        <th class="text-left text-[11px] uppercase tracking-wide text-slate-400 font-semibold px-5 py-3">Status</th>
+                        <th class="text-left text-[11px] uppercase tracking-wide text-slate-400 font-semibold px-5 py-3">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-bd">
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <!-- Tab 2 -->
 <div id="tab2" class="tab-content hidden">
-    <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-lg font-bold mb-2">Laporan</h2>
-        <p>Ini halaman laporan.</p>
+    <div class="bg-white border border-bd rounded-2xl p-6">
+        <h2 class="font-bold text-[15px] mb-2">Laporan</h2>
+        <p class="text-sm text-muted">Ini halaman laporan.</p>
     </div>
 </div>
 
 <!-- Tab 3 -->
 <!-- <div id="tab3" class="tab-content hidden">
-    <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-lg font-bold mb-2">Pengaturan</h2>
-        <p>Ini halaman pengaturan.</p>
+    <div class="bg-white border border-bd rounded-2xl p-6">
+        <h2 class="font-bold text-[15px] mb-2">Pengaturan</h2>
+        <p class="text-sm text-muted">Ini halaman pengaturan.</p>
     </div>
 </div> -->
 @include('menu.modal-data')
@@ -58,4 +60,3 @@
 @vite('resources/js/menu/menu.js')
 @endpush
 @endsection
-<!-- /home/itsupport/aplikasi/simpel/resources/js/menu/menu.js -->
