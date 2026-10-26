@@ -131,7 +131,7 @@ class AntrianOnlineController extends Controller
     public function autoStore()
     {
         // $tanggal = DATE('Y-m-d');
-        $tanggal = DATE('2026-09-10');
+        $tanggal = DATE('2026-10-17');
 
         $request = new Request();
         $request->replace(['tanggal' => $tanggal]);
@@ -144,7 +144,8 @@ class AntrianOnlineController extends Controller
         echo $pesan2 = "Selesai proses simpan " . $tanggal . ". Mohon di cek.";
         $this->storeLogs($responseData->code, $responseData->message, $pesan, $pesan2);
 
-        return redirect()->route('antrianonline.digitalclock');
+        // return redirect()->route('antrianonline.digitalclock');
+        echo $tanggal;
         return $response;
         
     }

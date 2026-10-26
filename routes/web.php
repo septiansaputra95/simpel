@@ -7,9 +7,11 @@ use App\Mail\DokterEmail;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Menu\MenuController;
 use App\Http\Controllers\Master\MasterDokterController;
+use App\Http\Controllers\Master\MasterPasienController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\GudangUmum\GudangStokController;
 use App\Http\Controllers\GudangUmum\PermintaanController;
+use App\Http\Controllers\Scheduler\SchedulerController;
 
 
 // Route::get('/', function () {
@@ -99,10 +101,24 @@ Route::group(['namespace' => 'App\Http\Controllers\Keuangan', 'prefix' => 'Keuan
 
 // Route::group(['namespace' => 'App\Http\Controllers\Master', 'prefix' => 'Master'], function() {
 Route::middleware(['auth', 'check.menu.access'])->group(function () {
+    Route::get('/scheduler', [SchedulerController::class, 'index'])->name('scheduler.index');
+    Route::get('/scheduler/datatables', [SchedulerController::class, 'loadDatatables'])->name('scheduler.datatables');
+    Route::post('/scheduler/simpan', [SchedulerController::class, 'store'])->name('scheduler.store');
+    Route::post('/scheduler/{id}/update', [SchedulerController::class, 'update'])->name('scheduler.update');
+});
+
+Route::middleware(['auth', 'check.menu.access'])->group(function () {
     Route::get('/masterdokter', [MasterDokterController::class , 'index'])->name('masterdokter.index');
     Route::get('/masterdokter/datatables', [MasterDokterController::class , 'loadDatatables'])->name('masterdokter.loadDatatables');
     Route::post('/masterdokter/simpan', [MasterDokterController::class , 'simpan'])->name('masterdokter.simpan');
     Route::post('/masterdokter/update', [MasterDokterController::class , 'update'])->name('masterdokter.update');
+});
+Route::middleware(['auth', 'check.menu.access'])->group(function () {
+    Route::get('/masterpasien', [MasterPasienController::class , 'index'])->name('masterpasien.index');
+    Route::get('/masterpasien/datatables', [MasterPasienController::class , 'loadDatatables'])->name('masterpasien.loadDatatables');
+    Route::get('/masterpasien/input', [MasterPasienController::class , 'input'])->name('masterpasien.input');
+    Route::post('/masterpasien/simpan', [MasterPasienController::class , 'simpan'])->name('masterpasien.simpan');
+    Route::post('/masterpasien/update', [MasterPasienController::class , 'update'])->name('masterpasien.update');
 });
 
 // Route::prefix('menu')->group(function () {

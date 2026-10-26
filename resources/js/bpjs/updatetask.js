@@ -110,6 +110,7 @@ $(function () {
         
     // };
 
+    // === TOMBOL BATAL ANTREAN ===
     $(document).on("click", "#btn-batalAntrean", function () {
 
         cancelSingle();
@@ -121,7 +122,8 @@ $(function () {
         cancelBulk();
 
     });
-
+    
+    // === SCRIPT BATAL ANTREAN ===
     const cancelSingle = () => {
 
         const kodebooking = $("#singleCode").val().trim();
@@ -153,12 +155,12 @@ $(function () {
             return;
         }
 
-        console.log("Daftar kode:", kodebookings);
+        // console.log("Daftar kode:", kodebookings);
         const results = [];
 
         for (const kodebooking of kodebookings) {
 
-            console.log("Memproses:", kodebooking);
+            // console.log("Memproses:", kodebooking);
             const result = await postBatal(kodebooking);
             results.push(result);
 
@@ -762,12 +764,16 @@ $(function () {
 
     };
 
+    // === RENDER KE HTML SEBAGAI MESSAGE ===
     const renderSingleResult = (result) => {
         // console.log(result);
         const response = result.response;
+        const metadata = response?.metadata;
+
         $("#singleResultWrap").removeClass("hidden");
         let messageHtml = "";
-        if (result.success && (response.status === "OK" || response.code === 200)) {
+        console.log(response)
+        if (metadata?.code === 200) {
 
             messageHtml = `
                 <div class="flex items-start gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
@@ -819,12 +825,9 @@ $(function () {
         results.forEach(function (result) {
 
             const response = result.response;
+            const metadata = response?.metadata;
 
-            const berhasil =
-                result.success &&
-                (response.status === "OK" || response.code === 200);
-
-            if (berhasil) {
+            if (metadata?.code === 200) {
 
                 html += `
                     <div class="flex items-start gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">

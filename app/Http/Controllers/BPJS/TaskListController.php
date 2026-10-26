@@ -172,7 +172,7 @@ class TaskListController extends Controller
     public function autoStore()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2026-08-03');
+        // $tanggal = DATE('2026-10-17');
 
         $request = new Request();
         $request->replace(['tanggal' => $tanggal]);

@@ -205,8 +205,6 @@ class UpdateTaskController extends Controller
         $endpoint = 'antrean/batal';
         $requestBridge = $this->bridging->postRequest($endpoint, $dataRequest);
         $result = json_decode($requestBridge);
-        // echo $result;
-        // return $result;
         return response()->json($result);
     }
 
@@ -373,7 +371,7 @@ class UpdateTaskController extends Controller
     public function autoUpdateTask()
     {
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2026-08-03";
+        // $tanggal = "2026-10-17";
         echo $tanggal;
         // MENGAMBIL DATA ANTRIAN YANG STATUS NYA BELUM DILAYANI
         $data = MAntrianTanggal::where('tanggal', $tanggal)
@@ -860,7 +858,7 @@ class UpdateTaskController extends Controller
     {
         // MENGAMBIL DATA MTASKLIST BERDASARKAN TANGGAL DAN TASKID = 0
         $tanggal = DATE('Y-m-d');
-        // $tanggal = "2026-08-03";
+        // $tanggal = "2026-10-17";
         $data = MTaskList::where('tanggal_data', $tanggal)
                         ->where('taskid', "0")
                         ->with('antrian') 

@@ -27,8 +27,8 @@ class SEPController extends Controller
     public function autoStoreKunjungan()
     {
 
-        $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2026-08-03');
+        // $tanggal = DATE('Y-m-d');
+        $tanggal = DATE('2026-10-12');
         
         // JENIS LAYANAN 1 = RAWAT INAP, 2 = RAWAT JALAN
         $jenislayanan = 2;
@@ -65,8 +65,8 @@ class SEPController extends Controller
     }
     public function autoStore()
     {
-        $tanggal = DATE('Y-m-d');
-        // $tanggal = DATE('2026-08-03');
+        // $tanggal = DATE('Y-m-d');
+        $tanggal = DATE('2026-10-12');
         echo $tanggal;
         $data = MVclaimSEP::where('tanggal_sep', $tanggal)->get();
         
@@ -77,7 +77,7 @@ class SEPController extends Controller
         }
         
         MSEP::where('tglsep', $tanggal)->delete();
-
+        $nomorin = 1;
         for($i = 0; $i < COUNT($nosep); $i++)
         {
             $SEPData = $this->sep($nosep[$i]);
@@ -100,12 +100,13 @@ class SEPController extends Controller
                     'kddpjp'        => $responseSEP->dpjp->kdDPJP,
                     'nmdpjp'        => $responseSEP->dpjp->nmDPJP
                 ]);
-
-                echo 'Simpan SEP: '. $nosep[$i]. '<br>';
+                echo $nomorin;
+                echo ' Simpan SEP: '. $nosep[$i]. '<br>';
                 // dd($responseSEP);
             } else {
-                echo "No SEP :". $nosep[$i]. ' Sudah Ada <br>';
+                echo " No SEP :". $nosep[$i]. ' Sudah Ada <br>';
             }
+            $nomorin++;
         } 
     }
 
@@ -224,8 +225,8 @@ class SEPController extends Controller
 
     public function cariselisih()
     {
-        $tanggal = DATE('Y-m-d');
-        // $tanggal = '2026-08-03';
+        // $tanggal = DATE('Y-m-d');
+        $tanggal = '2026-10-12';
         echo $tanggal.'<br>';
         $data = MSEP::where('tglsep', $tanggal)
                 ->where('poli', '<>', 'INSTALASI GAWAT DARURAT')->get();

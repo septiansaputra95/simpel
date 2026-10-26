@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('country', 150)->nullable();
             $table->string('identitytype', 150)->nullable();
             $table->string('identityno', 150)->nullable();
+            $table->string('idbpjs', 150)->nullable();
             $table->string('emergencycontactperson', 150)->nullable();
             $table->string('relationship', 150)->nullable();
             $table->string('emergencyphoneno', 150)->nullable();
@@ -39,6 +40,7 @@ return new class extends Migration
             $table->string('user', 150)->nullable();
             $table->string('servicecenter', 150)->nullable();
             // $table->date('tanggaldata')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

@@ -245,7 +245,7 @@ $(function () {
                 // { mData: "id" },
                 {
                     mData: "id",
-                    
+
                     createdCell: function (td) {
                         $(td).addClass("px-5 py-3.5 text-center");
                     },
